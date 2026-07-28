@@ -3,6 +3,101 @@
 import { useState, useRef, useEffect } from 'react';
 import Navbar from '../../components/Navbar';
 
+const cafeData = [
+  { name: "Dottore Coffee", desc: "Interior industrial modern dan kopi specialty", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Penghibur No. 15, Losari", fac: ["WiFi", "AC", "Live Music"] },
+  { name: "Kalaras Coffee & Eatery", desc: "Rooftop dengan view sunset pantai Losari", cat: "rooftop", price: "$$$", rating: 4.5, addr: "Jl. Metro Tanjung Bunga", fac: ["WiFi", "Rooftop", "Full Kitchen"] },
+  { name: "Kultura Coffee", desc: "Coworking bernuansa budaya Makassar", cat: "coworking", price: "$$", rating: 4.6, addr: "Jl. A.P. Pettarani No. 88", fac: ["WiFi Cepat", "Stop Kontak", "Meeting Room"] },
+  { name: "Warung Kopi Daeng", desc: "Kedai kopi tradisional dengan kopi Toraja asli", cat: "traditional", price: "$", rating: 4.3, addr: "Jl. Somba Opu No. 200", fac: ["Outdoor", "Parking"] },
+  { name: "The Garden Cafe", desc: "Taman hijau asri, spot instagramable & healthy food", cat: "outdoor", price: "$$", rating: 4.4, addr: "Jl. Boulevard, Panakkukang", fac: ["WiFi", "Garden", "Pet Friendly"] },
+  { name: "Nara Coffee & Kitchen", desc: "Minimalis Jepang, menu fusion & instagramable", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Hertasning No. 52", fac: ["WiFi", "AC", "Dessert Bar"] },
+  { name: "Sky Lounge Makassar", desc: "Lantai 20, view 360° kota, premium coffee & cocktails", cat: "rooftop", price: "$$$", rating: 4.6, addr: "Jl. Jend. Sudirman No. 1", fac: ["WiFi", "Bar", "VIP Room"] },
+  { name: "Digital Nomad Hub", desc: "Co-working 24 jam, internet 100Mbps", cat: "coworking", price: "$$", rating: 4.5, addr: "Jl. Ratulangi No. 33", fac: ["WiFi 100Mbps", "Locker", "Nap Room"] },
+  { name: "Losari Beach Coffee", desc: "Tepi pantai Losari, sunset terbaik & pisang epe", cat: "outdoor", price: "$", rating: 4.7, addr: "Jl. Penghibur, Pantai Losari", fac: ["Sea View", "Traditional Food"] },
+  { name: "Kopi Lain Hati Makassar", desc: "Aesthetic modern, harga terjangkau untuk mahasiswa", cat: "aesthetic", price: "$", rating: 4.2, addr: "Jl. Urip Sumoharjo No. 120", fac: ["WiFi", "AC", "Parking"] },
+  { name: "Fort Rotterdam Cafe", desc: "Heritage dekat Benteng Rotterdam, nuansa kolonial", cat: "traditional", price: "$$", rating: 4.4, addr: "Jl. Ujung Pandang No. 1", fac: ["WiFi", "Heritage View", "Outdoor"] },
+  { name: "Maleo Coffee Roasters", desc: "Specialty roaster, biji kopi Toraja & Enrekang", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Jl. Bonto Lempangan No. 8", fac: ["WiFi", "Roasting Demo", "Workshop"] },
+  { name: "Panorama Rooftop Bar", desc: "Sky bar hotel bintang 5, panorama kota & laut", cat: "rooftop", price: "$$$", rating: 4.7, addr: "Jl. Andi Djemma No. 5", fac: ["Premium Bar", "Live Band", "Private Dining"] },
+  { name: "Green Space Co-Working", desc: "Konsep hijau & sustainable, organic coffee", cat: "coworking", price: "$$", rating: 4.3, addr: "Jl. Perintis Kemerdekaan KM 12", fac: ["WiFi Cepat", "Standing Desk", "Projector"] },
+  { name: "Taman Sari Coffee House", desc: "Taman teduh, live acoustic Jumat-Sabtu malam", cat: "outdoor", price: "$", rating: 4.5, addr: "Jl. Kakatua No. 18", fac: ["Garden", "Live Acoustic", "Kids Playground"] },
+  { name: "Warkop Phoenam", desc: "Legendaris sejak 1946, kopi tubruk khas Makassar", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14", fac: ["Traditional Coffee", "24 Jam"] },
+];
+
+function getAIResponse(message) {
+  const msg = message.toLowerCase();
+
+  if (msg.includes('halo') || msg.includes('hai') || msg.includes('hi') || msg.includes('hey') || msg.includes('apa kabar')) {
+    return `Halo! 👋 Selamat datang di Cafe Makassar!\n\nSaya bisa bantu kamu cari cafe terbaik di Makassar. Coba tanya:\n• "Cafe aesthetic yang instagramable?"\n• "Cafe buat kerja dengan WiFi cepat?"\n• "Cafe murah tapi enak dimana?"\n• "Rooftop cafe dengan view bagus?"\n• "Top 5 cafe terbaik?"\n\nMau cari yang mana? 😊☕`;
+  }
+
+  if (msg.includes('aesthetic') || msg.includes('instagramable') || msg.includes('foto') || msg.includes('cantik')) {
+    const picks = cafeData.filter(c => c.cat === 'aesthetic');
+    const list = picks.map(c => `📸 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
+    return `Rekomendasi cafe aesthetic & instagramable di Makassar:\n\n${list}\n\n✨ Semua punya spot foto keren! Favorit saya: Maleo Coffee Roasters (rating tertinggi 4.9)!`;
+  }
+
+  if (msg.includes('kerja') || msg.includes('work') || msg.includes('wifi') || msg.includes('coworking') || msg.includes('laptop') || msg.includes('wfc')) {
+    const picks = cafeData.filter(c => c.cat === 'coworking');
+    const list = picks.map(c => `💻 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
+    return `Cafe terbaik untuk kerja/WFC di Makassar:\n\n${list}\n\n🔌 Tips: Digital Nomad Hub buka 24 jam dengan WiFi 100Mbps — perfect buat deadline!`;
+  }
+
+  if (msg.includes('murah') || msg.includes('terjangkau') || msg.includes('hemat') || msg.includes('mahasiswa') || msg.includes('budget')) {
+    const picks = cafeData.filter(c => c.price === '$');
+    const list = picks.map(c => `💰 ${c.name} ⭐${c.rating}\n   📍 ${c.addr}\n   ${c.desc}`).join('\n\n');
+    return `Cafe murah tapi enak di Makassar:\n\n${list}\n\n💸 Semua harga ramah kantong! Warkop Phoenam paling legendaris — buka sejak 1946!`;
+  }
+
+  if (msg.includes('rooftop') || msg.includes('view') || msg.includes('sunset') || msg.includes('pemandangan') || msg.includes('tinggi')) {
+    const picks = cafeData.filter(c => c.cat === 'rooftop');
+    const list = picks.map(c => `🌆 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
+    return `Rooftop cafe dengan view terbaik di Makassar:\n\n${list}\n\n🌅 Tips: Kalaras Coffee punya sunset pantai Losari terbaik! Datang jam 5 sore ya!`;
+  }
+
+  if (msg.includes('outdoor') || msg.includes('taman') || msg.includes('alam') || msg.includes('hijau') || msg.includes('segar')) {
+    const picks = cafeData.filter(c => c.cat === 'outdoor');
+    const list = picks.map(c => `🌿 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
+    return `Cafe outdoor asri di Makassar:\n\n${list}\n\n🍃 Losari Beach Coffee wajib dicoba — view laut + pisang epe khas Makassar!`;
+  }
+
+  if (msg.includes('tradisional') || msg.includes('toraja') || msg.includes('warkop') || msg.includes('klasik') || msg.includes('kopi tubruk')) {
+    const picks = cafeData.filter(c => c.cat === 'traditional');
+    const list = picks.map(c => `☕ ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
+    return `Warkop & cafe tradisional khas Makassar:\n\n${list}\n\n☕ Kopi Toraja dan kopi tubruk Makassar itu legend! Warkop Phoenam wajib dikunjungi!`;
+  }
+
+  if (msg.includes('terbaik') || msg.includes('rating') || msg.includes('top') || msg.includes('populer') || msg.includes('best')) {
+    const picks = [...cafeData].sort((a, b) => b.rating - a.rating).slice(0, 5);
+    const list = picks.map((c, i) => `${i+1}. ${c.name} ⭐${c.rating} — ${c.cat}\n   📍 ${c.addr}\n   ${c.desc}`).join('\n\n');
+    return `🏆 Top 5 Cafe Terbaik di Makassar:\n\n${list}\n\nSemua worth to visit! Maleo Coffee Roasters juara dengan rating 4.9! 🎯`;
+  }
+
+  if (msg.includes('rekomen') || msg.includes('saran') || msg.includes('suggest') || msg.includes('pilih')) {
+    const picks = [...cafeData].sort((a, b) => b.rating - a.rating).slice(0, 4);
+    const list = picks.map(c => `⭐ ${c.name} (${c.cat}) — Rating: ${c.rating}/5\n   📍 ${c.addr}\n   ${c.desc}`).join('\n\n');
+    return `Rekomendasi cafe pilihan di Makassar:\n\n${list}\n\nMau yang spesifik? Tanya aja kategorinya:\n• Aesthetic / Coworking / Outdoor / Rooftop / Traditional 😊`;
+  }
+
+  if (msg.includes('makan') || msg.includes('menu') || msg.includes('food') || msg.includes('makanan')) {
+    return `🍽️ Cafe di Makassar dengan menu makanan lengkap:\n\n1. Kalaras Coffee & Eatery — Full kitchen, makanan berat khas Makassar\n2. Nara Coffee & Kitchen — Menu fusion Jepang + dessert bar\n3. Losari Beach Coffee — Pisang epe & makanan tradisional\n4. Taman Sari Coffee House — Menu nusantara lengkap\n\n🥘 Jangan lupa coba pisang epe dan coto Makassar di sekitar cafe!`;
+  }
+
+  if (msg.includes('24 jam') || msg.includes('malam') || msg.includes('tengah malam') || msg.includes('begadang') || msg.includes('lembur')) {
+    return `🌙 Cafe yang buka malam/24 jam di Makassar:\n\n1. Digital Nomad Hub — 24 Jam, WiFi 100Mbps\n   📍 Jl. Ratulangi No. 33\n\n2. Warkop Phoenam — 24 Jam, kopi tubruk legendaris\n   📍 Jl. Sulawesi No. 14\n\n3. Dottore Coffee — Sampai jam 24:00\n   📍 Jl. Penghibur No. 15\n\n4. Kopi Lain Hati — Sampai jam 24:00\n   📍 Jl. Urip Sumoharjo No. 120\n\n☕ Perfect buat begadang atau lembur!`;
+  }
+
+  if (msg.includes('lokasi') || msg.includes('alamat') || msg.includes('dimana') || msg.includes('daerah')) {
+    const list = cafeData.map(c => `📍 ${c.name} — ${c.addr}`).join('\n');
+    return `Lokasi semua cafe di Makassar:\n\n${list}\n\nMau tau detail cafe yang mana? Tanya aja! 🗺️`;
+  }
+
+  if (msg.includes('terima kasih') || msg.includes('makasih') || msg.includes('thanks') || msg.includes('thank')) {
+    return `Sama-sama! 😊 Senang bisa membantu!\n\nKalau ada pertanyaan lain tentang cafe di Makassar, jangan ragu tanya ya. Selamat ngopi! ☕✨`;
+  }
+
+  // Default response
+  return `Kami punya ${cafeData.length} cafe di Makassar! 🏪\n\n📸 Aesthetic: ${cafeData.filter(c=>c.cat==='aesthetic').length} cafe\n💻 Coworking: ${cafeData.filter(c=>c.cat==='coworking').length} cafe\n🌿 Outdoor: ${cafeData.filter(c=>c.cat==='outdoor').length} cafe\n🌆 Rooftop: ${cafeData.filter(c=>c.cat==='rooftop').length} cafe\n☕ Traditional: ${cafeData.filter(c=>c.cat==='traditional').length} cafe\n\nCoba tanya lebih spesifik, contoh:\n• "Cafe aesthetic yang instagramable?"\n• "Cafe murah buat mahasiswa?"\n• "Top 5 cafe terbaik?"\n• "Cafe buat kerja?"\n\nSaya siap bantu! 😊`;
+}
+
 export default function ChatPage() {
   const [messages, setMessages] = useState([
     {
@@ -32,26 +127,39 @@ export default function ChatPage() {
     setMessages(prev => [...prev, { role: 'user', content: userMessage, timestamp: new Date().toISOString() }]);
     setIsLoading(true);
 
+    // Simulate brief thinking delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+
     try {
+      // Try backend API first
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      
       const res = await fetch(`${API_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMessage }),
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
       const data = await res.json();
       
-      if (data.success) {
+      if (data.success && data.data.message) {
         setMessages(prev => [...prev, { 
           role: 'ai', 
           content: data.data.message, 
-          timestamp: data.data.timestamp 
+          timestamp: data.data.timestamp || new Date().toISOString()
         }]);
+      } else {
+        throw new Error('No response');
       }
     } catch (error) {
+      // Fallback: use local AI response
+      const aiResponse = getAIResponse(userMessage);
       setMessages(prev => [...prev, { 
         role: 'ai', 
-        content: 'Maaf, terjadi kesalahan. Silakan coba lagi 🙏', 
+        content: aiResponse, 
         timestamp: new Date().toISOString() 
       }]);
     } finally {

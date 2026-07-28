@@ -2,6 +2,41 @@
 
 import { useState, useRef, useEffect } from 'react';
 
+const cafeData = [
+  { name: "Dottore Coffee", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Penghibur No. 15" },
+  { name: "Kalaras Coffee & Eatery", cat: "rooftop", price: "$$$", rating: 4.5, addr: "Jl. Metro Tanjung Bunga" },
+  { name: "Kultura Coffee", cat: "coworking", price: "$$", rating: 4.6, addr: "Jl. A.P. Pettarani No. 88" },
+  { name: "Nara Coffee & Kitchen", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Hertasning No. 52" },
+  { name: "Maleo Coffee Roasters", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Jl. Bonto Lempangan No. 8" },
+  { name: "Warkop Phoenam", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14" },
+  { name: "Digital Nomad Hub", cat: "coworking", price: "$$", rating: 4.5, addr: "Jl. Ratulangi No. 33" },
+  { name: "Losari Beach Coffee", cat: "outdoor", price: "$", rating: 4.7, addr: "Pantai Losari" },
+];
+
+function getQuickResponse(msg) {
+  const m = msg.toLowerCase();
+  if (m.includes('aesthetic') || m.includes('foto')) {
+    return '📸 Cafe aesthetic: Maleo Coffee Roasters (⭐4.9), Nara Coffee (⭐4.8), Dottore Coffee (⭐4.7). Semua instagramable!';
+  }
+  if (m.includes('murah') || m.includes('hemat')) {
+    return '💰 Cafe murah: Warkop Phoenam ($, legendaris!), Losari Beach Coffee ($, view laut), Kopi Lain Hati ($, hits!).';
+  }
+  if (m.includes('kerja') || m.includes('wifi') || m.includes('coworking')) {
+    return '💻 Cafe buat kerja: Digital Nomad Hub (24jam, 100Mbps), Kultura Coffee, Green Space Co-Working. WiFi cepat!';
+  }
+  if (m.includes('rooftop') || m.includes('view')) {
+    return '🌆 Rooftop: Sky Lounge (lantai 20!), Kalaras Coffee (sunset Losari), Panorama Rooftop Bar. View mantap!';
+  }
+  if (m.includes('rekomen') || m.includes('saran')) {
+    const top = [...cafeData].sort((a,b) => b.rating - a.rating).slice(0,3);
+    return `⭐ Top 3: ${top.map(c => `${c.name} (${c.rating})`).join(', ')}. Buka halaman Explore untuk detail!`;
+  }
+  if (m.includes('halo') || m.includes('hai') || m.includes('hi')) {
+    return 'Halo! 👋 Tanya aja soal cafe aesthetic, murah, coworking, rooftop, atau rekomendasi! 😊';
+  }
+  return `Ada ${cafeData.length}+ cafe di Makassar! Tanya: "cafe aesthetic?", "cafe murah?", "cafe buat kerja?", atau "rekomendasi?" 😊`;
+}
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -24,22 +59,11 @@ export default function ChatWidget() {
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
 
-    try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${API_URL}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setMessages(prev => [...prev, { role: 'ai', content: data.data.message }]);
-      }
-    } catch {
-      setMessages(prev => [...prev, { role: 'ai', content: 'Maaf, terjadi kesalahan. Coba lagi ya 🙏' }]);
-    } finally {
-      setIsLoading(false);
-    }
+    await new Promise(resolve => setTimeout(resolve, 600));
+    
+    const response = getQuickResponse(userMessage);
+    setMessages(prev => [...prev, { role: 'ai', content: response }]);
+    setIsLoading(false);
   };
 
   return (
