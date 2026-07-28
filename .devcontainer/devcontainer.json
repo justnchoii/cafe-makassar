@@ -1,0 +1,17 @@
+{
+  "name": "Cafe Makassar Dev",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "backend",
+  "workspaceFolder": "/app",
+  "forwardPorts": [3000, 5000, 9000, 9001, 27017],
+  "postCreateCommand": "cd /app && npm install && node src/seed.js",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "mongodb.mongodb-vscode"
+      ]
+    }
+  }
+}
