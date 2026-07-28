@@ -1,10 +1,11 @@
 {
   "name": "Cafe Makassar Dev",
-  "dockerComposeFile": "../docker-compose.yml",
-  "service": "backend",
-  "workspaceFolder": "/app",
-  "forwardPorts": [3000, 5000, 9000, 9001, 27017],
-  "postCreateCommand": "cd /app && npm install && node src/seed.js",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:18",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "18" }
+  },
+  "forwardPorts": [3000, 5000, 27017],
+  "postCreateCommand": "bash .devcontainer/setup.sh",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -15,3 +16,4 @@
     }
   }
 }
+
