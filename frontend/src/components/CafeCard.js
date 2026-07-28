@@ -22,11 +22,19 @@ export default function CafeCard({ cafe, index }) {
       className="glass-card overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in-up"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      {/* Image Placeholder */}
-      <div className="h-48 bg-gradient-to-br from-warm to-secondary/30 relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-6xl opacity-50">{categoryEmoji[cafe.category] || '☕'}</span>
-        </div>
+      {/* Image */}
+      <div className="h-48 relative overflow-hidden">
+        {cafe.image ? (
+          <img 
+            src={cafe.image} 
+            alt={cafe.name}
+            className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+          />
+        ) : (
+          <div className="h-full bg-gradient-to-br from-warm to-secondary/30 flex items-center justify-center">
+            <span className="text-6xl opacity-50">{categoryEmoji[cafe.category] || '☕'}</span>
+          </div>
+        )}
         {/* Price Badge */}
         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-bold text-primary">
           {cafe.priceRange}
