@@ -5,8 +5,8 @@ import Navbar from '../../components/Navbar';
 
 const cafeData = [
   { name: "Goodfields Makassar", desc: "Cafe aesthetic real di area Ujung Pandang dengan suasana modern dan nyaman", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Chairil Anwar, Sawerigading, Ujung Pandang", fac: ["WiFi", "AC", "Live Music"] },
-  { name: "Duft Coffee Indonesia", desc: "Cafe real dengan interior hangat dan nyaman buat nongkrong", cat: "aesthetic", price: "$$", rating: 4.5, addr: "Jalan A.P. Pettarani, Tamamaung, Panakkukang", fac: ["WiFi", "AC", "Coffee Bar"] },
-  { name: "Postropis Coffee & Space", desc: "Cafe modern dan luas, cocok untuk kerja atau meeting", cat: "coworking", price: "$$", rating: 4.6, addr: "Jalan Adipura Raya, Karuwisi Utara, Panakkukang", fac: ["WiFi Cepat", "Meeting Room", "Workspace"] },
+  { name: "Duft Coffee Indonesia", desc: "Cafe real dengan interior hangat dan nyaman buat nongkrong", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jalan A.P. Pettarani, Tamamaung, Panakkukang", fac: ["WiFi", "AC", "Coffee Bar"] },
+  { name: "Postropis Coffee & Space", desc: "Cafe modern dan luas, cocok untuk kerja atau meeting", cat: "coworking", price: "$$", rating: 4.8, addr: "Jalan Adipura Raya, Karuwisi Utara, Panakkukang", fac: ["WiFi Cepat", "Meeting Room", "Workspace"] },
   { name: "Warung Kopi Daeng", desc: "Kedai kopi tradisional dengan kopi Toraja asli", cat: "traditional", price: "$", rating: 4.3, addr: "Jl. Somba Opu No. 200", fac: ["Outdoor", "Parking"] },
   { name: "The Garden Cafe", desc: "Taman hijau asri, spot instagramable & healthy food", cat: "outdoor", price: "$$", rating: 4.4, addr: "Jl. Boulevard, Panakkukang", fac: ["WiFi", "Garden", "Pet Friendly"] },
   { name: "Nara Coffee & Kitchen", desc: "Minimalis Jepang, menu fusion & instagramable", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Hertasning No. 52", fac: ["WiFi", "AC", "Dessert Bar"] },

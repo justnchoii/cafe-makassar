@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 
 const cafeData = [
   { name: "Goodfields Makassar", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Chairil Anwar, Ujung Pandang" },
-  { name: "Duft Coffee Indonesia", cat: "aesthetic", price: "$$", rating: 4.5, addr: "Jalan A.P. Pettarani, Panakkukang" },
-  { name: "Postropis Coffee & Space", cat: "coworking", price: "$$", rating: 4.6, addr: "Jalan Adipura Raya, Panakkukang" },
+  { name: "Duft Coffee Indonesia", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jalan A.P. Pettarani, Panakkukang" },
+  { name: "Postropis Coffee & Space", cat: "coworking", price: "$$", rating: 4.8, addr: "Jalan Adipura Raya, Panakkukang" },
   { name: "Nara Coffee & Kitchen", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Hertasning No. 52" },
   { name: "Maleo Coffee Roasters", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Jl. Bonto Lempangan No. 8" },
   { name: "Warkop Phoenam", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14" },
