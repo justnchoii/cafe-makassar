@@ -17,7 +17,7 @@ const staticCafes = [
     priceRange: "$$",
     facilities: ["WiFi", "AC", "Smoking Area", "Meeting Room", "Live Music"],
     openHours: "09:00 - 24:00",
-    image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop",
+    image: "/goodfields-makassar.png",
     mapsLink: "https://maps.app.goo.gl/j6uMYGuWDQusQmhL9"
   },
   {
