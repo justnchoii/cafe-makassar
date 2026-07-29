@@ -21,6 +21,9 @@ const cafeData = [
   { name: "COASTLINE Cafe", cat: "outdoor", price: "$$", rating: 4.4, addr: "CPI, Panambungan, Mariso" },
   { name: "Center Point Cafe", cat: "outdoor", price: "$$", rating: 4.6, addr: "CPI, Panambungan, Mariso" },
   { name: "Negeri Sembilan Melayu's Signature & Coffee", cat: "aesthetic", price: "$$$", rating: 4.9, addr: "Lego-Lego, CPI, Mariso" },
+  { name: "Seroeni - Sunset Quay", cat: "outdoor", price: "$$$", rating: 4.9, addr: "Lego-Lego, CPI, Mariso" },
+  { name: "Ballairate", cat: "aesthetic", price: "$$", rating: 4.4, addr: "Swiss-BelHotel, Ujung Pandang" },
+  { name: "Kultur Haus Sunset Quay", cat: "aesthetic", price: "$$$", rating: 4.6, addr: "Lego-Lego, CPI, Mariso" },
   { name: "Warkop Phoenam", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14" },
 ];
 

@@ -238,6 +238,45 @@ const cafes = [
     location: { lat: -5.1476032, lng: 119.3952551 }
   },
   {
+    name: "Seroeni - Sunset Quay",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Tempatnya elegan dengan suasana sunset di area Sunset Quay, cocok untuk nongkrong santai, makan, dan foto aesthetic di CPI.",
+    address: "Lego-Lego, Centre Point of Indonesia (CPI), Panambungan, Mariso, Makassar",
+    category: "outdoor",
+    rating: 4.9,
+    priceRange: "$$$",
+    facilities: ["Sea View", "Outdoor Seating", "Indoor Seating", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/seroeni-sunset-quay.png",
+    mapsLink: "https://maps.app.goo.gl/aQ6iWB97u3cEhgB87",
+    location: { lat: -5.1470229, lng: 119.3959728 }
+  },
+  {
+    name: "Ballairate",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Interiornya clean dan nyaman dengan nuansa hotel lounge, cocok untuk nongkrong santai, meeting ringan, dan foto aesthetic di area Ujung Pandang.",
+    address: "Swiss-BelHotel Makassar, Jalan Ujung Pandang 12, Bulogading, Ujung Pandang, Makassar",
+    category: "aesthetic",
+    rating: 4.4,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/ballairate.png",
+    mapsLink: "https://maps.app.goo.gl/Xpng9ALfLSo7J6HS7",
+    location: { lat: -5.1365371, lng: 119.4037076 }
+  },
+  {
+    name: "Kultur Haus Sunset Quay",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Interiornya estetik dengan sentuhan hijau dan kayu, cocok untuk nongkrong santai, ngopi, dan foto aesthetic di area Sunset Quay CPI.",
+    address: "Lego-Lego, Centre Point of Indonesia (CPI), Panambungan, Mariso, Makassar",
+    category: "aesthetic",
+    rating: 4.6,
+    priceRange: "$$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/kultur-haus-sunset-quay.png",
+    mapsLink: "https://maps.app.goo.gl/xNa1NUXsFRfGJuAu6",
+    location: { lat: -5.1473483, lng: 119.3956325 }
+  },
+  {
     name: "Warkop Phoenam",
     description: "Warkop legendaris Makassar sejak 1946. Kopi tubruk khas Makassar dan roti bakar ikon kuliner kota.",
     address: "Jl. Sulawesi No. 14, Makassar",
