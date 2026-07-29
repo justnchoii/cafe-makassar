@@ -5,8 +5,8 @@ import Navbar from '../../components/Navbar';
 
 const cafeData = [
   { name: "Goodfields Makassar", desc: "Cafe aesthetic real di area Ujung Pandang dengan suasana modern dan nyaman", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Chairil Anwar, Sawerigading, Ujung Pandang", fac: ["WiFi", "AC", "Live Music"] },
-  { name: "Kalaras Coffee & Eatery", desc: "Rooftop dengan view sunset pantai Losari", cat: "rooftop", price: "$$$", rating: 4.5, addr: "Jl. Metro Tanjung Bunga", fac: ["WiFi", "Rooftop", "Full Kitchen"] },
-  { name: "Kultura Coffee", desc: "Coworking bernuansa budaya Makassar", cat: "coworking", price: "$$", rating: 4.6, addr: "Jl. A.P. Pettarani No. 88", fac: ["WiFi Cepat", "Stop Kontak", "Meeting Room"] },
+  { name: "Duft Coffee Indonesia", desc: "Cafe real dengan interior hangat dan nyaman buat nongkrong", cat: "aesthetic", price: "$$", rating: 4.5, addr: "Jalan A.P. Pettarani, Tamamaung, Panakkukang", fac: ["WiFi", "AC", "Coffee Bar"] },
+  { name: "Postropis Coffee & Space", desc: "Cafe modern dan luas, cocok untuk kerja atau meeting", cat: "coworking", price: "$$", rating: 4.6, addr: "Jalan Adipura Raya, Karuwisi Utara, Panakkukang", fac: ["WiFi Cepat", "Meeting Room", "Workspace"] },
   { name: "Warung Kopi Daeng", desc: "Kedai kopi tradisional dengan kopi Toraja asli", cat: "traditional", price: "$", rating: 4.3, addr: "Jl. Somba Opu No. 200", fac: ["Outdoor", "Parking"] },
   { name: "The Garden Cafe", desc: "Taman hijau asri, spot instagramable & healthy food", cat: "outdoor", price: "$$", rating: 4.4, addr: "Jl. Boulevard, Panakkukang", fac: ["WiFi", "Garden", "Pet Friendly"] },
   { name: "Nara Coffee & Kitchen", desc: "Minimalis Jepang, menu fusion & instagramable", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Hertasning No. 52", fac: ["WiFi", "AC", "Dessert Bar"] },
@@ -38,7 +38,7 @@ function getAIResponse(message) {
   if (msg.includes('kerja') || msg.includes('work') || msg.includes('wifi') || msg.includes('coworking') || msg.includes('laptop') || msg.includes('wfc')) {
     const picks = cafeData.filter(c => c.cat === 'coworking');
     const list = picks.map(c => `💻 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
-    return `Cafe terbaik untuk kerja/WFC di Makassar:\n\n${list}\n\n🔌 Tips: Digital Nomad Hub buka 24 jam dengan WiFi 100Mbps — perfect buat deadline!`;
+    return `Cafe terbaik untuk kerja/WFC di Makassar:\n\n${list}\n\n🔌 Tips: Postropis Coffee & Space dan Digital Nomad Hub cocok banget buat kerja atau deadline!`;
   }
 
   if (msg.includes('murah') || msg.includes('terjangkau') || msg.includes('hemat') || msg.includes('mahasiswa') || msg.includes('budget')) {
@@ -50,7 +50,7 @@ function getAIResponse(message) {
   if (msg.includes('rooftop') || msg.includes('view') || msg.includes('sunset') || msg.includes('pemandangan') || msg.includes('tinggi')) {
     const picks = cafeData.filter(c => c.cat === 'rooftop');
     const list = picks.map(c => `🌆 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
-    return `Rooftop cafe dengan view terbaik di Makassar:\n\n${list}\n\n🌅 Tips: Kalaras Coffee punya sunset pantai Losari terbaik! Datang jam 5 sore ya!`;
+    return `Rooftop cafe dengan view terbaik di Makassar:\n\n${list}\n\n🌅 Datang sore menjelang sunset biar view-nya makin bagus ya!`;
   }
 
   if (msg.includes('outdoor') || msg.includes('taman') || msg.includes('alam') || msg.includes('hijau') || msg.includes('segar')) {
@@ -78,7 +78,7 @@ function getAIResponse(message) {
   }
 
   if (msg.includes('makan') || msg.includes('menu') || msg.includes('food') || msg.includes('makanan')) {
-    return `🍽️ Cafe di Makassar dengan menu makanan lengkap:\n\n1. Kalaras Coffee & Eatery — Full kitchen, makanan berat khas Makassar\n2. Nara Coffee & Kitchen — Menu fusion Jepang + dessert bar\n3. Losari Beach Coffee — Pisang epe & makanan tradisional\n4. Taman Sari Coffee House — Menu nusantara lengkap\n\n🥘 Jangan lupa coba pisang epe dan coto Makassar di sekitar cafe!`;
+    return `🍽️ Cafe di Makassar dengan menu makanan lengkap:\n\n1. Duft Coffee Indonesia — Ngopi santai dengan suasana hangat\n2. Nara Coffee & Kitchen — Menu fusion Jepang + dessert bar\n3. Losari Beach Coffee — Pisang epe & makanan tradisional\n4. Taman Sari Coffee House — Menu nusantara lengkap\n\n🥘 Jangan lupa coba pisang epe dan coto Makassar di sekitar cafe!`;
   }
 
   if (msg.includes('24 jam') || msg.includes('malam') || msg.includes('tengah malam') || msg.includes('begadang') || msg.includes('lembur')) {

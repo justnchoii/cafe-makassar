@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 
 const cafeData = [
   { name: "Goodfields Makassar", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Chairil Anwar, Ujung Pandang" },
-  { name: "Kalaras Coffee & Eatery", cat: "rooftop", price: "$$$", rating: 4.5, addr: "Jl. Metro Tanjung Bunga" },
-  { name: "Kultura Coffee", cat: "coworking", price: "$$", rating: 4.6, addr: "Jl. A.P. Pettarani No. 88" },
+  { name: "Duft Coffee Indonesia", cat: "aesthetic", price: "$$", rating: 4.5, addr: "Jalan A.P. Pettarani, Panakkukang" },
+  { name: "Postropis Coffee & Space", cat: "coworking", price: "$$", rating: 4.6, addr: "Jalan Adipura Raya, Panakkukang" },
   { name: "Nara Coffee & Kitchen", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Hertasning No. 52" },
   { name: "Maleo Coffee Roasters", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Jl. Bonto Lempangan No. 8" },
   { name: "Warkop Phoenam", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14" },
@@ -22,10 +22,10 @@ function getQuickResponse(msg) {
     return '💰 Cafe murah: Warkop Phoenam ($, legendaris!), Losari Beach Coffee ($, view laut), Kopi Lain Hati ($, hits!).';
   }
   if (m.includes('kerja') || m.includes('wifi') || m.includes('coworking')) {
-    return '💻 Cafe buat kerja: Digital Nomad Hub (24jam, 100Mbps), Kultura Coffee, Green Space Co-Working. WiFi cepat!';
+    return '💻 Cafe buat kerja: Digital Nomad Hub (24jam, 100Mbps), Postropis Coffee & Space, Green Space Co-Working. WiFi cepat!';
   }
   if (m.includes('rooftop') || m.includes('view')) {
-    return '🌆 Rooftop: Sky Lounge (lantai 20!), Kalaras Coffee (sunset Losari), Panorama Rooftop Bar. View mantap!';
+    return '🌆 Rooftop: Sky Lounge (lantai 20!), Panorama Rooftop Bar, Kalaras Coffee. View mantap!';
   }
   if (m.includes('rekomen') || m.includes('saran')) {
     const top = [...cafeData].sort((a,b) => b.rating - a.rating).slice(0,3);

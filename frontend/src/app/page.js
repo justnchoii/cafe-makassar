@@ -22,27 +22,29 @@ const staticCafes = [
   },
   {
     _id: '2',
-    name: "Kalaras Coffee & Eatery",
-    description: "Rooftop cafe dengan pemandangan sunset pantai Losari yang memukau. Menu lengkap dari kopi hingga makanan berat khas Makassar.",
-    address: "Jl. Metro Tanjung Bunga, Makassar",
-    category: "rooftop",
+    name: "Duft Coffee Indonesia",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Vibenya hangat dengan dominasi kayu, cocok untuk nongkrong santai dan ngopi di area Panakkukang.",
+    address: "Jalan A.P. Pettarani, Tamamaung, Panakkukang, Makassar",
+    category: "aesthetic",
     rating: 4.5,
-    priceRange: "$$$",
-    facilities: ["WiFi", "Rooftop", "Parking", "Live Music", "Full Kitchen"],
+    priceRange: "$$",
+    facilities: ["WiFi", "AC", "Coffee Bar", "Indoor Seating", "Parking"],
     openHours: "10:00 - 01:00",
-    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop"
+    image: "/duft-coffee-indonesia.png",
+    mapsLink: "https://maps.app.goo.gl/QGPTcSpqvfukdRhz6"
   },
   {
     _id: '3',
-    name: "Kultura Coffee",
-    description: "Cafe coworking space bernuansa budaya Makassar. Cocok untuk bekerja dengan suasana tenang dan kopi lokal Toraja pilihan.",
-    address: "Jl. A.P. Pettarani No. 88, Makassar",
+    name: "Postropis Coffee & Space",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Tempatnya luas, modern, dan cocok untuk kerja, meeting, atau nongkrong di area Panakkukang.",
+    address: "Jalan Adipura Raya, Karuwisi Utara, Panakkukang, Makassar",
     category: "coworking",
     rating: 4.6,
     priceRange: "$$",
-    facilities: ["WiFi Cepat", "AC", "Stop Kontak", "Meeting Room", "Printer"],
+    facilities: ["WiFi Cepat", "AC", "Meeting Room", "Workspace", "Parking"],
     openHours: "07:00 - 23:00",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop"
+    image: "/postropis-coffee-space.png",
+    mapsLink: "https://maps.app.goo.gl/z1m3AJjDsM5HotvXA"
   },
   {
     _id: '4',
