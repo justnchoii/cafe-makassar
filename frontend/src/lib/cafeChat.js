@@ -516,6 +516,36 @@ function buildTopResponse(compact = false) {
   return `🏆 Cafe dengan rating tinggi di Makassar:\n\n${list}\n\nKalau mau, aku bisa bantu pilihkan berdasarkan area atau suasana.`;
 }
 
+function buildRecommendationResponse(compact = false, excludedCafeNames = []) {
+  const recommended = filterExcludedCafes(
+    [...cafeData].sort((a, b) => b.rating - a.rating),
+    excludedCafeNames
+  ).slice(0, compact ? 3 : 5);
+
+  if (!recommended.length) {
+    return compact
+      ? 'Pilihan cafe lainnya sudah sedikit. Coba sebut area atau suasana yang kamu mau.'
+      : 'Pilihan cafe lainnya sudah sedikit. Coba sebut area atau suasana yang kamu mau, nanti aku pilihkan yang paling cocok.';
+  }
+
+  const list = recommended
+    .map(cafe => formatCafeLine(cafe, !compact))
+    .join('\n\n');
+
+  return `⭐ Rekomendasi cafe di Makassar:\n\n${list}\n\n${compact ? 'Kalau mau, bilang cari yang aesthetic, buat kerja, atau buat sunset.' : 'Kalau mau lebih pas, bilang kamu cari yang aesthetic, buat kerja, sunset, atau area tertentu.'}`;
+}
+
+function buildCafeListResponse(compact = false) {
+  const list = cafeData
+    .slice(0, compact ? 8 : 12)
+    .map(cafe => `• ${cafe.name} — ${cafe.addr}`)
+    .join('\n');
+
+  return compact
+    ? `Ada banyak cafe di Makassar. Contohnya:\n${list}\n\nKalau mau, aku bisa carikan berdasarkan kebutuhanmu.`
+    : `Ada banyak pilihan cafe di Makassar. Beberapa yang ada di web ini:\n\n${list}\n\nKalau mau, aku bisa lanjut pilihkan berdasarkan kerja, aesthetic, sunset, atau area tertentu.`;
+}
+
 function buildDefaultResponse(compact = false) {
   return compact
     ? `Aku bisa bantu rekomendasi cafe berdasarkan nama cafe, area, suasana, rating, atau lokasi. Coba tulis: "jelaskan Seroeni" atau "cafe bagus di CPI".`
@@ -578,6 +608,20 @@ export function getCafeChatResponse(message, options = {}) {
 
   if (areaResult) {
     return buildAreaResponse(areaResult, compact);
+  }
+
+  if (
+    hasAny(normalizedContextMessage, ['cafe apa aja', 'ada cafe apa aja', 'cafe apa saja', 'ada cafe apa saja', 'daftar cafe']) ||
+    (hasAny(normalizedContextMessage, ['ada', 'apa aja', 'apa saja']) && normalizedContextMessage.includes('cafe'))
+  ) {
+    return buildCafeListResponse(compact);
+  }
+
+  if (
+    hasAny(normalizedContextMessage, ['rekomen', 'rekom', 'rekomendasi', 'saran', 'suggest']) ||
+    (normalizedContextMessage.includes('cafe') && hasAny(normalizedContextMessage, ['bagus', 'enak', 'best']))
+  ) {
+    return buildRecommendationResponse(compact, excludedCafeNames);
   }
 
   if (hasAny(normalizedContextMessage, ['terbaik', 'rating', 'top', 'populer', 'best'])) {
