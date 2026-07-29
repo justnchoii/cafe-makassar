@@ -15,6 +15,9 @@ const cafeData = [
   { name: "Crematology X Makassar", cat: "aesthetic", price: "$$", rating: 4.5, addr: "Jalan Metro Tanjung Bunga, Mariso" },
   { name: "STORIAMO COFFE AND ROASTERY", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Topaz Lorong 2, Panakkukang" },
   { name: "Cafe Aestetic Dimakassar", cat: "aesthetic", price: "$$", rating: 5.0, addr: "Bitoa, Manggala" },
+  { name: "Bangi Cafe Sunset CPI", cat: "outdoor", price: "$$", rating: 4.2, addr: "CPI, Panambungan, Mariso" },
+  { name: "THE ICON BEACH LOUNGE & CAFE", cat: "outdoor", price: "$$$", rating: 4.6, addr: "Lego-Lego, CPI, Mariso" },
+  { name: "Gravity Sky Lounge", cat: "rooftop", price: "$$$", rating: 4.7, addr: "Swiss-BelHotel, Ujung Pandang" },
   { name: "Warkop Phoenam", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14" },
 ];
 
@@ -27,10 +30,10 @@ function getQuickResponse(msg) {
     return '💰 Cafe murah: Warkop Phoenam ($, legendaris!), Kopi Lain Hati ($, hits!), Goodfields Makassar ($$, worth it!).';
   }
   if (m.includes('kerja') || m.includes('wifi') || m.includes('coworking')) {
-    return '💻 Cafe buat kerja: Postropis Coffee & Space, Green Space Co-Working, SIJA PETTARANI. WiFi cepat dan nyaman!';
+    return '💻 Cafe buat kerja: Postropis Coffee & Space, SIJA PETTARANI, Duft Coffee Indonesia. WiFi cepat dan nyaman!';
   }
   if (m.includes('rooftop') || m.includes('view')) {
-    return '🌆 Rooftop: Sky Lounge (lantai 20!), Panorama Rooftop Bar, Kalaras Coffee. View mantap!';
+    return '🌆 Rooftop: Gravity Sky Lounge, THE ICON BEACH LOUNGE & CAFE, Bangi Cafe Sunset CPI. View mantap!';
   }
   if (m.includes('rekomen') || m.includes('saran')) {
     const top = [...cafeData].sort((a,b) => b.rating - a.rating).slice(0,3);

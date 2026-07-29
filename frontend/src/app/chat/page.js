@@ -16,9 +16,9 @@ const cafeData = [
   { name: "Crematology X Makassar", desc: "Cafe real dengan interior modern dan pencahayaan hangat, cocok untuk nongkrong santai, ngopi, dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.5, addr: "Phinisi Point, Jalan Metro Tanjung Bunga, Mariso", fac: ["Indoor Seating", "AC", "Coffee Bar"] },
   { name: "STORIAMO COFFE AND ROASTERY", desc: "Cafe real dengan area rindang dan suasana cozy, cocok untuk nongkrong, kerja ringan, dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Topaz Lorong 2, Masale, Panakkukang", fac: ["Indoor Seating", "Outdoor Seating", "WiFi"] },
   { name: "Cafe Aestetic Dimakassar", desc: "Cafe real dengan konsep clean minimalis dan area semi-outdoor, cocok untuk nongkrong malam dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 5.0, addr: "Bitoa, Manggala, Makassar", fac: ["Semi Outdoor", "WiFi", "Parking"] },
-  { name: "Maleo Coffee Roasters", desc: "Specialty roaster, biji kopi Toraja & Enrekang", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Jl. Bonto Lempangan No. 8", fac: ["WiFi", "Roasting Demo", "Workshop"] },
-  { name: "Panorama Rooftop Bar", desc: "Sky bar hotel bintang 5, panorama kota & laut", cat: "rooftop", price: "$$$", rating: 4.7, addr: "Jl. Andi Djemma No. 5", fac: ["Premium Bar", "Live Band", "Private Dining"] },
-  { name: "Green Space Co-Working", desc: "Konsep hijau & sustainable, organic coffee", cat: "coworking", price: "$$", rating: 4.3, addr: "Jl. Perintis Kemerdekaan KM 12", fac: ["WiFi Cepat", "Standing Desk", "Projector"] },
+  { name: "Bangi Cafe Sunset CPI", desc: "Cafe real dengan spot sunset tepi laut, cocok untuk santai sore dan foto aesthetic", cat: "outdoor", price: "$$", rating: 4.2, addr: "Centre Point of Indonesia (CPI), Panambungan, Mariso", fac: ["Sea View", "Outdoor Seating", "Sunset Spot"] },
+  { name: "THE ICON BEACH LOUNGE & CAFE", desc: "Cafe real beach lounge dengan suasana senja cantik, cocok untuk nongkrong dan menikmati view laut", cat: "outdoor", price: "$$$", rating: 4.6, addr: "Lego-Lego, Centre Point of Indonesia (CPI), Panambungan, Mariso", fac: ["Sea View", "Outdoor Seating", "Indoor Seating"] },
+  { name: "Gravity Sky Lounge", desc: "Cafe real sky lounge dengan view laut dari ketinggian, cocok untuk sunset dan nongkrong malam", cat: "rooftop", price: "$$$", rating: 4.7, addr: "Swiss-BelHotel Makassar, Jalan Ujung Pandang 12", fac: ["Sea View", "Indoor Seating", "Sky Lounge"] },
   { name: "Taman Sari Coffee House", desc: "Taman teduh, live acoustic Jumat-Sabtu malam", cat: "outdoor", price: "$", rating: 4.5, addr: "Jl. Kakatua No. 18", fac: ["Garden", "Live Acoustic", "Kids Playground"] },
   { name: "Warkop Phoenam", desc: "Legendaris sejak 1946, kopi tubruk khas Makassar", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14", fac: ["Traditional Coffee", "24 Jam"] },
 ];
@@ -39,7 +39,7 @@ function getAIResponse(message) {
   if (msg.includes('kerja') || msg.includes('work') || msg.includes('wifi') || msg.includes('coworking') || msg.includes('laptop') || msg.includes('wfc')) {
     const picks = cafeData.filter(c => c.cat === 'coworking');
     const list = picks.map(c => `💻 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
-    return `Cafe terbaik untuk kerja/WFC di Makassar:\n\n${list}\n\n🔌 Tips: Postropis Coffee & Space dan Green Space Co-Working cocok banget buat kerja atau deadline!`;
+    return `Cafe terbaik untuk kerja/WFC di Makassar:\n\n${list}\n\n🔌 Tips: Postropis Coffee & Space dan SIJA PETTARANI cocok banget buat kerja atau deadline!`;
   }
 
   if (msg.includes('murah') || msg.includes('terjangkau') || msg.includes('hemat') || msg.includes('mahasiswa') || msg.includes('budget')) {
@@ -51,13 +51,13 @@ function getAIResponse(message) {
   if (msg.includes('rooftop') || msg.includes('view') || msg.includes('sunset') || msg.includes('pemandangan') || msg.includes('tinggi')) {
     const picks = cafeData.filter(c => c.cat === 'rooftop');
     const list = picks.map(c => `🌆 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
-    return `Rooftop cafe dengan view terbaik di Makassar:\n\n${list}\n\n🌅 Datang sore menjelang sunset biar view-nya makin bagus ya!`;
+    return `Rooftop cafe dengan view terbaik di Makassar:\n\n${list}\n\n🌅 Gravity Sky Lounge cocok banget buat sunset dengan view laut dari ketinggian!`;
   }
 
   if (msg.includes('outdoor') || msg.includes('taman') || msg.includes('alam') || msg.includes('hijau') || msg.includes('segar')) {
     const picks = cafeData.filter(c => c.cat === 'outdoor');
     const list = picks.map(c => `🌿 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
-    return `Cafe outdoor asri di Makassar:\n\n${list}\n\n🍃 Aynaka Coffee Racing Centre wajib dicoba kalau kamu cari suasana santai dengan area semi-outdoor!`;
+    return `Cafe outdoor asri di Makassar:\n\n${list}\n\n🍃 Bangi Cafe Sunset CPI dan THE ICON BEACH LOUNGE & CAFE cocok buat santai sambil lihat sunset!`;
   }
 
   if (msg.includes('tradisional') || msg.includes('toraja') || msg.includes('warkop') || msg.includes('klasik') || msg.includes('kopi tubruk')) {
