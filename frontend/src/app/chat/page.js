@@ -19,7 +19,9 @@ const cafeData = [
   { name: "Bangi Cafe Sunset CPI", desc: "Cafe real dengan spot sunset tepi laut, cocok untuk santai sore dan foto aesthetic", cat: "outdoor", price: "$$", rating: 4.2, addr: "Centre Point of Indonesia (CPI), Panambungan, Mariso", fac: ["Sea View", "Outdoor Seating", "Sunset Spot"] },
   { name: "THE ICON BEACH LOUNGE & CAFE", desc: "Cafe real beach lounge dengan suasana senja cantik, cocok untuk nongkrong dan menikmati view laut", cat: "outdoor", price: "$$$", rating: 4.6, addr: "Lego-Lego, Centre Point of Indonesia (CPI), Panambungan, Mariso", fac: ["Sea View", "Outdoor Seating", "Indoor Seating"] },
   { name: "Gravity Sky Lounge", desc: "Cafe real sky lounge dengan view laut dari ketinggian, cocok untuk sunset dan nongkrong malam", cat: "rooftop", price: "$$$", rating: 4.7, addr: "Swiss-BelHotel Makassar, Jalan Ujung Pandang 12", fac: ["Sea View", "Indoor Seating", "Sky Lounge"] },
-  { name: "Taman Sari Coffee House", desc: "Taman teduh, live acoustic Jumat-Sabtu malam", cat: "outdoor", price: "$", rating: 4.5, addr: "Jl. Kakatua No. 18", fac: ["Garden", "Live Acoustic", "Kids Playground"] },
+  { name: "COASTLINE Cafe", desc: "Cafe real tepi laut CPI dengan bangunan modern, cocok untuk nongkrong santai dan menikmati sunset", cat: "outdoor", price: "$$", rating: 4.4, addr: "Centre Point of Indonesia (CPI), Panambungan, Mariso", fac: ["Sea View", "Indoor Seating", "Outdoor Seating"] },
+  { name: "Center Point Cafe", desc: "Cafe real dengan view area CPI yang luas, cocok untuk nongkrong sore dan menikmati suasana pantai", cat: "outdoor", price: "$$", rating: 4.6, addr: "Centre Point of Indonesia (CPI), Panambungan, Mariso", fac: ["Sea View", "Outdoor Seating", "Sunset Spot"] },
+  { name: "Negeri Sembilan Melayu's Signature & Coffee", desc: "Cafe real dengan interior melayu modern yang elegan, cocok untuk makan santai dan foto aesthetic", cat: "aesthetic", price: "$$$", rating: 4.9, addr: "Lego-Lego, Centre Point of Indonesia (CPI), Panambungan, Mariso", fac: ["Indoor Seating", "Dining Area", "AC"] },
   { name: "Warkop Phoenam", desc: "Legendaris sejak 1946, kopi tubruk khas Makassar", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14", fac: ["Traditional Coffee", "24 Jam"] },
 ];
 
@@ -57,7 +59,7 @@ function getAIResponse(message) {
   if (msg.includes('outdoor') || msg.includes('taman') || msg.includes('alam') || msg.includes('hijau') || msg.includes('segar')) {
     const picks = cafeData.filter(c => c.cat === 'outdoor');
     const list = picks.map(c => `🌿 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
-    return `Cafe outdoor asri di Makassar:\n\n${list}\n\n🍃 Bangi Cafe Sunset CPI dan THE ICON BEACH LOUNGE & CAFE cocok buat santai sambil lihat sunset!`;
+    return `Cafe outdoor asri di Makassar:\n\n${list}\n\n🍃 COASTLINE Cafe, Bangi Cafe Sunset CPI, dan Center Point Cafe cocok buat santai sambil lihat sunset!`;
   }
 
   if (msg.includes('tradisional') || msg.includes('toraja') || msg.includes('warkop') || msg.includes('klasik') || msg.includes('kopi tubruk')) {

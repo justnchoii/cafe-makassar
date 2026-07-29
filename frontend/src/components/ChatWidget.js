@@ -18,6 +18,9 @@ const cafeData = [
   { name: "Bangi Cafe Sunset CPI", cat: "outdoor", price: "$$", rating: 4.2, addr: "CPI, Panambungan, Mariso" },
   { name: "THE ICON BEACH LOUNGE & CAFE", cat: "outdoor", price: "$$$", rating: 4.6, addr: "Lego-Lego, CPI, Mariso" },
   { name: "Gravity Sky Lounge", cat: "rooftop", price: "$$$", rating: 4.7, addr: "Swiss-BelHotel, Ujung Pandang" },
+  { name: "COASTLINE Cafe", cat: "outdoor", price: "$$", rating: 4.4, addr: "CPI, Panambungan, Mariso" },
+  { name: "Center Point Cafe", cat: "outdoor", price: "$$", rating: 4.6, addr: "CPI, Panambungan, Mariso" },
+  { name: "Negeri Sembilan Melayu's Signature & Coffee", cat: "aesthetic", price: "$$$", rating: 4.9, addr: "Lego-Lego, CPI, Mariso" },
   { name: "Warkop Phoenam", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14" },
 ];
 

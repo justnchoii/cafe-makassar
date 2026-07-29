@@ -199,16 +199,43 @@ const cafes = [
     location: { lat: -5.136002, lng: 119.4043688 }
   },
   {
-    name: "Taman Sari Coffee House",
-    description: "Cafe di taman kota yang teduh dengan live acoustic setiap Jumat-Sabtu malam dan menu nusantara.",
-    address: "Jl. Kakatua No. 18, Makassar",
+    name: "COASTLINE Cafe",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Tempatnya modern dan estetik dengan nuansa tepi laut CPI, cocok untuk nongkrong santai, menikmati sunset, dan foto aesthetic di area Mariso.",
+    address: "Centre Point of Indonesia (CPI), Panambungan, Mariso, Makassar",
     category: "outdoor",
-    rating: 4.5,
-    priceRange: "$",
-    facilities: ["Garden Seating", "Live Acoustic", "Parking", "Kids Playground"],
-    openHours: "08:00 - 23:00",
-    image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=400&fit=crop",
-    location: { lat: -5.1430, lng: 119.4150 }
+    rating: 4.4,
+    priceRange: "$$",
+    facilities: ["Sea View", "Indoor Seating", "Outdoor Seating", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/coastline-cafe.png",
+    mapsLink: "https://maps.app.goo.gl/YtmYUR94N4nBMWNW9",
+    location: { lat: -5.148991, lng: 119.393503 }
+  },
+  {
+    name: "Center Point Cafe",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Tempatnya punya view area CPI yang luas, cocok untuk nongkrong sore, menikmati suasana pantai, dan foto aesthetic di area Mariso.",
+    address: "Centre Point of Indonesia (CPI), Panambungan, Mariso, Makassar",
+    category: "outdoor",
+    rating: 4.6,
+    priceRange: "$$",
+    facilities: ["Sea View", "Outdoor Seating", "Sunset Spot", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/center-point-cafe.png",
+    mapsLink: "https://maps.app.goo.gl/5LJyqJ2YJcYLtDk47",
+    location: { lat: -5.148242, lng: 119.3957857 }
+  },
+  {
+    name: "Negeri Sembilan Melayu's Signature & Coffee",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Interiornya elegan dan bersih dengan nuansa melayu modern, cocok untuk nongkrong, makan, dan foto aesthetic di area CPI.",
+    address: "Lego-Lego, Centre Point of Indonesia (CPI), Panambungan, Mariso, Makassar",
+    category: "aesthetic",
+    rating: 4.9,
+    priceRange: "$$$",
+    facilities: ["Indoor Seating", "Dining Area", "AC", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/negeri-sembilan-signature-coffee.png",
+    mapsLink: "https://maps.app.goo.gl/mMjNnEQy3NxNMrZE7",
+    location: { lat: -5.1476032, lng: 119.3952551 }
   },
   {
     name: "Warkop Phoenam",
