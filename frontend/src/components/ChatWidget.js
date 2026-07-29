@@ -24,6 +24,9 @@ const cafeData = [
   { name: "Seroeni - Sunset Quay", cat: "outdoor", price: "$$$", rating: 4.9, addr: "Lego-Lego, CPI, Mariso" },
   { name: "Ballairate", cat: "aesthetic", price: "$$", rating: 4.4, addr: "Swiss-BelHotel, Ujung Pandang" },
   { name: "Kultur Haus Sunset Quay", cat: "aesthetic", price: "$$$", rating: 4.6, addr: "Lego-Lego, CPI, Mariso" },
+  { name: "Fore Coffee - Sunset Quay", cat: "aesthetic", price: "$$", rating: 4.2, addr: "CPI, Panambungan, Mariso" },
+  { name: "Wam's Coffee", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Jalan Inspeksi Kanal Puri Borong Raya, Manggala" },
+  { name: "Utata Space", cat: "aesthetic", price: "$$", rating: 4.4, addr: "Bitoa, Manggala" },
   { name: "Warkop Phoenam", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14" },
 ];
 

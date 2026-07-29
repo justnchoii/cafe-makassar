@@ -25,6 +25,9 @@ const cafeData = [
   { name: "Seroeni - Sunset Quay", desc: "Cafe real dengan suasana sunset elegan di Sunset Quay, cocok untuk nongkrong santai dan makan", cat: "outdoor", price: "$$$", rating: 4.9, addr: "Lego-Lego, Centre Point of Indonesia (CPI), Panambungan, Mariso", fac: ["Sea View", "Outdoor Seating", "Indoor Seating"] },
   { name: "Ballairate", desc: "Cafe real dengan interior clean dan nyaman, cocok untuk nongkrong santai dan meeting ringan", cat: "aesthetic", price: "$$", rating: 4.4, addr: "Swiss-BelHotel Makassar, Jalan Ujung Pandang 12", fac: ["Indoor Seating", "AC", "Coffee Bar"] },
   { name: "Kultur Haus Sunset Quay", desc: "Cafe real dengan interior estetik bernuansa hijau dan kayu, cocok untuk ngopi dan foto aesthetic", cat: "aesthetic", price: "$$$", rating: 4.6, addr: "Lego-Lego, Centre Point of Indonesia (CPI), Panambungan, Mariso", fac: ["Indoor Seating", "AC", "Coffee Bar"] },
+  { name: "Fore Coffee - Sunset Quay", desc: "Cafe real dengan konsep clean modern khas Fore, cocok untuk ngopi santai dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.2, addr: "Centre Point of Indonesia (CPI), Panambungan, Mariso", fac: ["Indoor Seating", "AC", "Coffee Bar"] },
+  { name: "Wam's Coffee", desc: "Cafe real dengan nuansa industrial hangat, cocok untuk nongkrong malam dan ngopi santai", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Jalan Inspeksi Kanal Puri Borong Raya, Borong, Manggala", fac: ["Indoor Seating", "Outdoor Seating", "Coffee Bar"] },
+  { name: "Utata Space", desc: "Cafe real dengan interior luas dan industrial modern, cocok untuk nongkrong dan kerja ringan", cat: "aesthetic", price: "$$", rating: 4.4, addr: "Bitoa, Manggala, Makassar", fac: ["Indoor Seating", "AC", "Workspace"] },
   { name: "Warkop Phoenam", desc: "Legendaris sejak 1946, kopi tubruk khas Makassar", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14", fac: ["Traditional Coffee", "24 Jam"] },
 ];
 

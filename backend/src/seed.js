@@ -277,6 +277,45 @@ const cafes = [
     location: { lat: -5.1473483, lng: 119.3956325 }
   },
   {
+    name: "Fore Coffee - Sunset Quay",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Tempatnya clean modern khas Fore dengan suasana CPI, cocok untuk nongkrong santai, ngopi cepat, dan foto aesthetic di area Sunset Quay.",
+    address: "Centre Point of Indonesia (CPI), Panambungan, Mariso, Makassar",
+    category: "aesthetic",
+    rating: 4.2,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/fore-coffee-sunset-quay.png",
+    mapsLink: "https://maps.app.goo.gl/QfxFZk9LtekmsYRt8",
+    location: { lat: -5.1489976, lng: 119.3934978 }
+  },
+  {
+    name: "Wam's Coffee",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Tempatnya cozy dengan nuansa industrial hangat, cocok untuk nongkrong malam, ngopi, dan foto aesthetic di area Manggala.",
+    address: "Jalan Inspeksi Kanal Puri Borong Raya, Borong, Manggala, Makassar",
+    category: "aesthetic",
+    rating: 4.9,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "Outdoor Seating", "Coffee Bar", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/wams-coffee.png",
+    mapsLink: "https://maps.app.goo.gl/VzEJ1wFr869z2vts9",
+    location: { lat: -5.1657571, lng: 119.4664693 }
+  },
+  {
+    name: "Utata Space",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Interiornya luas dan industrial modern, cocok untuk nongkrong, kerja ringan, dan foto aesthetic di area Manggala.",
+    address: "Bitoa, Manggala, Makassar",
+    category: "aesthetic",
+    rating: 4.4,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Workspace", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/utata-space.png",
+    mapsLink: "https://maps.app.goo.gl/EfyNNJuhDpHZWMmQ6",
+    location: { lat: -5.1684049, lng: 119.4682915 }
+  },
+  {
     name: "Warkop Phoenam",
     description: "Warkop legendaris Makassar sejak 1946. Kopi tubruk khas Makassar dan roti bakar ikon kuliner kota.",
     address: "Jl. Sulawesi No. 14, Makassar",
