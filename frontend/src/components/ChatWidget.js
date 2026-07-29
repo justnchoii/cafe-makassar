@@ -10,21 +10,21 @@ const cafeData = [
   { name: "EIGHTEEN Eatery", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Jalan Rusa, Maricaya" },
   { name: "Mark Trees Cafe", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jalan G. Batu Putih, Ujung Pandang" },
   { name: "Aynaka Coffee Racing Centre", cat: "outdoor", price: "$$", rating: 4.5, addr: "Jalan Btn Gaedenia, Panakkukang" },
+  { name: "SIJA PETTARANI", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Andi Pangeran Pettarani 3, Panakkukang" },
+  { name: "Monochrome Cafe", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Jalan Bulukunyi, Maricaya Baru" },
   { name: "Warkop Phoenam", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14" },
-  { name: "Digital Nomad Hub", cat: "coworking", price: "$$", rating: 4.5, addr: "Jl. Ratulangi No. 33" },
-  { name: "Losari Beach Coffee", cat: "outdoor", price: "$", rating: 4.7, addr: "Pantai Losari" },
 ];
 
 function getQuickResponse(msg) {
   const m = msg.toLowerCase();
   if (m.includes('aesthetic') || m.includes('foto')) {
-    return '📸 Cafe aesthetic: 1997 Coffee (⭐5.0), Duft Coffee Indonesia (⭐4.8), EIGHTEEN Eatery (⭐4.6). Semua instagramable!';
+    return '📸 Cafe aesthetic: 1997 Coffee (⭐5.0), SIJA PETTARANI (⭐4.8), Monochrome Cafe (⭐4.6). Semua instagramable!';
   }
   if (m.includes('murah') || m.includes('hemat')) {
-    return '💰 Cafe murah: Warkop Phoenam ($, legendaris!), Losari Beach Coffee ($, view laut), Kopi Lain Hati ($, hits!).';
+    return '💰 Cafe murah: Warkop Phoenam ($, legendaris!), Kopi Lain Hati ($, hits!), Goodfields Makassar ($$, worth it!).';
   }
   if (m.includes('kerja') || m.includes('wifi') || m.includes('coworking')) {
-    return '💻 Cafe buat kerja: Digital Nomad Hub (24jam, 100Mbps), Postropis Coffee & Space, Green Space Co-Working. WiFi cepat!';
+    return '💻 Cafe buat kerja: Postropis Coffee & Space, Green Space Co-Working, SIJA PETTARANI. WiFi cepat dan nyaman!';
   }
   if (m.includes('rooftop') || m.includes('view')) {
     return '🌆 Rooftop: Sky Lounge (lantai 20!), Panorama Rooftop Bar, Kalaras Coffee. View mantap!';

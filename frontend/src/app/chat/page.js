@@ -11,8 +11,8 @@ const cafeData = [
   { name: "EIGHTEEN Eatery", desc: "Cafe real dengan interior warm dan clean, cocok untuk nongkrong, makan, dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Jalan Rusa, Maricaya", fac: ["Indoor Seating", "AC", "Dining Area"] },
   { name: "Mark Trees Cafe", desc: "Cafe real dengan interior hangat dan cozy, cocok untuk nongkrong santai dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jalan G. Batu Putih, Mangkura, Ujung Pandang", fac: ["Indoor Seating", "AC", "Coffee Bar"] },
   { name: "Aynaka Coffee Racing Centre", desc: "Cafe real semi-outdoor dengan banyak tanaman, cocok untuk nongkrong malam dan suasana santai", cat: "outdoor", price: "$$", rating: 4.5, addr: "Jalan Btn Gaedenia, Karampuang, Panakkukang", fac: ["Outdoor Seating", "WiFi", "Parking"] },
-  { name: "Digital Nomad Hub", desc: "Co-working 24 jam, internet 100Mbps", cat: "coworking", price: "$$", rating: 4.5, addr: "Jl. Ratulangi No. 33", fac: ["WiFi 100Mbps", "Locker", "Nap Room"] },
-  { name: "Losari Beach Coffee", desc: "Tepi pantai Losari, sunset terbaik & pisang epe", cat: "outdoor", price: "$", rating: 4.7, addr: "Jl. Penghibur, Pantai Losari", fac: ["Sea View", "Traditional Food"] },
+  { name: "SIJA PETTARANI", desc: "Cafe real dengan konsep clean industrial, cocok untuk nongkrong santai, kerja ringan, dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Andi Pangeran Pettarani 3, Tamamaung, Panakkukang", fac: ["Indoor Seating", "AC", "Coffee Bar"] },
+  { name: "Monochrome Cafe", desc: "Cafe real dengan interior hitam-putih yang unik dan estetik, cocok untuk nongkrong dan makan santai", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Jalan Bulukunyi, Maricaya Baru", fac: ["Indoor Seating", "AC", "Dining Area"] },
   { name: "Kopi Lain Hati Makassar", desc: "Aesthetic modern, harga terjangkau untuk mahasiswa", cat: "aesthetic", price: "$", rating: 4.2, addr: "Jl. Urip Sumoharjo No. 120", fac: ["WiFi", "AC", "Parking"] },
   { name: "Fort Rotterdam Cafe", desc: "Heritage dekat Benteng Rotterdam, nuansa kolonial", cat: "traditional", price: "$$", rating: 4.4, addr: "Jl. Ujung Pandang No. 1", fac: ["WiFi", "Heritage View", "Outdoor"] },
   { name: "Maleo Coffee Roasters", desc: "Specialty roaster, biji kopi Toraja & Enrekang", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Jl. Bonto Lempangan No. 8", fac: ["WiFi", "Roasting Demo", "Workshop"] },
@@ -38,7 +38,7 @@ function getAIResponse(message) {
   if (msg.includes('kerja') || msg.includes('work') || msg.includes('wifi') || msg.includes('coworking') || msg.includes('laptop') || msg.includes('wfc')) {
     const picks = cafeData.filter(c => c.cat === 'coworking');
     const list = picks.map(c => `💻 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
-    return `Cafe terbaik untuk kerja/WFC di Makassar:\n\n${list}\n\n🔌 Tips: Postropis Coffee & Space dan Digital Nomad Hub cocok banget buat kerja atau deadline!`;
+    return `Cafe terbaik untuk kerja/WFC di Makassar:\n\n${list}\n\n🔌 Tips: Postropis Coffee & Space dan Green Space Co-Working cocok banget buat kerja atau deadline!`;
   }
 
   if (msg.includes('murah') || msg.includes('terjangkau') || msg.includes('hemat') || msg.includes('mahasiswa') || msg.includes('budget')) {
@@ -56,7 +56,7 @@ function getAIResponse(message) {
   if (msg.includes('outdoor') || msg.includes('taman') || msg.includes('alam') || msg.includes('hijau') || msg.includes('segar')) {
     const picks = cafeData.filter(c => c.cat === 'outdoor');
     const list = picks.map(c => `🌿 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
-    return `Cafe outdoor asri di Makassar:\n\n${list}\n\n🍃 Losari Beach Coffee wajib dicoba — view laut + pisang epe khas Makassar!`;
+    return `Cafe outdoor asri di Makassar:\n\n${list}\n\n🍃 Aynaka Coffee Racing Centre wajib dicoba kalau kamu cari suasana santai dengan area semi-outdoor!`;
   }
 
   if (msg.includes('tradisional') || msg.includes('toraja') || msg.includes('warkop') || msg.includes('klasik') || msg.includes('kopi tubruk')) {
@@ -78,11 +78,11 @@ function getAIResponse(message) {
   }
 
   if (msg.includes('makan') || msg.includes('menu') || msg.includes('food') || msg.includes('makanan')) {
-    return `🍽️ Cafe di Makassar dengan menu makanan lengkap:\n\n1. EIGHTEEN Eatery — Nongkrong santai dengan area makan yang nyaman\n2. Duft Coffee Indonesia — Ngopi santai dengan suasana hangat\n3. Mark Trees Cafe — Nongkrong cozy dengan suasana hangat\n4. Losari Beach Coffee — Pisang epe & makanan tradisional\n\n🥘 Jangan lupa coba pisang epe dan coto Makassar di sekitar cafe!`;
+    return `🍽️ Cafe di Makassar dengan menu makanan lengkap:\n\n1. EIGHTEEN Eatery — Nongkrong santai dengan area makan yang nyaman\n2. Monochrome Cafe — Nongkrong dan makan santai dengan interior unik\n3. Duft Coffee Indonesia — Ngopi santai dengan suasana hangat\n4. Mark Trees Cafe — Nongkrong cozy dengan suasana hangat\n\n🥘 Jangan lupa coba pisang epe dan coto Makassar di sekitar cafe!`;
   }
 
   if (msg.includes('24 jam') || msg.includes('malam') || msg.includes('tengah malam') || msg.includes('begadang') || msg.includes('lembur')) {
-    return `🌙 Cafe yang buka malam/24 jam di Makassar:\n\n1. Digital Nomad Hub — 24 Jam, WiFi 100Mbps\n   📍 Jl. Ratulangi No. 33\n\n2. Warkop Phoenam — 24 Jam, kopi tubruk legendaris\n   📍 Jl. Sulawesi No. 14\n\n3. Goodfields Makassar — Sampai jam 24:00\n   📍 Jl. Chairil Anwar, Ujung Pandang\n\n4. Kopi Lain Hati — Sampai jam 24:00\n   📍 Jl. Urip Sumoharjo No. 120\n\n☕ Perfect buat begadang atau lembur!`;
+    return `🌙 Cafe yang buka malam/24 jam di Makassar:\n\n1. Warkop Phoenam — 24 Jam, kopi tubruk legendaris\n   📍 Jl. Sulawesi No. 14\n\n2. Goodfields Makassar — Sampai jam 24:00\n   📍 Jl. Chairil Anwar, Ujung Pandang\n\n3. Kopi Lain Hati — Sampai jam 24:00\n   📍 Jl. Urip Sumoharjo No. 120\n\n4. Aynaka Coffee Racing Centre — Cocok buat nongkrong malam\n   📍 Jalan Btn Gaedenia, Panakkukang\n\n☕ Perfect buat begadang atau lembur!`;
   }
 
   if (msg.includes('lokasi') || msg.includes('alamat') || msg.includes('dimana') || msg.includes('daerah')) {
