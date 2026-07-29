@@ -104,6 +104,27 @@ function isSunsetCafe(cafe) {
     || hasAny(description, ['sunset', 'senja', 'tepi laut', 'view laut']);
 }
 
+function isAestheticCafe(cafe) {
+  const description = normalizeText(cafe.desc);
+  return cafe.cat === 'aesthetic' || hasAny(description, ['aesthetic', 'estetik', 'minimalis', 'clean', 'instagramable']);
+}
+
+function isIndoorCafe(cafe) {
+  return cafe.fac.includes('Indoor Seating') || cafe.fac.includes('AC');
+}
+
+function isOutdoorCafe(cafe) {
+  return cafe.fac.includes('Outdoor Seating') || cafe.fac.includes('Semi Outdoor') || cafe.cat === 'outdoor';
+}
+
+function isFoodFriendlyCafe(cafe) {
+  return cafe.fac.includes('Dining Area') || hasAny(normalizeText(cafe.desc), ['makan', 'eatery', 'dinner']);
+}
+
+function isNightCafe(cafe) {
+  return cafe.fac.includes('24 Jam') || hasAny(normalizeText(cafe.desc), ['malam', 'senja', 'sunset']);
+}
+
 function getRelaxedSignature(text) {
   return normalizeText(text).replace(/\s+/g, '').replace(/[aeiou]/g, '');
 }
@@ -248,6 +269,13 @@ function filterExcludedCafes(cafes, excludedCafeNames) {
 
   const excludedSet = new Set(excludedCafeNames);
   return cafes.filter(cafe => !excludedSet.has(cafe.name));
+}
+
+function rankCafes(cafes, scorer) {
+  return [...cafes]
+    .map(cafe => ({ cafe, score: scorer(cafe) }))
+    .sort((a, b) => b.score - a.score || b.cafe.rating - a.cafe.rating)
+    .map(item => item.cafe);
 }
 
 function cleanDescription(description) {
@@ -455,6 +483,21 @@ function buildAreaResponse(areaResult, compact = false) {
   return `📍 Rekomendasi cafe di area ${areaResult.area}:\n\n${list}\n\n${compact ? 'Kalau mau, sebut nama cafenya biar aku jelaskan detailnya.' : 'Kalau kamu mau, sebut nama salah satu cafenya dan aku jelaskan suasana atau cocok buat apa.'}`;
 }
 
+function buildCuratedResponse(title, cafes, compact, closing) {
+  if (!cafes.length) {
+    return compact
+      ? 'Aku belum nemu pilihan yang pas untuk itu. Coba sebut area atau kebutuhanmu.'
+      : 'Aku belum nemu pilihan yang pas untuk itu. Coba sebut area atau kebutuhanmu, nanti aku bantu pilihkan lagi.';
+  }
+
+  const list = cafes
+    .slice(0, compact ? 3 : 5)
+    .map(cafe => formatCafeLine(cafe, !compact))
+    .join('\n\n');
+
+  return `${title}:\n\n${list}\n\n${closing}`;
+}
+
 function buildCategoryResponse(message, compact = false, excludedCafeNames = []) {
   const normalizedMessage = normalizeText(message);
 
@@ -508,6 +551,165 @@ function buildCategoryResponse(message, compact = false, excludedCafeNames = [])
 
   const list = cafes.map(cafe => formatCafeLine(cafe, !compact)).join('\n\n');
   return `${config.title}:\n\n${list}\n\n${config.closing}`;
+}
+
+function buildNeedsResponse(message, compact = false, excludedCafeNames = []) {
+  const normalizedMessage = normalizeText(message);
+
+  if (hasAny(normalizedMessage, ['murah', 'hemat', 'budget', 'terjangkau', 'mahasiswa'])) {
+    const cafes = filterExcludedCafes(
+      rankCafes(cafeData.filter(cafe => cafe.price === '$' || cafe.price === '$$'), cafe => {
+        let score = cafe.rating;
+        if (cafe.price === '$') {
+          score += 2;
+        }
+        return score;
+      }),
+      excludedCafeNames
+    );
+
+    return buildCuratedResponse(
+      '💸 Cafe yang relatif ramah budget di Makassar',
+      cafes,
+      compact,
+      'Kalau mau yang lebih murah atau area tertentu, tinggal bilang ya.'
+    );
+  }
+
+  if (hasAny(normalizedMessage, ['mahal', 'premium', 'mewah', 'fancy', 'fine dining'])) {
+    const cafes = filterExcludedCafes(
+      rankCafes(cafeData.filter(cafe => cafe.price === '$$$'), cafe => cafe.rating + (cafe.cat === 'rooftop' ? 1 : 0)),
+      excludedCafeNames
+    );
+
+    return buildCuratedResponse(
+      '✨ Cafe yang lebih premium di Makassar',
+      cafes,
+      compact,
+      'Kalau mau yang cocok buat dinner, sunset, atau view bagus, aku bisa pilihin lagi.'
+    );
+  }
+
+  if (hasAny(normalizedMessage, ['makan', 'menu', 'food', 'makanan', 'dinner', 'lunch', 'sarapan'])) {
+    const cafes = filterExcludedCafes(
+      rankCafes(cafeData.filter(isFoodFriendlyCafe), cafe => cafe.rating + (cafe.price === '$$$' ? 0.4 : 0)),
+      excludedCafeNames
+    );
+
+    return buildCuratedResponse(
+      '🍽️ Cafe yang enak buat nongkrong sambil makan',
+      cafes,
+      compact,
+      'Kalau kamu mau yang lebih cocok buat makan santai atau dinner, aku bisa arahkan juga.'
+    );
+  }
+
+  if (hasAny(normalizedMessage, ['malam', 'begadang', 'lembur', 'larut', '24 jam'])) {
+    const cafes = filterExcludedCafes(
+      rankCafes(cafeData.filter(isNightCafe), cafe => cafe.rating + (cafe.fac.includes('24 Jam') ? 2 : 0)),
+      excludedCafeNames
+    );
+
+    return buildCuratedResponse(
+      '🌙 Cafe yang enak buat malam hari',
+      cafes,
+      compact,
+      'Kalau mau yang lebih tenang buat kerja malam atau yang bagus buat sunset, bilang saja.'
+    );
+  }
+
+  if (hasAny(normalizedMessage, ['indoor', 'ac', 'dingin'])) {
+    const cafes = filterExcludedCafes(
+      rankCafes(cafeData.filter(isIndoorCafe), cafe => cafe.rating + (cafe.fac.includes('AC') ? 0.6 : 0)),
+      excludedCafeNames
+    );
+
+    return buildCuratedResponse(
+      '🪑 Cafe indoor / ber-AC di Makassar',
+      cafes,
+      compact,
+      'Kalau mau yang indoor tapi tetap aesthetic atau cocok buat kerja, aku bisa pilihin lagi.'
+    );
+  }
+
+  if (hasAny(normalizedMessage, ['outdoor', 'semi outdoor', 'angin', 'terbuka'])) {
+    const cafes = filterExcludedCafes(
+      rankCafes(cafeData.filter(isOutdoorCafe), cafe => cafe.rating + (cafe.fac.includes('Sea View') ? 1 : 0)),
+      excludedCafeNames
+    );
+
+    return buildCuratedResponse(
+      '🌿 Cafe outdoor / semi outdoor di Makassar',
+      cafes,
+      compact,
+      'Kalau mau yang lebih cocok buat sore atau sunset, aku bisa pilihin lagi.'
+    );
+  }
+
+  if (hasAny(normalizedMessage, ['nongkrong', 'santai', 'chill', 'healing'])) {
+    const cafes = filterExcludedCafes(
+      rankCafes(cafeData, cafe => {
+        let score = cafe.rating;
+        if (cafe.fac.includes('Sea View')) {
+          score += 1;
+        }
+        if (isAestheticCafe(cafe)) {
+          score += 0.6;
+        }
+        return score;
+      }),
+      excludedCafeNames
+    );
+
+    return buildCuratedResponse(
+      '☕ Cafe enak buat nongkrong santai',
+      cafes,
+      compact,
+      'Kalau kamu mau suasana tertentu, misalnya sunset, indoor, atau aesthetic, aku bisa sempitkan lagi.'
+    );
+  }
+
+  if (hasAny(normalizedMessage, ['foto', 'instagramable', 'aesthetic', 'estetik'])) {
+    const cafes = filterExcludedCafes(
+      rankCafes(cafeData.filter(isAestheticCafe), cafe => cafe.rating + (cafe.cat === 'aesthetic' ? 1 : 0)),
+      excludedCafeNames
+    );
+
+    return buildCuratedResponse(
+      '📸 Cafe yang aesthetic / enak buat foto',
+      cafes,
+      compact,
+      'Kalau mau yang lebih clean minimalis atau yang view laut, aku bisa pilihin lagi.'
+    );
+  }
+
+  if (hasAny(normalizedMessage, ['keluarga', 'rame', 'rombongan', 'bareng', 'teman'])) {
+    const cafes = filterExcludedCafes(
+      rankCafes(cafeData, cafe => {
+        let score = cafe.rating;
+        if (cafe.fac.includes('Dining Area')) {
+          score += 1;
+        }
+        if (cafe.fac.includes('Outdoor Seating') || cafe.fac.includes('Indoor Seating')) {
+          score += 0.5;
+        }
+        if (hasAny(normalizeText(cafe.desc), ['luas', 'meeting', 'nongkrong santai'])) {
+          score += 0.5;
+        }
+        return score;
+      }),
+      excludedCafeNames
+    );
+
+    return buildCuratedResponse(
+      '👥 Cafe yang enak buat datang bareng teman atau keluarga',
+      cafes,
+      compact,
+      'Kalau mau yang lebih santai atau lebih premium buat kumpul, aku bisa pilihin juga.'
+    );
+  }
+
+  return null;
 }
 
 function buildTopResponse(compact = false) {
@@ -608,6 +810,11 @@ export function getCafeChatResponse(message, options = {}) {
 
   if (areaResult) {
     return buildAreaResponse(areaResult, compact);
+  }
+
+  const needsResponse = buildNeedsResponse(contextMessage, compact, excludedCafeNames);
+  if (needsResponse) {
+    return needsResponse;
   }
 
   if (
