@@ -31,11 +31,111 @@ const cafeData = [
   { name: "Warkop Phoenam", desc: "Legendaris sejak 1946, kopi tubruk khas Makassar", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14", fac: ["Traditional Coffee", "24 Jam"] },
 ];
 
+const cafeStopWords = new Set([
+  'cafe', 'coffee', 'coffe', 'lounge', 'space', 'eatery', 'roastery',
+  'signature', 'house', 'the', 'and', 'sunset', 'quay'
+]);
+
+function normalizeText(text) {
+  return text
+    .toLowerCase()
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9\s-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getCafeAliases(cafe) {
+  const normalizedName = normalizeText(cafe.name);
+  const words = normalizedName
+    .split(' ')
+    .filter(word => word.length >= 4 && !cafeStopWords.has(word));
+
+  const aliases = new Set([normalizedName]);
+  words.forEach(word => aliases.add(word));
+
+  for (let i = 0; i < words.length - 1; i += 1) {
+    aliases.add(`${words[i]} ${words[i + 1]}`);
+  }
+
+  return [...aliases].filter(alias => alias.length >= 4);
+}
+
+function findCafeByMessage(message) {
+  const normalizedMessage = normalizeText(message);
+  let bestMatch = null;
+
+  for (const cafe of cafeData) {
+    for (const alias of getCafeAliases(cafe)) {
+      if (normalizedMessage.includes(alias)) {
+        if (!bestMatch || alias.length > bestMatch.alias.length) {
+          bestMatch = { cafe, alias };
+        }
+      }
+    }
+  }
+
+  return bestMatch ? bestMatch.cafe : null;
+}
+
+function getCategoryLabel(category) {
+  const labels = {
+    aesthetic: 'Aesthetic',
+    coworking: 'Coworking',
+    outdoor: 'Outdoor',
+    rooftop: 'Rooftop',
+    traditional: 'Traditional',
+  };
+
+  return labels[category] || category;
+}
+
+function cleanCafeDescription(description) {
+  return description
+    .replace(/^Cafe real dari link Google Maps yang kamu kirim\.?\s*/i, '')
+    .replace(/^Cafe real /i, '')
+    .replace(/^Cafe /i, '')
+    .replace(/^\s+/, '');
+}
+
+function getCafeBestFor(cafe) {
+  if (cafe.fac.includes('Sea View')) {
+    return 'sunset, nongkrong santai, dan foto-foto';
+  }
+
+  if (cafe.cat === 'rooftop') {
+    return 'sunset, dinner, dan nongkrong malam';
+  }
+
+  if (cafe.fac.includes('Workspace') || cafe.fac.includes('Meeting Room')) {
+    return 'kerja, meeting, dan nongkrong lama';
+  }
+
+  if (cafe.cat === 'traditional') {
+    return 'ngopi santai dan suasana klasik';
+  }
+
+  return 'nongkrong, ngopi, dan foto-foto';
+}
+
+function buildCafeDetailResponse(cafe) {
+  const description = cleanCafeDescription(cafe.desc);
+  const facilities = cafe.fac.slice(0, 4).join(', ');
+
+  return `☕ ${cafe.name}\n\nVibenya ${description}.\n\n⭐ Rating: ${cafe.rating}/5\n📍 Lokasi: ${cafe.addr}\n🏷️ Tipe: ${getCategoryLabel(cafe.cat)}\n✨ Cocok untuk: ${getCafeBestFor(cafe)}\n🪑 Fasilitas utama: ${facilities}`;
+}
+
 function getAIResponse(message) {
   const msg = message.toLowerCase();
 
+  const matchedCafe = findCafeByMessage(message);
+
   if (msg.includes('halo') || msg.includes('hai') || msg.includes('hi') || msg.includes('hey') || msg.includes('apa kabar')) {
     return `Halo! 👋 Selamat datang di Cafe Makassar!\n\nSaya bisa bantu kamu cari cafe terbaik di Makassar. Coba tanya:\n• "Cafe aesthetic yang instagramable?"\n• "Cafe buat kerja dengan WiFi cepat?"\n• "Cafe murah tapi enak dimana?"\n• "Rooftop cafe dengan view bagus?"\n• "Top 5 cafe terbaik?"\n\nMau cari yang mana? 😊☕`;
+  }
+
+  if (matchedCafe) {
+    return buildCafeDetailResponse(matchedCafe);
   }
 
   if (msg.includes('aesthetic') || msg.includes('instagramable') || msg.includes('foto') || msg.includes('cantik')) {
@@ -136,44 +236,15 @@ export default function ChatPage() {
     setMessages(prev => [...prev, { role: 'user', content: userMessage, timestamp: new Date().toISOString() }]);
     setIsLoading(true);
 
-    // Simulate brief thinking delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise(resolve => setTimeout(resolve, 400));
 
-    try {
-      // Try backend API first
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      
-      const res = await fetch(`${API_URL}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage }),
-        signal: controller.signal,
-      });
-      clearTimeout(timeout);
-      const data = await res.json();
-      
-      if (data.success && data.data.message) {
-        setMessages(prev => [...prev, { 
-          role: 'ai', 
-          content: data.data.message, 
-          timestamp: data.data.timestamp || new Date().toISOString()
-        }]);
-      } else {
-        throw new Error('No response');
-      }
-    } catch (error) {
-      // Fallback: use local AI response
-      const aiResponse = getAIResponse(userMessage);
-      setMessages(prev => [...prev, { 
-        role: 'ai', 
-        content: aiResponse, 
-        timestamp: new Date().toISOString() 
-      }]);
-    } finally {
-      setIsLoading(false);
-    }
+    const aiResponse = getAIResponse(userMessage);
+    setMessages(prev => [...prev, {
+      role: 'ai',
+      content: aiResponse,
+      timestamp: new Date().toISOString()
+    }]);
+    setIsLoading(false);
   };
 
   const quickQuestions = [

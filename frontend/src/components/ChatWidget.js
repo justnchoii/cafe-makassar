@@ -30,8 +30,81 @@ const cafeData = [
   { name: "Warkop Phoenam", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14" },
 ];
 
+const cafeStopWords = new Set([
+  'cafe', 'coffee', 'coffe', 'lounge', 'space', 'eatery', 'roastery',
+  'signature', 'house', 'the', 'and', 'sunset', 'quay'
+]);
+
+function normalizeText(text) {
+  return text
+    .toLowerCase()
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9\s-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getCafeAliases(cafe) {
+  const normalizedName = normalizeText(cafe.name);
+  const words = normalizedName
+    .split(' ')
+    .filter(word => word.length >= 4 && !cafeStopWords.has(word));
+
+  const aliases = new Set([normalizedName]);
+  words.forEach(word => aliases.add(word));
+
+  for (let i = 0; i < words.length - 1; i += 1) {
+    aliases.add(`${words[i]} ${words[i + 1]}`);
+  }
+
+  return [...aliases].filter(alias => alias.length >= 4);
+}
+
+function findCafeByMessage(message) {
+  const normalizedMessage = normalizeText(message);
+  let bestMatch = null;
+
+  for (const cafe of cafeData) {
+    for (const alias of getCafeAliases(cafe)) {
+      if (normalizedMessage.includes(alias)) {
+        if (!bestMatch || alias.length > bestMatch.alias.length) {
+          bestMatch = { cafe, alias };
+        }
+      }
+    }
+  }
+
+  return bestMatch ? bestMatch.cafe : null;
+}
+
+function getCafeVibe(cafe) {
+  if (cafe.cat === 'rooftop') {
+    return 'lebih mewah dan enak buat lihat view malam dari ketinggian';
+  }
+
+  if (cafe.cat === 'outdoor') {
+    return 'santai, terbuka, dan enak buat sunset atau foto-foto';
+  }
+
+  if (cafe.cat === 'traditional') {
+    return 'klasik dan cocok buat ngopi santai';
+  }
+
+  return 'modern, nyaman, dan cocok buat nongkrong atau foto aesthetic';
+}
+
+function buildCafeQuickResponse(cafe) {
+  return `☕ ${cafe.name}\nVibenya ${getCafeVibe(cafe)}.\n⭐ ${cafe.rating}/5 • ${cafe.price}\n📍 ${cafe.addr}`;
+}
+
 function getQuickResponse(msg) {
   const m = msg.toLowerCase();
+  const matchedCafe = findCafeByMessage(msg);
+
+  if (matchedCafe) {
+    return buildCafeQuickResponse(matchedCafe);
+  }
+
   if (m.includes('aesthetic') || m.includes('foto')) {
     return '📸 Cafe aesthetic: Cafe Aestetic Dimakassar (⭐5.0), 1997 Coffee (⭐5.0), SIJA PETTARANI (⭐4.8). Semua instagramable!';
   }
