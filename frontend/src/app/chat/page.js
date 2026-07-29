@@ -7,8 +7,8 @@ const cafeData = [
   { name: "Goodfields Makassar", desc: "Cafe aesthetic real di area Ujung Pandang dengan suasana modern dan nyaman", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Chairil Anwar, Sawerigading, Ujung Pandang", fac: ["WiFi", "AC", "Live Music"] },
   { name: "Duft Coffee Indonesia", desc: "Cafe real dengan interior hangat dan nyaman buat nongkrong", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jalan A.P. Pettarani, Tamamaung, Panakkukang", fac: ["WiFi", "AC", "Coffee Bar"] },
   { name: "Postropis Coffee & Space", desc: "Cafe modern dan luas, cocok untuk kerja atau meeting", cat: "coworking", price: "$$", rating: 4.8, addr: "Jalan Adipura Raya, Karuwisi Utara, Panakkukang", fac: ["WiFi Cepat", "Meeting Room", "Workspace"] },
-  { name: "Warung Kopi Daeng", desc: "Kedai kopi tradisional dengan kopi Toraja asli", cat: "traditional", price: "$", rating: 4.3, addr: "Jl. Somba Opu No. 200", fac: ["Outdoor", "Parking"] },
-  { name: "The Garden Cafe", desc: "Taman hijau asri, spot instagramable & healthy food", cat: "outdoor", price: "$$", rating: 4.4, addr: "Jl. Boulevard, Panakkukang", fac: ["WiFi", "Garden", "Pet Friendly"] },
+  { name: "1997 Coffee", desc: "Cafe real dengan interior clean minimalis, cocok untuk nongkrong santai dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 5.0, addr: "Jalan Bougenville, Masale, Panakkukang", fac: ["Indoor Seating", "AC", "Coffee Bar"] },
+  { name: "EIGHTEEN Eatery", desc: "Cafe real dengan interior warm dan clean, cocok untuk nongkrong, makan, dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Jalan Rusa, Maricaya", fac: ["Indoor Seating", "AC", "Dining Area"] },
   { name: "Nara Coffee & Kitchen", desc: "Minimalis Jepang, menu fusion & instagramable", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Hertasning No. 52", fac: ["WiFi", "AC", "Dessert Bar"] },
   { name: "Sky Lounge Makassar", desc: "Lantai 20, view 360° kota, premium coffee & cocktails", cat: "rooftop", price: "$$$", rating: 4.6, addr: "Jl. Jend. Sudirman No. 1", fac: ["WiFi", "Bar", "VIP Room"] },
   { name: "Digital Nomad Hub", desc: "Co-working 24 jam, internet 100Mbps", cat: "coworking", price: "$$", rating: 4.5, addr: "Jl. Ratulangi No. 33", fac: ["WiFi 100Mbps", "Locker", "Nap Room"] },
@@ -32,7 +32,7 @@ function getAIResponse(message) {
   if (msg.includes('aesthetic') || msg.includes('instagramable') || msg.includes('foto') || msg.includes('cantik')) {
     const picks = cafeData.filter(c => c.cat === 'aesthetic');
     const list = picks.map(c => `📸 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
-    return `Rekomendasi cafe aesthetic & instagramable di Makassar:\n\n${list}\n\n✨ Semua punya spot foto keren! Favorit saya: Maleo Coffee Roasters (rating tertinggi 4.9)!`;
+    return `Rekomendasi cafe aesthetic & instagramable di Makassar:\n\n${list}\n\n✨ Semua punya spot foto keren! Favorit saya: 1997 Coffee (rating tertinggi 5.0)!`;
   }
 
   if (msg.includes('kerja') || msg.includes('work') || msg.includes('wifi') || msg.includes('coworking') || msg.includes('laptop') || msg.includes('wfc')) {
@@ -68,7 +68,7 @@ function getAIResponse(message) {
   if (msg.includes('terbaik') || msg.includes('rating') || msg.includes('top') || msg.includes('populer') || msg.includes('best')) {
     const picks = [...cafeData].sort((a, b) => b.rating - a.rating).slice(0, 5);
     const list = picks.map((c, i) => `${i+1}. ${c.name} ⭐${c.rating} — ${c.cat}\n   📍 ${c.addr}\n   ${c.desc}`).join('\n\n');
-    return `🏆 Top 5 Cafe Terbaik di Makassar:\n\n${list}\n\nSemua worth to visit! Maleo Coffee Roasters juara dengan rating 4.9! 🎯`;
+    return `🏆 Top 5 Cafe Terbaik di Makassar:\n\n${list}\n\nSemua worth to visit! 1997 Coffee juara dengan rating 5.0! 🎯`;
   }
 
   if (msg.includes('rekomen') || msg.includes('saran') || msg.includes('suggest') || msg.includes('pilih')) {
@@ -78,7 +78,7 @@ function getAIResponse(message) {
   }
 
   if (msg.includes('makan') || msg.includes('menu') || msg.includes('food') || msg.includes('makanan')) {
-    return `🍽️ Cafe di Makassar dengan menu makanan lengkap:\n\n1. Duft Coffee Indonesia — Ngopi santai dengan suasana hangat\n2. Nara Coffee & Kitchen — Menu fusion Jepang + dessert bar\n3. Losari Beach Coffee — Pisang epe & makanan tradisional\n4. Taman Sari Coffee House — Menu nusantara lengkap\n\n🥘 Jangan lupa coba pisang epe dan coto Makassar di sekitar cafe!`;
+    return `🍽️ Cafe di Makassar dengan menu makanan lengkap:\n\n1. EIGHTEEN Eatery — Nongkrong santai dengan area makan yang nyaman\n2. Duft Coffee Indonesia — Ngopi santai dengan suasana hangat\n3. Nara Coffee & Kitchen — Menu fusion Jepang + dessert bar\n4. Losari Beach Coffee — Pisang epe & makanan tradisional\n\n🥘 Jangan lupa coba pisang epe dan coto Makassar di sekitar cafe!`;
   }
 
   if (msg.includes('24 jam') || msg.includes('malam') || msg.includes('tengah malam') || msg.includes('begadang') || msg.includes('lembur')) {

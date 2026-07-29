@@ -6,8 +6,8 @@ const cafeData = [
   { name: "Goodfields Makassar", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Chairil Anwar, Ujung Pandang" },
   { name: "Duft Coffee Indonesia", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jalan A.P. Pettarani, Panakkukang" },
   { name: "Postropis Coffee & Space", cat: "coworking", price: "$$", rating: 4.8, addr: "Jalan Adipura Raya, Panakkukang" },
-  { name: "Nara Coffee & Kitchen", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Hertasning No. 52" },
-  { name: "Maleo Coffee Roasters", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Jl. Bonto Lempangan No. 8" },
+  { name: "1997 Coffee", cat: "aesthetic", price: "$$", rating: 5.0, addr: "Jalan Bougenville, Panakkukang" },
+  { name: "EIGHTEEN Eatery", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Jalan Rusa, Maricaya" },
   { name: "Warkop Phoenam", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14" },
   { name: "Digital Nomad Hub", cat: "coworking", price: "$$", rating: 4.5, addr: "Jl. Ratulangi No. 33" },
   { name: "Losari Beach Coffee", cat: "outdoor", price: "$", rating: 4.7, addr: "Pantai Losari" },
@@ -16,7 +16,7 @@ const cafeData = [
 function getQuickResponse(msg) {
   const m = msg.toLowerCase();
   if (m.includes('aesthetic') || m.includes('foto')) {
-    return '📸 Cafe aesthetic: Maleo Coffee Roasters (⭐4.9), Nara Coffee (⭐4.8), Goodfields Makassar (⭐4.7). Semua instagramable!';
+    return '📸 Cafe aesthetic: 1997 Coffee (⭐5.0), Duft Coffee Indonesia (⭐4.8), EIGHTEEN Eatery (⭐4.6). Semua instagramable!';
   }
   if (m.includes('murah') || m.includes('hemat')) {
     return '💰 Cafe murah: Warkop Phoenam ($, legendaris!), Losari Beach Coffee ($, view laut), Kopi Lain Hati ($, hits!).';
