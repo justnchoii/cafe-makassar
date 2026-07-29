@@ -11,6 +11,7 @@ const cafeData = [
   { name: "Mark Trees Cafe", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jalan G. Batu Putih, Ujung Pandang" },
   { name: "Aynaka Coffee Racing Centre", cat: "outdoor", price: "$$", rating: 4.5, addr: "Jalan Btn Gaedenia, Panakkukang" },
   { name: "SIJA PETTARANI", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Andi Pangeran Pettarani 3, Panakkukang" },
+  { name: "Monochrome Cafe", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Jalan Bulukunyi, Maricaya Baru" },
   { name: "Crematology X Makassar", cat: "aesthetic", price: "$$", rating: 4.5, addr: "Jalan Metro Tanjung Bunga, Mariso" },
   { name: "STORIAMO COFFE AND ROASTERY", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Topaz Lorong 2, Panakkukang" },
   { name: "Cafe Aestetic Dimakassar", cat: "aesthetic", price: "$$", rating: 5.0, addr: "Bitoa, Manggala" },

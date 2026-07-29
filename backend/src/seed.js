@@ -108,6 +108,19 @@ const cafes = [
     location: { lat: -5.1467249, lng: 119.4393314 }
   },
   {
+    name: "Monochrome Cafe",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Interior hitam-putih yang unik dan estetik, cocok untuk nongkrong, foto, dan makan santai di area Maricaya Baru.",
+    address: "Jalan Bulukunyi, Maricaya Baru, Makassar",
+    category: "aesthetic",
+    rating: 4.6,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Dining Area", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/monochrome-cafe.png",
+    mapsLink: "https://maps.app.goo.gl/pqokGk6spA9nc2rX9",
+    location: { lat: -5.1471521, lng: 119.4216883 }
+  },
+  {
     name: "Crematology X Makassar",
     description: "Cafe real dari link Google Maps yang kamu kirim. Interior modern dengan pencahayaan hangat dan area duduk cozy, cocok untuk nongkrong santai, ngopi, dan foto aesthetic di area Tanjung Bunga.",
     address: "Phinisi Point, Jalan Metro Tanjung Bunga, Lette, Mariso, Makassar",

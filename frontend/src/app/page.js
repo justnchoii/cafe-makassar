@@ -113,6 +113,19 @@ const staticCafes = [
   },
   {
     _id: '9',
+    name: "Monochrome Cafe",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Interior hitam-putih yang unik dan estetik, cocok untuk nongkrong, foto, dan makan santai di area Maricaya Baru.",
+    address: "Jalan Bulukunyi, Maricaya Baru, Makassar",
+    category: "aesthetic",
+    rating: 4.6,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Dining Area", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/monochrome-cafe.png",
+    mapsLink: "https://maps.app.goo.gl/pqokGk6spA9nc2rX9"
+  },
+  {
+    _id: '10',
     name: "Crematology X Makassar",
     description: "Cafe real dari link Google Maps yang kamu kirim. Interior modern dengan pencahayaan hangat dan area duduk cozy, cocok untuk nongkrong santai, ngopi, dan foto aesthetic di area Tanjung Bunga.",
     address: "Phinisi Point, Jalan Metro Tanjung Bunga, Lette, Mariso, Makassar",
@@ -125,7 +138,7 @@ const staticCafes = [
     mapsLink: "https://maps.app.goo.gl/teyyEnidH9w6HkNs6"
   },
   {
-    _id: '10',
+    _id: '11',
     name: "STORIAMO COFFE AND ROASTERY",
     description: "Cafe real dari link Google Maps yang kamu kirim. Tempatnya rindang dengan area duduk santai dan nuansa cozy, cocok untuk nongkrong, kerja ringan, dan foto aesthetic di area Masale.",
     address: "Topaz Lorong 2, Masale, Panakkukang, Makassar",
@@ -138,7 +151,7 @@ const staticCafes = [
     mapsLink: "https://maps.app.goo.gl/2Tj3tikM2qViMKkv9"
   },
   {
-    _id: '11',
+    _id: '12',
     name: "Cafe Aestetic Dimakassar",
     description: "Cafe real dari link Google Maps yang kamu kirim. Konsepnya clean minimalis dengan area semi-outdoor, cocok untuk nongkrong malam, santai, dan foto aesthetic di area Manggala.",
     address: "Bitoa, Manggala, Makassar",
@@ -151,7 +164,7 @@ const staticCafes = [
     mapsLink: "https://maps.app.goo.gl/R66DTUCD6LNybUR99"
   },
   {
-    _id: '12',
+    _id: '13',
     name: "Maleo Coffee Roasters",
     description: "Specialty coffee roaster dengan biji kopi Sulawesi Selatan pilihan. Single origin Toraja dan Enrekang yang di-roast in house.",
     address: "Jl. Bonto Lempangan No. 8, Makassar",
@@ -163,7 +176,7 @@ const staticCafes = [
     image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=400&fit=crop"
   },
   {
-    _id: '13',
+    _id: '14',
     name: "Panorama Rooftop Bar",
     description: "Sky bar & cafe di hotel bintang 5 dengan panorama kota dan laut. Cocktail signature dan tapas menu premium.",
     address: "Jl. Andi Djemma No. 5, Makassar",
@@ -175,7 +188,7 @@ const staticCafes = [
     image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=600&h=400&fit=crop"
   },
   {
-    _id: '14',
+    _id: '15',
     name: "Green Space Co-Working",
     description: "Coworking cafe dengan konsep hijau dan sustainable. Tanaman indoor, furnitur daur ulang, dan menu organic coffee.",
     address: "Jl. Perintis Kemerdekaan KM 12, Makassar",
@@ -187,7 +200,7 @@ const staticCafes = [
     image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&h=400&fit=crop"
   },
   {
-    _id: '15',
+    _id: '16',
     name: "Taman Sari Coffee House",
     description: "Cafe di taman kota yang teduh dengan suasana rileks. Live acoustic setiap Jumat-Sabtu malam dan menu nusantara.",
     address: "Jl. Kakatua No. 18, Makassar",
@@ -199,7 +212,7 @@ const staticCafes = [
     image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=400&fit=crop"
   },
   {
-    _id: '16',
+    _id: '17',
     name: "Warkop Phoenam",
     description: "Warkop legendaris Makassar sejak 1946. Kopi tubruk khas Makassar dan roti bakar yang jadi ikon kuliner kota.",
     address: "Jl. Sulawesi No. 14, Makassar",
