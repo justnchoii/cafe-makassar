@@ -73,7 +73,8 @@ export async function POST(request) {
     const body = await request.json();
     const message = typeof body?.message === 'string' ? body.message.trim() : '';
     const compact = Boolean(body?.compact);
-    const fallback = getCafeChatResponse(message, { compact });
+    const history = Array.isArray(body?.history) ? body.history : [];
+    const fallback = getCafeChatResponse(message, { compact, history });
 
     if (!message) {
       return NextResponse.json({ error: 'Message is required.' }, { status: 400 });

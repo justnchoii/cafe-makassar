@@ -4,7 +4,7 @@ export async function sendCafeChat({ message, history = [], compact = false }) {
   const trimmedMessage = typeof message === 'string' ? message.trim() : '';
 
   if (!trimmedMessage) {
-    return getCafeChatResponse('', { compact });
+    return getCafeChatResponse('', { compact, history });
   }
 
   try {
@@ -29,8 +29,8 @@ export async function sendCafeChat({ message, history = [], compact = false }) {
       return data.response.trim();
     }
   } catch (error) {
-    return getCafeChatResponse(trimmedMessage, { compact });
+    return getCafeChatResponse(trimmedMessage, { compact, history });
   }
 
-  return getCafeChatResponse(trimmedMessage, { compact });
+  return getCafeChatResponse(trimmedMessage, { compact, history });
 }

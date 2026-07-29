@@ -46,6 +46,8 @@ const areaKeywords = [
   { label: 'Ujung Pandang', terms: ['ujung pandang', 'sawerigading', 'bulogading', 'losari'] },
 ];
 
+const followUpKeywords = ['selain itu', 'selain', 'yang lain', 'lainnya', 'apalagi', 'opsi lain', 'alternatif lain'];
+
 function normalizeText(text) {
   return text
     .toLowerCase()
@@ -57,6 +59,49 @@ function normalizeText(text) {
 
 function hasAny(text, terms) {
   return terms.some(term => text.includes(term));
+}
+
+function dedupeCafes(cafes) {
+  const seen = new Set();
+  return cafes.filter(cafe => {
+    if (seen.has(cafe.name)) {
+      return false;
+    }
+    seen.add(cafe.name);
+    return true;
+  });
+}
+
+function getLastHistoryMessage(history, role) {
+  if (!Array.isArray(history)) {
+    return null;
+  }
+
+  for (let i = history.length - 1; i >= 0; i -= 1) {
+    const item = history[i];
+    if (item?.role === role && typeof item.content === 'string' && item.content.trim()) {
+      return item.content.trim();
+    }
+  }
+
+  return null;
+}
+
+function isWorkFriendlyCafe(cafe) {
+  const description = normalizeText(cafe.desc);
+  return cafe.cat === 'coworking'
+    || cafe.fac.includes('Workspace')
+    || cafe.fac.includes('Meeting Room')
+    || cafe.fac.includes('WiFi Cepat')
+    || (cafe.fac.includes('WiFi') && hasAny(description, ['kerja', 'meeting', 'luas', 'cozy']));
+}
+
+function isSunsetCafe(cafe) {
+  const description = normalizeText(cafe.desc);
+  return cafe.cat === 'rooftop'
+    || cafe.fac.includes('Sea View')
+    || cafe.fac.includes('Sunset Spot')
+    || hasAny(description, ['sunset', 'senja', 'tepi laut', 'view laut']);
 }
 
 function getRelaxedSignature(text) {
@@ -194,6 +239,15 @@ function findAreaCafes(message) {
 
   const cafes = cafeData.filter(cafe => hasAny(normalizeText(cafe.addr), area.terms));
   return cafes.length ? { area: area.label, cafes } : null;
+}
+
+function filterExcludedCafes(cafes, excludedCafeNames) {
+  if (!excludedCafeNames?.length) {
+    return cafes;
+  }
+
+  const excludedSet = new Set(excludedCafeNames);
+  return cafes.filter(cafe => !excludedSet.has(cafe.name));
 }
 
 function cleanDescription(description) {
@@ -401,37 +455,37 @@ function buildAreaResponse(areaResult, compact = false) {
   return `📍 Rekomendasi cafe di area ${areaResult.area}:\n\n${list}\n\n${compact ? 'Kalau mau, sebut nama cafenya biar aku jelaskan detailnya.' : 'Kalau kamu mau, sebut nama salah satu cafenya dan aku jelaskan suasana atau cocok buat apa.'}`;
 }
 
-function buildCategoryResponse(message, compact = false) {
+function buildCategoryResponse(message, compact = false, excludedCafeNames = []) {
   const normalizedMessage = normalizeText(message);
 
   const configs = [
     {
       match: ['aesthetic', 'instagramable', 'foto', 'cantik'],
-      category: 'aesthetic',
+      getCafes: () => cafeData.filter(cafe => cafe.cat === 'aesthetic'),
       title: '📸 Cafe aesthetic & instagramable di Makassar',
       closing: 'Kalau mau, sebut nama salah satu cafe dan aku jelaskan vibes-nya.',
     },
     {
       match: ['kerja', 'work', 'wifi', 'coworking', 'laptop', 'wfc'],
-      category: 'coworking',
+      getCafes: () => cafeData.filter(isWorkFriendlyCafe),
       title: '💻 Cafe buat kerja / WFC di Makassar',
-      closing: 'Kalau mau kerja lama, Postropis termasuk yang paling aman.',
+      closing: 'Kalau mau kerja lama, Postropis, Utata Space, dan SIJA termasuk yang aman.',
     },
     {
       match: ['rooftop', 'view', 'sunset', 'pemandangan', 'tinggi'],
-      category: 'rooftop',
-      title: '🌆 Cafe rooftop dengan view bagus di Makassar',
-      closing: 'Kalau cari sunset dari ketinggian, Gravity Sky Lounge paling menonjol.',
+      getCafes: () => cafeData.filter(isSunsetCafe),
+      title: '🌅 Cafe buat lihat sunset / view bagus di Makassar',
+      closing: 'Kalau cari sunset, Seroeni, THE ICON, dan Gravity Sky Lounge termasuk yang menonjol.',
     },
     {
       match: ['outdoor', 'taman', 'alam', 'hijau', 'segar'],
-      category: 'outdoor',
+      getCafes: () => cafeData.filter(cafe => cafe.cat === 'outdoor'),
       title: '🌿 Cafe outdoor di Makassar',
       closing: 'Kalau mau suasana sore yang santai, area CPI punya banyak pilihan.',
     },
     {
       match: ['tradisional', 'toraja', 'warkop', 'klasik', 'kopi tubruk'],
-      category: 'traditional',
+      getCafes: () => cafeData.filter(cafe => cafe.cat === 'traditional'),
       title: '☕ Cafe tradisional / warkop di Makassar',
       closing: 'Kalau suka nuansa klasik, Warkop Phoenam paling ikonik.',
     },
@@ -442,10 +496,15 @@ function buildCategoryResponse(message, compact = false) {
     return null;
   }
 
-  const cafes = cafeData
-    .filter(cafe => cafe.cat === config.category)
+  const cafes = filterExcludedCafes(config.getCafes(), excludedCafeNames)
     .sort((a, b) => b.rating - a.rating)
     .slice(0, compact ? 3 : 6);
+
+  if (!cafes.length) {
+    return compact
+      ? 'Untuk kategori itu, opsi lain yang tersisa tidak banyak. Coba sebut area atau cafe yang kamu mau.'
+      : 'Untuk kategori itu, opsi lain yang tersisa tidak banyak. Coba sebut area atau nama cafe yang kamu incar, nanti aku bantu pilihkan.';
+  }
 
   const list = cafes.map(cafe => formatCafeLine(cafe, !compact)).join('\n\n');
   return `${config.title}:\n\n${list}\n\n${config.closing}`;
@@ -479,13 +538,23 @@ export function buildCafeKnowledgeBase() {
 
 export function getCafeChatResponse(message, options = {}) {
   const compact = options.compact || false;
+  const history = Array.isArray(options.history) ? options.history : [];
   const normalizedMessage = normalizeText(message);
-  const mentionedCafes = findMentionedCafes(message);
-  const areaResult = findAreaCafes(message);
+  const lastUserMessage = getLastHistoryMessage(history, 'user');
+  const lastAssistantMessage = getLastHistoryMessage(history, 'ai');
+  const isFollowUp = hasAny(normalizedMessage, followUpKeywords);
+  const contextMessage = isFollowUp && lastUserMessage ? `${lastUserMessage} ${message}` : message;
+  const normalizedContextMessage = normalizeText(contextMessage);
+  const mentionedCafes = dedupeCafes(findMentionedCafes(contextMessage));
+  const areaResult = findAreaCafes(contextMessage);
   const hasCompareIntent = hasAny(normalizedMessage, ['bandingkan', 'compare', 'vs', 'versus', 'beda', 'perbandingan']);
   const hasChoiceIntent = hasAny(normalizedMessage, ['bagus mana', 'lebih bagus mana', 'pilih mana', 'mending mana', 'rekomen mana', 'saran mana', 'lebih cocok mana']);
+  const excludedCafeNames = dedupeCafes([
+    ...findMentionedCafes(message),
+    ...(isFollowUp && lastAssistantMessage ? findMentionedCafes(lastAssistantMessage) : []),
+  ]).map(cafe => cafe.name);
 
-  if (hasAny(normalizedMessage, ['halo', 'hai', 'hi', 'hey', 'apa kabar'])) {
+  if (hasAny(normalizedContextMessage, ['halo', 'hai', 'hi', 'hey', 'apa kabar'])) {
     return compact
       ? 'Halo! Tanya nama cafe, area, rating, atau suasananya ya ☕'
       : 'Halo! 👋 Aku bisa bantu cari cafe di Makassar berdasarkan nama cafe, area, suasana, rating, fasilitas, atau cocok buat apa. Coba tanya yang spesifik ya ☕';
@@ -511,20 +580,20 @@ export function getCafeChatResponse(message, options = {}) {
     return buildAreaResponse(areaResult, compact);
   }
 
-  if (hasAny(normalizedMessage, ['terbaik', 'rating', 'top', 'populer', 'best'])) {
+  if (hasAny(normalizedContextMessage, ['terbaik', 'rating', 'top', 'populer', 'best'])) {
     return buildTopResponse(compact);
   }
 
-  if (hasAny(normalizedMessage, ['lokasi semua', 'semua lokasi', 'daftar lokasi', 'alamat semua'])) {
+  if (hasAny(normalizedContextMessage, ['lokasi semua', 'semua lokasi', 'daftar lokasi', 'alamat semua'])) {
     const list = cafeData.slice(0, compact ? 8 : cafeData.length).map(cafe => `📍 ${cafe.name} — ${cafe.addr}`).join('\n');
     return `Daftar lokasi cafe:\n\n${list}`;
   }
 
-  if (hasAny(normalizedMessage, ['terima kasih', 'makasih', 'thanks', 'thank'])) {
+  if (hasAny(normalizedContextMessage, ['terima kasih', 'makasih', 'thanks', 'thank'])) {
     return compact ? 'Sama-sama! ☕' : 'Sama-sama! Kalau mau, lanjut tanya nama cafe atau area yang kamu incar ya ☕';
   }
 
-  const categoryResponse = buildCategoryResponse(message, compact);
+  const categoryResponse = buildCategoryResponse(contextMessage, compact, excludedCafeNames);
   if (categoryResponse) {
     return categoryResponse;
   }
