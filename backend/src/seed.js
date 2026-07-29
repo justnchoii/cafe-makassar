@@ -69,28 +69,30 @@ const cafes = [
     location: { lat: -5.15163, lng: 119.4216345 }
   },
   {
-    name: "Nara Coffee & Kitchen",
-    description: "Cafe minimalis Jepang dengan menu fusion. Interior clean dan instagramable, cocok buat nongkrong santai.",
-    address: "Jl. Hertasning No. 52, Makassar",
+    name: "Mark Trees Cafe",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Interior hangat dengan dominasi kayu dan suasana cozy, cocok buat nongkrong santai, ngobrol, dan foto aesthetic di area Ujung Pandang.",
+    address: "Jalan G. Batu Putih, Mangkura, Ujung Pandang, Makassar",
     category: "aesthetic",
-    rating: 4.8,
+    rating: 4.7,
     priceRange: "$$",
-    facilities: ["WiFi", "AC", "Instagram Spot", "Dessert Bar"],
-    openHours: "10:00 - 23:00",
-    image: "https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=600&h=400&fit=crop",
-    location: { lat: -5.1645, lng: 119.4512 }
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/mark-trees-cafe.png",
+    mapsLink: "https://maps.app.goo.gl/N8VvVz4BdFf2bM6EA",
+    location: { lat: -5.1469113, lng: 119.4159946 }
   },
   {
-    name: "Sky Lounge Makassar",
-    description: "Rooftop lounge di lantai 20 dengan view 360° kota Makassar. Premium coffee dan cocktails.",
-    address: "Jl. Jend. Sudirman No. 1, Makassar",
-    category: "rooftop",
-    rating: 4.6,
-    priceRange: "$$$",
-    facilities: ["WiFi", "AC", "Bar", "Live DJ", "VIP Room"],
-    openHours: "15:00 - 02:00",
-    image: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=600&h=400&fit=crop",
-    location: { lat: -5.1350, lng: 119.4100 }
+    name: "Aynaka Coffee Racing Centre",
+    description: "Cafe real dari link Google Maps yang kamu kirim. Tempatnya semi-outdoor dengan banyak tanaman dan suasana santai, cocok untuk nongkrong malam, ngopi, dan foto aesthetic di area Panakkukang.",
+    address: "Jalan Btn Gaedenia, Karampuang, Panakkukang, Makassar",
+    category: "outdoor",
+    rating: 4.5,
+    priceRange: "$$",
+    facilities: ["Outdoor Seating", "Indoor Seating", "WiFi", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/aynaka-coffee-racing-centre.png",
+    mapsLink: "https://maps.app.goo.gl/eTQvkpYFTBk4Wt2b6",
+    location: { lat: -5.1458728, lng: 119.4502153 }
   },
   {
     name: "Digital Nomad Hub",

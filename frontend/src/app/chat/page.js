@@ -9,8 +9,8 @@ const cafeData = [
   { name: "Postropis Coffee & Space", desc: "Cafe modern dan luas, cocok untuk kerja atau meeting", cat: "coworking", price: "$$", rating: 4.8, addr: "Jalan Adipura Raya, Karuwisi Utara, Panakkukang", fac: ["WiFi Cepat", "Meeting Room", "Workspace"] },
   { name: "1997 Coffee", desc: "Cafe real dengan interior clean minimalis, cocok untuk nongkrong santai dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 5.0, addr: "Jalan Bougenville, Masale, Panakkukang", fac: ["Indoor Seating", "AC", "Coffee Bar"] },
   { name: "EIGHTEEN Eatery", desc: "Cafe real dengan interior warm dan clean, cocok untuk nongkrong, makan, dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Jalan Rusa, Maricaya", fac: ["Indoor Seating", "AC", "Dining Area"] },
-  { name: "Nara Coffee & Kitchen", desc: "Minimalis Jepang, menu fusion & instagramable", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Hertasning No. 52", fac: ["WiFi", "AC", "Dessert Bar"] },
-  { name: "Sky Lounge Makassar", desc: "Lantai 20, view 360° kota, premium coffee & cocktails", cat: "rooftop", price: "$$$", rating: 4.6, addr: "Jl. Jend. Sudirman No. 1", fac: ["WiFi", "Bar", "VIP Room"] },
+  { name: "Mark Trees Cafe", desc: "Cafe real dengan interior hangat dan cozy, cocok untuk nongkrong santai dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jalan G. Batu Putih, Mangkura, Ujung Pandang", fac: ["Indoor Seating", "AC", "Coffee Bar"] },
+  { name: "Aynaka Coffee Racing Centre", desc: "Cafe real semi-outdoor dengan banyak tanaman, cocok untuk nongkrong malam dan suasana santai", cat: "outdoor", price: "$$", rating: 4.5, addr: "Jalan Btn Gaedenia, Karampuang, Panakkukang", fac: ["Outdoor Seating", "WiFi", "Parking"] },
   { name: "Digital Nomad Hub", desc: "Co-working 24 jam, internet 100Mbps", cat: "coworking", price: "$$", rating: 4.5, addr: "Jl. Ratulangi No. 33", fac: ["WiFi 100Mbps", "Locker", "Nap Room"] },
   { name: "Losari Beach Coffee", desc: "Tepi pantai Losari, sunset terbaik & pisang epe", cat: "outdoor", price: "$", rating: 4.7, addr: "Jl. Penghibur, Pantai Losari", fac: ["Sea View", "Traditional Food"] },
   { name: "Kopi Lain Hati Makassar", desc: "Aesthetic modern, harga terjangkau untuk mahasiswa", cat: "aesthetic", price: "$", rating: 4.2, addr: "Jl. Urip Sumoharjo No. 120", fac: ["WiFi", "AC", "Parking"] },
@@ -78,7 +78,7 @@ function getAIResponse(message) {
   }
 
   if (msg.includes('makan') || msg.includes('menu') || msg.includes('food') || msg.includes('makanan')) {
-    return `🍽️ Cafe di Makassar dengan menu makanan lengkap:\n\n1. EIGHTEEN Eatery — Nongkrong santai dengan area makan yang nyaman\n2. Duft Coffee Indonesia — Ngopi santai dengan suasana hangat\n3. Nara Coffee & Kitchen — Menu fusion Jepang + dessert bar\n4. Losari Beach Coffee — Pisang epe & makanan tradisional\n\n🥘 Jangan lupa coba pisang epe dan coto Makassar di sekitar cafe!`;
+    return `🍽️ Cafe di Makassar dengan menu makanan lengkap:\n\n1. EIGHTEEN Eatery — Nongkrong santai dengan area makan yang nyaman\n2. Duft Coffee Indonesia — Ngopi santai dengan suasana hangat\n3. Mark Trees Cafe — Nongkrong cozy dengan suasana hangat\n4. Losari Beach Coffee — Pisang epe & makanan tradisional\n\n🥘 Jangan lupa coba pisang epe dan coto Makassar di sekitar cafe!`;
   }
 
   if (msg.includes('24 jam') || msg.includes('malam') || msg.includes('tengah malam') || msg.includes('begadang') || msg.includes('lembur')) {

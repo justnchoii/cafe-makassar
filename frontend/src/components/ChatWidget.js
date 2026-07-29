@@ -8,6 +8,8 @@ const cafeData = [
   { name: "Postropis Coffee & Space", cat: "coworking", price: "$$", rating: 4.8, addr: "Jalan Adipura Raya, Panakkukang" },
   { name: "1997 Coffee", cat: "aesthetic", price: "$$", rating: 5.0, addr: "Jalan Bougenville, Panakkukang" },
   { name: "EIGHTEEN Eatery", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Jalan Rusa, Maricaya" },
+  { name: "Mark Trees Cafe", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jalan G. Batu Putih, Ujung Pandang" },
+  { name: "Aynaka Coffee Racing Centre", cat: "outdoor", price: "$$", rating: 4.5, addr: "Jalan Btn Gaedenia, Panakkukang" },
   { name: "Warkop Phoenam", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14" },
   { name: "Digital Nomad Hub", cat: "coworking", price: "$$", rating: 4.5, addr: "Jl. Ratulangi No. 33" },
   { name: "Losari Beach Coffee", cat: "outdoor", price: "$", rating: 4.7, addr: "Pantai Losari" },
