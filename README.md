@@ -65,7 +65,17 @@ npm run dev
 
 ## 🤖 AI Chat
 
-AI Chat menggunakan Ollama API dari `https://ollama.if.unismuh.ac.id/api/api/generate` dengan model `llama3`.
+AI Chat frontend sekarang bisa memakai **Gemini API** lewat route internal Next.js (`frontend/src/app/api/chat/route.js`) agar jawaban lebih natural seperti AI chat modern, tetapi tetap diarahkan ke data cafe Makassar yang ada di web.
+
+Tambahkan API key di `frontend/.env.local`:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+Format key dari Google AI Studio bisa berbeda-beda, misalnya `AIza...` atau `AQ...`. Keduanya didukung oleh route chat frontend ini.
+
+Kalau API key belum diisi, chat tetap jalan memakai fallback lokal berbasis data cafe.
 
 Fitur:
 - Rekomendasi cafe berdasarkan mood/kebutuhan

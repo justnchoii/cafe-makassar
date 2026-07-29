@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { getCafeChatResponse } from '../lib/cafeChat';
+import { sendCafeChat } from '../lib/chatApi';
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,9 +25,17 @@ export default function ChatWidget() {
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
 
-    await new Promise(resolve => setTimeout(resolve, 600));
-    
-    const response = getCafeChatResponse(userMessage, { compact: true });
+    const chatHistory = messages.map(msg => ({
+      role: msg.role,
+      content: msg.content,
+    }));
+
+    const response = await sendCafeChat({
+      message: userMessage,
+      history: chatHistory,
+      compact: true,
+    });
+
     setMessages(prev => [...prev, { role: 'ai', content: response }]);
     setIsLoading(false);
   };

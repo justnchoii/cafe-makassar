@@ -1,5 +1,3 @@
-'use client';
-
 export const cafeData = [
   { name: "Goodfields Makassar", desc: "Cafe aesthetic real di area Ujung Pandang dengan suasana modern dan nyaman", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Chairil Anwar, Sawerigading, Ujung Pandang", fac: ["WiFi", "AC", "Live Music"] },
   { name: "Duft Coffee Indonesia", desc: "Cafe real dengan interior hangat dan nyaman buat nongkrong", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jalan A.P. Pettarani, Tamamaung, Panakkukang", fac: ["WiFi", "AC", "Coffee Bar"] },
@@ -61,6 +59,87 @@ function hasAny(text, terms) {
   return terms.some(term => text.includes(term));
 }
 
+function getRelaxedSignature(text) {
+  return normalizeText(text).replace(/\s+/g, '').replace(/[aeiou]/g, '');
+}
+
+function levenshteinDistance(a, b) {
+  if (a === b) {
+    return 0;
+  }
+
+  const rows = a.length + 1;
+  const cols = b.length + 1;
+  const matrix = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+  for (let i = 0; i < rows; i += 1) {
+    matrix[i][0] = i;
+  }
+
+  for (let j = 0; j < cols; j += 1) {
+    matrix[0][j] = j;
+  }
+
+  for (let i = 1; i < rows; i += 1) {
+    for (let j = 1; j < cols; j += 1) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+
+  return matrix[a.length][b.length];
+}
+
+function getMessageTerms(message) {
+  const words = normalizeText(message).split(' ').filter(Boolean);
+  const terms = new Set(words);
+
+  for (let i = 0; i < words.length - 1; i += 1) {
+    terms.add(`${words[i]} ${words[i + 1]}`);
+  }
+
+  return [...terms];
+}
+
+function getAliasMatchScore(alias, normalizedMessage, messageTerms) {
+  if (normalizedMessage.includes(alias)) {
+    return 3;
+  }
+
+  const compactAlias = alias.replace(/\s+/g, '');
+  if (compactAlias.length < 5) {
+    return 0;
+  }
+
+  const aliasSignature = getRelaxedSignature(compactAlias);
+
+  for (const term of messageTerms) {
+    const compactTerm = term.replace(/\s+/g, '');
+
+    if (compactTerm.length < 5) {
+      continue;
+    }
+
+    if (compactTerm === compactAlias) {
+      return 3;
+    }
+
+    if (aliasSignature && aliasSignature === getRelaxedSignature(compactTerm)) {
+      return 2;
+    }
+
+    if (Math.abs(compactAlias.length - compactTerm.length) <= 2 && levenshteinDistance(compactAlias, compactTerm) <= 2) {
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
 function getCafeAliases(cafe) {
   const normalizedName = normalizeText(cafe.name);
   const words = normalizedName
@@ -79,23 +158,29 @@ function getCafeAliases(cafe) {
 
 function findMentionedCafes(message) {
   const normalizedMessage = normalizeText(message);
+  const messageTerms = getMessageTerms(message);
   const matches = [];
 
   for (const cafe of cafeData) {
     let bestAlias = '';
+    let bestScore = 0;
+
     for (const alias of getCafeAliases(cafe)) {
-      if (normalizedMessage.includes(alias) && alias.length > bestAlias.length) {
+      const score = getAliasMatchScore(alias, normalizedMessage, messageTerms);
+
+      if (score > bestScore || (score === bestScore && alias.length > bestAlias.length)) {
         bestAlias = alias;
+        bestScore = score;
       }
     }
 
-    if (bestAlias) {
-      matches.push({ cafe, alias: bestAlias });
+    if (bestAlias && bestScore > 0) {
+      matches.push({ cafe, alias: bestAlias, score: bestScore });
     }
   }
 
   return matches
-    .sort((a, b) => b.alias.length - a.alias.length)
+    .sort((a, b) => b.score - a.score || b.alias.length - a.alias.length)
     .map(match => match.cafe);
 }
 
@@ -376,6 +461,20 @@ function buildDefaultResponse(compact = false) {
   return compact
     ? `Aku bisa bantu rekomendasi cafe berdasarkan nama cafe, area, suasana, rating, atau lokasi. Coba tulis: "jelaskan Seroeni" atau "cafe bagus di CPI".`
     : `Aku bisa bantu jawab lebih nyambung kalau kamu tanya seperti ini:\n\n• "Jelaskan suasana Seroeni"\n• "Utata Space cocok buat kerja tidak?"\n• "Cafe bagus di area CPI apa saja?"\n• "Bandingkan Seroeni dan Kultur Haus"\n• "Cafe aesthetic rating tinggi di Manggala?"`;
+}
+
+export function buildCafeKnowledgeBase() {
+  return cafeData.map((cafe, index) => {
+    const facilities = cafe.fac.join(', ');
+    return `${index + 1}. ${cafe.name}
+- kategori: ${categoryLabels[cafe.cat] || cafe.cat}
+- rating: ${cafe.rating}/5
+- harga: ${cafe.price}
+- alamat: ${cafe.addr}
+- deskripsi: ${cleanDescription(cafe.desc)}
+- fasilitas: ${facilities}
+- cocok untuk: ${getBestFor(cafe)}`;
+  }).join('\n\n');
 }
 
 export function getCafeChatResponse(message, options = {}) {

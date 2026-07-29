@@ -2,14 +2,22 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Navbar from '../../components/Navbar';
-import { getCafeChatResponse } from '../../lib/cafeChat';
+import { sendCafeChat } from '../../lib/chatApi';
+
+function createChatMessage(role, content) {
+  return {
+    role,
+    content,
+    timestamp: new Date().toISOString(),
+  };
+}
 
 export default function ChatPage() {
   const [messages, setMessages] = useState([
     {
       role: 'ai',
       content: 'Halo! 👋 Saya asisten AI Cafe Makassar. Tanyakan apa saja tentang cafe di Makassar — rekomendasi, menu, suasana, atau apapun! Saya siap membantu ☕',
-      timestamp: new Date().toISOString(),
+      timestamp: null,
     }
   ]);
   const [input, setInput] = useState('');
@@ -30,17 +38,20 @@ export default function ChatPage() {
 
     const userMessage = input.trim();
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMessage, timestamp: new Date().toISOString() }]);
+    setMessages(prev => [...prev, createChatMessage('user', userMessage)]);
     setIsLoading(true);
 
-    await new Promise(resolve => setTimeout(resolve, 400));
+    const chatHistory = messages.map(msg => ({
+      role: msg.role,
+      content: msg.content,
+    }));
 
-    const aiResponse = getCafeChatResponse(userMessage);
-    setMessages(prev => [...prev, {
-      role: 'ai',
-      content: aiResponse,
-      timestamp: new Date().toISOString()
-    }]);
+    const aiResponse = await sendCafeChat({
+      message: userMessage,
+      history: chatHistory,
+    });
+
+    setMessages(prev => [...prev, createChatMessage('ai', aiResponse)]);
     setIsLoading(false);
   };
 
@@ -83,9 +94,11 @@ export default function ChatPage() {
                   <p className="text-xs text-secondary font-medium mb-1">🤖 AI Assistant</p>
                 )}
                 <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-                <p className="text-[10px] opacity-50 mt-1">
-                  {new Date(msg.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
-                </p>
+                {msg.timestamp && (
+                  <p className="text-[10px] opacity-50 mt-1">
+                    {new Date(msg.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                  </p>
+                )}
               </div>
             </div>
           ))}
