@@ -12,9 +12,9 @@ const cafeData = [
   { name: "Mark Trees Cafe", desc: "Cafe real dengan interior hangat dan cozy, cocok untuk nongkrong santai dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jalan G. Batu Putih, Mangkura, Ujung Pandang", fac: ["Indoor Seating", "AC", "Coffee Bar"] },
   { name: "Aynaka Coffee Racing Centre", desc: "Cafe real semi-outdoor dengan banyak tanaman, cocok untuk nongkrong malam dan suasana santai", cat: "outdoor", price: "$$", rating: 4.5, addr: "Jalan Btn Gaedenia, Karampuang, Panakkukang", fac: ["Outdoor Seating", "WiFi", "Parking"] },
   { name: "SIJA PETTARANI", desc: "Cafe real dengan konsep clean industrial, cocok untuk nongkrong santai, kerja ringan, dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Andi Pangeran Pettarani 3, Tamamaung, Panakkukang", fac: ["Indoor Seating", "AC", "Coffee Bar"] },
-  { name: "Monochrome Cafe", desc: "Cafe real dengan interior hitam-putih yang unik dan estetik, cocok untuk nongkrong dan makan santai", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Jalan Bulukunyi, Maricaya Baru", fac: ["Indoor Seating", "AC", "Dining Area"] },
-  { name: "Kopi Lain Hati Makassar", desc: "Aesthetic modern, harga terjangkau untuk mahasiswa", cat: "aesthetic", price: "$", rating: 4.2, addr: "Jl. Urip Sumoharjo No. 120", fac: ["WiFi", "AC", "Parking"] },
-  { name: "Fort Rotterdam Cafe", desc: "Heritage dekat Benteng Rotterdam, nuansa kolonial", cat: "traditional", price: "$$", rating: 4.4, addr: "Jl. Ujung Pandang No. 1", fac: ["WiFi", "Heritage View", "Outdoor"] },
+  { name: "Crematology X Makassar", desc: "Cafe real dengan interior modern dan pencahayaan hangat, cocok untuk nongkrong santai, ngopi, dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.5, addr: "Phinisi Point, Jalan Metro Tanjung Bunga, Mariso", fac: ["Indoor Seating", "AC", "Coffee Bar"] },
+  { name: "STORIAMO COFFE AND ROASTERY", desc: "Cafe real dengan area rindang dan suasana cozy, cocok untuk nongkrong, kerja ringan, dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Topaz Lorong 2, Masale, Panakkukang", fac: ["Indoor Seating", "Outdoor Seating", "WiFi"] },
+  { name: "Cafe Aestetic Dimakassar", desc: "Cafe real dengan konsep clean minimalis dan area semi-outdoor, cocok untuk nongkrong malam dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 5.0, addr: "Bitoa, Manggala, Makassar", fac: ["Semi Outdoor", "WiFi", "Parking"] },
   { name: "Maleo Coffee Roasters", desc: "Specialty roaster, biji kopi Toraja & Enrekang", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Jl. Bonto Lempangan No. 8", fac: ["WiFi", "Roasting Demo", "Workshop"] },
   { name: "Panorama Rooftop Bar", desc: "Sky bar hotel bintang 5, panorama kota & laut", cat: "rooftop", price: "$$$", rating: 4.7, addr: "Jl. Andi Djemma No. 5", fac: ["Premium Bar", "Live Band", "Private Dining"] },
   { name: "Green Space Co-Working", desc: "Konsep hijau & sustainable, organic coffee", cat: "coworking", price: "$$", rating: 4.3, addr: "Jl. Perintis Kemerdekaan KM 12", fac: ["WiFi Cepat", "Standing Desk", "Projector"] },
@@ -32,7 +32,7 @@ function getAIResponse(message) {
   if (msg.includes('aesthetic') || msg.includes('instagramable') || msg.includes('foto') || msg.includes('cantik')) {
     const picks = cafeData.filter(c => c.cat === 'aesthetic');
     const list = picks.map(c => `📸 ${c.name} ⭐${c.rating} (${c.price})\n   📍 ${c.addr}\n   ${c.desc}\n   Fasilitas: ${c.fac.join(', ')}`).join('\n\n');
-    return `Rekomendasi cafe aesthetic & instagramable di Makassar:\n\n${list}\n\n✨ Semua punya spot foto keren! Favorit saya: 1997 Coffee (rating tertinggi 5.0)!`;
+    return `Rekomendasi cafe aesthetic & instagramable di Makassar:\n\n${list}\n\n✨ Semua punya spot foto keren! Favorit saya: Cafe Aestetic Dimakassar dan 1997 Coffee, dua-duanya punya rating tertinggi 5.0!`;
   }
 
   if (msg.includes('kerja') || msg.includes('work') || msg.includes('wifi') || msg.includes('coworking') || msg.includes('laptop') || msg.includes('wfc')) {
@@ -68,7 +68,7 @@ function getAIResponse(message) {
   if (msg.includes('terbaik') || msg.includes('rating') || msg.includes('top') || msg.includes('populer') || msg.includes('best')) {
     const picks = [...cafeData].sort((a, b) => b.rating - a.rating).slice(0, 5);
     const list = picks.map((c, i) => `${i+1}. ${c.name} ⭐${c.rating} — ${c.cat}\n   📍 ${c.addr}\n   ${c.desc}`).join('\n\n');
-    return `🏆 Top 5 Cafe Terbaik di Makassar:\n\n${list}\n\nSemua worth to visit! 1997 Coffee juara dengan rating 5.0! 🎯`;
+    return `🏆 Top 5 Cafe Terbaik di Makassar:\n\n${list}\n\nSemua worth to visit! Cafe Aestetic Dimakassar dan 1997 Coffee sama-sama ada di puncak dengan rating 5.0! 🎯`;
   }
 
   if (msg.includes('rekomen') || msg.includes('saran') || msg.includes('suggest') || msg.includes('pilih')) {
@@ -78,7 +78,7 @@ function getAIResponse(message) {
   }
 
   if (msg.includes('makan') || msg.includes('menu') || msg.includes('food') || msg.includes('makanan')) {
-    return `🍽️ Cafe di Makassar dengan menu makanan lengkap:\n\n1. EIGHTEEN Eatery — Nongkrong santai dengan area makan yang nyaman\n2. Monochrome Cafe — Nongkrong dan makan santai dengan interior unik\n3. Duft Coffee Indonesia — Ngopi santai dengan suasana hangat\n4. Mark Trees Cafe — Nongkrong cozy dengan suasana hangat\n\n🥘 Jangan lupa coba pisang epe dan coto Makassar di sekitar cafe!`;
+    return `🍽️ Cafe di Makassar dengan menu makanan lengkap:\n\n1. EIGHTEEN Eatery — Nongkrong santai dengan area makan yang nyaman\n2. Crematology X Makassar — Ngopi santai dengan area duduk cozy\n3. STORIAMO COFFE AND ROASTERY — Nongkrong rindang dan santai\n4. Mark Trees Cafe — Nongkrong cozy dengan suasana hangat\n\n🥘 Jangan lupa coba pisang epe dan coto Makassar di sekitar cafe!`;
   }
 
   if (msg.includes('24 jam') || msg.includes('malam') || msg.includes('tengah malam') || msg.includes('begadang') || msg.includes('lembur')) {
