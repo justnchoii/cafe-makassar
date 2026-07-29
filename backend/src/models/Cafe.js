@@ -18,6 +18,7 @@ const cafeSchema = new mongoose.Schema({
   facilities: [String],
   openHours: { type: String },
   image: { type: String },
+  mapsLink: { type: String },
   location: {
     lat: { type: Number },
     lng: { type: Number }

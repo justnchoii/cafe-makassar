@@ -9,15 +9,16 @@ import ChatWidget from '../components/ChatWidget';
 const staticCafes = [
   {
     _id: '1',
-    name: "Dottore Coffee",
-    description: "Cafe aesthetic dengan interior industrial modern dan kopi specialty. Tempat favorit untuk foto-foto dan work from cafe di jantung kota Makassar.",
-    address: "Jl. Penghibur No. 15, Losari, Makassar",
+    name: "Goodfields Makassar",
+    description: "Cafe aesthetic real dari link Google Maps yang kamu kirim. Interior modern, nyaman buat nongkrong, dan berada di area Ujung Pandang Makassar.",
+    address: "Jalan Chairil Anwar, Sawerigading, Ujung Pandang, Makassar",
     category: "aesthetic",
     rating: 4.7,
     priceRange: "$$",
     facilities: ["WiFi", "AC", "Smoking Area", "Meeting Room", "Live Music"],
     openHours: "09:00 - 24:00",
-    image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop"
+    image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop",
+    mapsLink: "https://maps.app.goo.gl/j6uMYGuWDQusQmhL9"
   },
   {
     _id: '2',

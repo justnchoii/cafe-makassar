@@ -82,9 +82,20 @@ export default function CafeCard({ cafe, index }) {
         {/* Open Hours */}
         <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
           <span className="text-xs text-gray-400">🕐 {cafe.openHours}</span>
-          <button className="text-xs text-secondary font-medium hover:text-accent transition-colors">
-            Detail →
-          </button>
+          {cafe.mapsLink ? (
+            <a
+              href={cafe.mapsLink}
+              target="_blank"
+              rel="noreferrer"
+              className="text-xs text-secondary font-medium hover:text-accent transition-colors"
+            >
+              Lihat Maps →
+            </a>
+          ) : (
+            <button className="text-xs text-secondary font-medium hover:text-accent transition-colors">
+              Detail →
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Navbar from '../../components/Navbar';
 
 const cafeData = [
-  { name: "Dottore Coffee", desc: "Interior industrial modern dan kopi specialty", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Penghibur No. 15, Losari", fac: ["WiFi", "AC", "Live Music"] },
+  { name: "Goodfields Makassar", desc: "Cafe aesthetic real di area Ujung Pandang dengan suasana modern dan nyaman", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Chairil Anwar, Sawerigading, Ujung Pandang", fac: ["WiFi", "AC", "Live Music"] },
   { name: "Kalaras Coffee & Eatery", desc: "Rooftop dengan view sunset pantai Losari", cat: "rooftop", price: "$$$", rating: 4.5, addr: "Jl. Metro Tanjung Bunga", fac: ["WiFi", "Rooftop", "Full Kitchen"] },
   { name: "Kultura Coffee", desc: "Coworking bernuansa budaya Makassar", cat: "coworking", price: "$$", rating: 4.6, addr: "Jl. A.P. Pettarani No. 88", fac: ["WiFi Cepat", "Stop Kontak", "Meeting Room"] },
   { name: "Warung Kopi Daeng", desc: "Kedai kopi tradisional dengan kopi Toraja asli", cat: "traditional", price: "$", rating: 4.3, addr: "Jl. Somba Opu No. 200", fac: ["Outdoor", "Parking"] },
@@ -82,7 +82,7 @@ function getAIResponse(message) {
   }
 
   if (msg.includes('24 jam') || msg.includes('malam') || msg.includes('tengah malam') || msg.includes('begadang') || msg.includes('lembur')) {
-    return `🌙 Cafe yang buka malam/24 jam di Makassar:\n\n1. Digital Nomad Hub — 24 Jam, WiFi 100Mbps\n   📍 Jl. Ratulangi No. 33\n\n2. Warkop Phoenam — 24 Jam, kopi tubruk legendaris\n   📍 Jl. Sulawesi No. 14\n\n3. Dottore Coffee — Sampai jam 24:00\n   📍 Jl. Penghibur No. 15\n\n4. Kopi Lain Hati — Sampai jam 24:00\n   📍 Jl. Urip Sumoharjo No. 120\n\n☕ Perfect buat begadang atau lembur!`;
+    return `🌙 Cafe yang buka malam/24 jam di Makassar:\n\n1. Digital Nomad Hub — 24 Jam, WiFi 100Mbps\n   📍 Jl. Ratulangi No. 33\n\n2. Warkop Phoenam — 24 Jam, kopi tubruk legendaris\n   📍 Jl. Sulawesi No. 14\n\n3. Goodfields Makassar — Sampai jam 24:00\n   📍 Jl. Chairil Anwar, Ujung Pandang\n\n4. Kopi Lain Hati — Sampai jam 24:00\n   📍 Jl. Urip Sumoharjo No. 120\n\n☕ Perfect buat begadang atau lembur!`;
   }
 
   if (msg.includes('lokasi') || msg.includes('alamat') || msg.includes('dimana') || msg.includes('daerah')) {

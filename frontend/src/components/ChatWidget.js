@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 const cafeData = [
-  { name: "Dottore Coffee", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Penghibur No. 15" },
+  { name: "Goodfields Makassar", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Jl. Chairil Anwar, Ujung Pandang" },
   { name: "Kalaras Coffee & Eatery", cat: "rooftop", price: "$$$", rating: 4.5, addr: "Jl. Metro Tanjung Bunga" },
   { name: "Kultura Coffee", cat: "coworking", price: "$$", rating: 4.6, addr: "Jl. A.P. Pettarani No. 88" },
   { name: "Nara Coffee & Kitchen", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Jl. Hertasning No. 52" },
@@ -16,7 +16,7 @@ const cafeData = [
 function getQuickResponse(msg) {
   const m = msg.toLowerCase();
   if (m.includes('aesthetic') || m.includes('foto')) {
-    return '📸 Cafe aesthetic: Maleo Coffee Roasters (⭐4.9), Nara Coffee (⭐4.8), Dottore Coffee (⭐4.7). Semua instagramable!';
+    return '📸 Cafe aesthetic: Maleo Coffee Roasters (⭐4.9), Nara Coffee (⭐4.8), Goodfields Makassar (⭐4.7). Semua instagramable!';
   }
   if (m.includes('murah') || m.includes('hemat')) {
     return '💰 Cafe murah: Warkop Phoenam ($, legendaris!), Losari Beach Coffee ($, view laut), Kopi Lain Hati ($, hits!).';
