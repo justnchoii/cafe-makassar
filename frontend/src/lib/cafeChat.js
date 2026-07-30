@@ -896,7 +896,7 @@ export function getCafeChatResponse(message, options = {}) {
     return buildRecommendationResponse(compact, excludedCafeNames);
   }
 
-  if (hasAny(normalizedContextMessage, ['terbaik', 'rating', 'top', 'populer', 'best'])) {
+  if (hasAny(normalizedContextMessage, ['terbaik', 'rating', 'top', 'populer', 'best', 'viral', 'trending', 'hits', 'hype', 'kekinian', 'lagi hits', 'lagi viral', 'paling hits', 'paling viral', 'paling populer', 'paling terkenal'])) {
     return buildTopResponse(compact);
   }
 

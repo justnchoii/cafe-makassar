@@ -114,69 +114,67 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Message is required.' }, { status: 400 });
     }
 
+    // 1. Coba Gemini langsung dulu kalau key ada di frontend
+    if (process.env.GEMINI_API_KEY) {
+      const geminiConfig = getGeminiRequestConfig(process.env.GEMINI_API_KEY);
+
+      try {
+        const response = await fetch(geminiConfig.url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...geminiConfig.headers,
+          },
+          body: JSON.stringify({
+            systemInstruction: {
+              parts: [{ text: createSystemPrompt() }],
+            },
+            contents: [
+              ...sanitizeHistory(history),
+              {
+                role: 'user',
+                parts: [{ text: message }],
+              },
+            ],
+            generationConfig: {
+              temperature: 0.3,
+              topP: 0.8,
+              maxOutputTokens: compact ? 220 : 420,
+            },
+          }),
+          cache: 'no-store',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const aiText = extractGeminiText(data);
+
+          if (aiText) {
+            return NextResponse.json({ response: aiText, mode: 'gemini' });
+          }
+
+          // Gemini connected but returned empty — log detail
+          const errDetail = data?.error?.message || JSON.stringify(data).slice(0, 200);
+          console.warn('[chat] Gemini returned empty. Detail:', errDetail);
+        } else {
+          const errText = await response.text().catch(() => '');
+          console.warn(`[chat] Gemini HTTP ${response.status}:`, errText.slice(0, 200));
+        }
+      } catch (geminiErr) {
+        console.warn('[chat] Gemini fetch error:', geminiErr.message);
+      }
+    } else {
+      console.warn('[chat] GEMINI_API_KEY tidak ditemukan di frontend/.env.local');
+    }
+
+    // 2. Fallback ke backend kalau Gemini frontend gagal
     const backendResponse = await requestBackendChat(message, history);
     if (backendResponse) {
-      return NextResponse.json({
-        response: backendResponse,
-        mode: 'backend',
-      });
+      return NextResponse.json({ response: backendResponse, mode: 'backend' });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
-      return NextResponse.json({
-        response: fallback,
-        mode: 'fallback',
-      });
-    }
-
-    const geminiConfig = getGeminiRequestConfig(process.env.GEMINI_API_KEY);
-
-    try {
-      const response = await fetch(geminiConfig.url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...geminiConfig.headers,
-        },
-        body: JSON.stringify({
-          systemInstruction: {
-            parts: [{ text: createSystemPrompt() }],
-          },
-          contents: [
-            ...sanitizeHistory(body?.history),
-            {
-              role: 'user',
-              parts: [{ text: message }],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.3,
-            topP: 0.8,
-            maxOutputTokens: compact ? 220 : 420,
-          },
-        }),
-        cache: 'no-store',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const aiText = extractGeminiText(data);
-
-        if (aiText) {
-          return NextResponse.json({
-            response: aiText,
-            mode: 'gemini-direct',
-          });
-        }
-      }
-    } catch (error) {
-      // Fall through to backend/local fallback.
-    }
-
-    return NextResponse.json({
-      response: fallback,
-      mode: 'fallback',
-    });
+    console.warn('[chat] Backend juga tidak tersedia. Pakai local fallback.');
+    return NextResponse.json({ response: fallback, mode: 'fallback' });
   } catch (error) {
     const fallbackMessage = getFallbackResponse(message || '', history, compact);
     return NextResponse.json({ response: fallbackMessage, mode: 'fallback' });
