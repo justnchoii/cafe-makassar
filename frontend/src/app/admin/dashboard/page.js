@@ -33,7 +33,7 @@ export default function AdminDashboard() {
 
   const fetchCafes = useCallback(async (tok) => {
     try {
-      const res = await fetch(`${API_URL}/api/cafes`);
+      const res = await fetch(`/api/cafes`);
       const data = await res.json();
       if (data.success) setCafes(data.data);
     } catch {
@@ -41,7 +41,7 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [API_URL]);
+  }, []);
 
   useEffect(() => {
     const stored = localStorage.getItem('admin_token');
@@ -91,7 +91,7 @@ export default function AdminDashboard() {
     if (!imageFile) return null;
     const fd = new FormData();
     fd.append('image', imageFile);
-    const res = await fetch(`${API_URL}/api/admin/upload`, {
+      const res = await fetch(`/api/admin/upload`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: fd,
@@ -116,8 +116,8 @@ export default function AdminDashboard() {
       };
 
       const url = modal === 'edit'
-        ? `${API_URL}/api/admin/cafes/${editCafe._id}`
-        : `${API_URL}/api/admin/cafes`;
+        ? `/api/cafes/${editCafe._id}`
+        : `/api/cafes`;
       const method = modal === 'edit' ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
 
   const handleDelete = async (cafe) => {
     try {
-      const res = await fetch(`${API_URL}/api/admin/cafes/${cafe._id}`, {
+      const res = await fetch(`/api/cafes/${cafe._id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
