@@ -842,6 +842,7 @@ const cafes = [
   {
     name: "Sekan Coffee (Racing Centre)",
     description: "Cafe retro hangat dengan rak vinyl record ikonik, sofa kulit, dan dekorasi kayu kental nuansa 70an. Cocok untuk ngopi santai sambil menikmati musik.",
+    about: "Sekan Coffee di Racing Centre menghadirkan konsep cafe retro yang hangat dengan dekorasi vinyl record ikonik, sofa kulit, dan ornamen kayu yang kental dengan nuansa 70an. Suasananya unik dan berbeda, cocok untuk menikmati kopi sambil bersantai dalam alunan musik.",
     address: "Racing Centre, Makassar",
     category: "cozy",
     rating: 4.5,
@@ -850,6 +851,11 @@ const cafes = [
     openHours: "Cek jam buka di Google Maps",
     image: "/sekan-coffee.jpg",
     mapsLink: "https://maps.app.goo.gl/rUY9SNw4XeKFx2ge8",
+    menu: ["Manual Brew", "Cafe Latte", "Cappuccino", "Es Kopi Susu", "Croissant", "Toast"],
+    priceInfo: "Rp20.000 – Rp55.000",
+    suitableFor: ["Ngopi santai", "Nongkrong", "Quality Time", "Foto aesthetic"],
+    favoriteSpot: "Rak vinyl record dan sofa kulit retro menjadi sudut foto paling ikonik di cafe ini.",
+    tips: "Datang pada sore atau malam hari untuk menikmati atmosfer retro yang semakin hidup dengan alunan musik.",
     location: { lat: -5.1500, lng: 119.4300 }
   },
   {
