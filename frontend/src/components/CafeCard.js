@@ -29,12 +29,15 @@ export default function CafeCard({ cafe, index }) {
             src={cafe.image} 
             alt={cafe.name}
             className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+            onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
           />
-        ) : (
-          <div className="h-full bg-gradient-to-br from-warm to-secondary/30 flex items-center justify-center">
-            <span className="text-6xl opacity-50">{categoryEmoji[cafe.category] || '☕'}</span>
-          </div>
-        )}
+        ) : null}
+        <div 
+          className="h-full bg-gradient-to-br from-warm to-secondary/30 flex items-center justify-center"
+          style={{ display: cafe.image ? 'none' : 'flex' }}
+        >
+          <span className="text-6xl opacity-50">{categoryEmoji[cafe.category] || '☕'}</span>
+        </div>
         {/* Price Badge */}
         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-bold text-primary">
           {cafe.priceRange === '$' ? 'Murah' : cafe.priceRange === '$$' ? 'Sedang' : cafe.priceRange === '$$$' ? 'Mahal' : cafe.priceRange || 'Sedang'}
