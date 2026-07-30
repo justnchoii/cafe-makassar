@@ -112,10 +112,6 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Message is required.' }, { status: 400 });
     }
 
-    if (!message) {
-      return NextResponse.json({ error: 'Message is required.' }, { status: 400 });
-    }
-
     if (!process.env.GEMINI_API_KEY) {
       const backendResponse = await requestBackendChat(message);
       return NextResponse.json({

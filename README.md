@@ -4,7 +4,7 @@ Web platform untuk menemukan cafe terbaik di Makassar dengan fitur AI Chat Assis
 
 ![Cafe Makassar](https://img.shields.io/badge/Made%20in-Makassar-brown)
 ![Tech](https://img.shields.io/badge/Stack-MERN-blue)
-![AI](https://img.shields.io/badge/AI-Ollama-green)
+![AI](https://img.shields.io/badge/AI-Gemini-blue)
 
 ## 🚀 Tech Stack
 
@@ -13,7 +13,7 @@ Web platform untuk menemukan cafe terbaik di Makassar dengan fitur AI Chat Assis
 | Database | MongoDB |
 | Backend | Express.js + Swagger |
 | Frontend | Next.js + Tailwind CSS |
-| AI | Ollama (llama3) |
+| AI | Gemini API |
 | Storage | MinIO |
 | Deploy | Docker + GitHub Codespace |
 
@@ -98,7 +98,7 @@ Kalau di Codespaces kamu expose port MinIO, ganti `http://localhost:9000` dengan
 
 ## 🤖 AI Chat
 
-AI Chat frontend sekarang bisa memakai **Gemini API** lewat route internal Next.js (`frontend/src/app/api/chat/route.js`) agar jawaban lebih natural seperti AI chat modern, tetapi tetap diarahkan ke data cafe Makassar yang ada di web.
+AI Chat sekarang memakai **Gemini API** baik di frontend route Next.js (`frontend/src/app/api/chat/route.js`) maupun endpoint backend (`backend/src/controllers/chatController.js`) agar jawaban lebih natural dan tetap diarahkan ke data cafe Makassar yang ada di web.
 
 Tambahkan API key di `frontend/.env.local`:
 
@@ -106,9 +106,15 @@ Tambahkan API key di `frontend/.env.local`:
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-Format key dari Google AI Studio bisa berbeda-beda, misalnya `AIza...` atau `AQ...`. Keduanya didukung oleh route chat frontend ini.
+Format key dari Google AI Studio bisa berbeda-beda, misalnya `AIza...` atau `AQ...`. Keduanya didukung oleh frontend dan backend.
 
 Kalau API key belum diisi, chat tetap jalan memakai fallback lokal berbasis data cafe.
+
+Jika kamu juga menjalankan backend secara terpisah, isi `backend/.env` juga:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+```
 
 Fitur:
 - Rekomendasi cafe berdasarkan mood/kebutuhan
