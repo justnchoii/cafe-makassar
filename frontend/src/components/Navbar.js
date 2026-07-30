@@ -27,6 +27,9 @@ export default function Navbar() {
           <Link href="/chat" className="text-sm text-gray-600 hover:text-primary transition-colors">
             AI Chat
           </Link>
+          <Link href="/admin" className="text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-1">
+            🔐 Admin
+          </Link>
           <Link href="/chat" className="btn-primary text-sm py-2">
             🤖 Tanya AI
           </Link>
@@ -53,6 +56,7 @@ export default function Navbar() {
           <Link href="/" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Home</Link>
           <Link href="/#cafes" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Explore</Link>
           <Link href="/chat" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>AI Chat</Link>
+          <Link href="/admin" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>🔐 Admin</Link>
         </div>
       )}
     </nav>
