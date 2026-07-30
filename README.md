@@ -114,7 +114,20 @@ Jika kamu juga menjalankan backend secara terpisah, isi `backend/.env` juga:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
+CHAT_DEBUG=false
 ```
+
+Kalau mau cek apakah backend benar-benar mengirim data cafe yang tepat ke Gemini, ubah:
+
+```env
+CHAT_DEBUG=true
+```
+
+Lalu restart backend. Nanti terminal backend akan menampilkan:
+- jumlah total cafe dari database
+- daftar cafe yang dipilih untuk context pertanyaan
+- preview prompt yang dikirim ke Gemini
+- potongan response mentah dari Gemini
 
 Fitur:
 - Rekomendasi cafe berdasarkan mood/kebutuhan

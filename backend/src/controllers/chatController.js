@@ -4,6 +4,7 @@ const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemi
 const MAX_HISTORY_ITEMS = 10;
 const MAX_CONTEXT_CAFES = 8;
 const MIN_RELEVANCE_SCORE = 3;
+const MAX_DEBUG_RESPONSE_LENGTH = 1200;
 const STOP_WORDS = new Set([
   'ada', 'aja', 'apa', 'apakah', 'atau', 'buat', 'bisa', 'cafe', 'coffee', 'dan', 'dari',
   'dengan', 'di', 'dimana', 'dong', 'enak', 'itu', 'ini', 'juga', 'kalau', 'kalo', 'ke',
@@ -122,6 +123,18 @@ function hasAny(text, keywords) {
 function hasFacility(cafe, keyword) {
   const normalizedKeyword = normalizeText(keyword);
   return (cafe.facilities || []).some(facility => normalizeText(facility).includes(normalizedKeyword));
+}
+
+function isDebugEnabled() {
+  return String(process.env.CHAT_DEBUG || '').toLowerCase() === 'true';
+}
+
+function logChatDebug(label, payload) {
+  if (!isDebugEnabled()) {
+    return;
+  }
+
+  console.log(`[chat-debug] ${label}:`, payload);
 }
 
 function sanitizeHistory(history) {
@@ -338,6 +351,16 @@ function extractGeminiText(data) {
     .trim();
 }
 
+function summarizeCafeForDebug(cafe) {
+  return {
+    name: cafe.name,
+    category: cafe.category,
+    priceRange: cafe.priceRange,
+    rating: cafe.rating,
+    address: cafe.address,
+  };
+}
+
 exports.chat = async (req, res) => {
   try {
     const { message, history = [] } = req.body;
@@ -350,6 +373,17 @@ exports.chat = async (req, res) => {
     const relevantCafes = selectRelevantCafes(message, history, allCafes);
     const cafesForContext = relevantCafes.length > 0 ? relevantCafes : allCafes.slice(0, MAX_CONTEXT_CAFES);
     const sanitizedHistory = sanitizeHistory(history);
+
+    logChatDebug('request-summary', {
+      message: message.trim(),
+      historyCount: Array.isArray(history) ? history.length : 0,
+      sanitizedHistoryCount: sanitizedHistory.length,
+      totalCafeCount: allCafes.length,
+      contextCafeCount: cafesForContext.length,
+    });
+    logChatDebug('all-cafes-sample', allCafes.slice(0, 2).map(summarizeCafeForDebug));
+    logChatDebug('selected-context-cafes', cafesForContext.map(summarizeCafeForDebug));
+    logChatDebug('system-prompt-preview', createSystemPrompt(cafesForContext).slice(0, MAX_DEBUG_RESPONSE_LENGTH));
 
     try {
       if (!process.env.GEMINI_API_KEY) {
@@ -387,11 +421,14 @@ exports.chat = async (req, res) => {
       }
 
       const data = await response.json();
+      logChatDebug('gemini-raw-response', JSON.stringify(data, null, 2).slice(0, MAX_DEBUG_RESPONSE_LENGTH));
       const aiResponse = extractGeminiText(data);
 
       if (!aiResponse) {
         throw new Error('Gemini returned empty response');
       }
+
+      logChatDebug('gemini-text-response', aiResponse.slice(0, MAX_DEBUG_RESPONSE_LENGTH));
 
       return res.json({
         success: true,
@@ -405,6 +442,7 @@ exports.chat = async (req, res) => {
     } catch (aiError) {
       console.log('Gemini not available, using fallback:', aiError.message);
       const fallbackResponse = generateFallbackResponse(message, cafesForContext);
+      logChatDebug('fallback-response', fallbackResponse.slice(0, MAX_DEBUG_RESPONSE_LENGTH));
 
       return res.json({
         success: true,
