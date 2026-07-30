@@ -55,7 +55,7 @@ export async function POST(request) {
     }
 
     return NextResponse.json({
-      response: 'AI sedang tidak tersedia. Pastikan backend berjalan dan GEMINI_API_KEY sudah diset di backend/.env.',
+      response: 'AI sedang tidak tersedia. Pastikan backend berjalan dan GROQ_API_KEY sudah diset di backend/.env.',
       mode: 'error',
     });
   }
