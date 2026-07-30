@@ -1,27 +1,15 @@
-import { getCafeChatResponse, isCafeRelatedChatMessage } from './cafeChat';
-
-function getUnavailableGeneralAiResponse() {
-  return 'AI sedang tidak tersedia untuk pertanyaan umum saat ini. Coba lagi sebentar lagi setelah koneksi Gemini aktif.';
-}
-
-export async function sendCafeChat({ message, history = [], compact = false }) {
+﻿export async function sendCafeChat({ message, history = [], compact = false }) {
   const trimmedMessage = typeof message === 'string' ? message.trim() : '';
 
   if (!trimmedMessage) {
-    return getCafeChatResponse('', { compact, history });
+    return 'Silakan ketik pesan terlebih dahulu.';
   }
 
   try {
     const response = await fetch('/api/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message: trimmedMessage,
-        history,
-        compact,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: trimmedMessage, history, compact }),
     });
 
     if (!response.ok) {
@@ -29,16 +17,12 @@ export async function sendCafeChat({ message, history = [], compact = false }) {
     }
 
     const data = await response.json();
-    if (typeof data?.response === 'string' && data.response.trim()) {
-      return data.response.trim();
-    }
-  } catch (error) {
-    return isCafeRelatedChatMessage(trimmedMessage, history)
-      ? getCafeChatResponse(trimmedMessage, { compact, history })
-      : getUnavailableGeneralAiResponse();
-  }
+    const text = data?.response?.trim() || data?.data?.message?.trim() || '';
 
-  return isCafeRelatedChatMessage(trimmedMessage, history)
-    ? getCafeChatResponse(trimmedMessage, { compact, history })
-    : getUnavailableGeneralAiResponse();
+    if (text) return text;
+    throw new Error('Empty response');
+  } catch (error) {
+    console.error('[chatApi]', error.message);
+    return 'AI sedang tidak tersedia. Coba lagi sebentar lagi.';
+  }
 }
