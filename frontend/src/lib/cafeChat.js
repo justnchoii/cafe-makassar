@@ -36,6 +36,8 @@ export const cafeData = [
   { name: "MAUKI", desc: "Cafe malam megah dua lantai dengan lampu string hangat dan nuansa industrial modern, cocok untuk nongkrong malam dan foto aesthetic", cat: "outdoor", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "Outdoor Seating", "AC", "Coffee Bar", "WiFi", "Parking", "Live Music"] },
   { name: "Obladi Cafe", desc: "Cafe cozy dengan interior industrial bata merah dan pencahayaan hangat, cocok untuk nongkrong, kerja, dan ngopi santai", cat: "coworking", price: "$$", rating: 4.7, addr: "Makassar", fac: ["Indoor Seating", "AC", "WiFi", "Coffee Bar", "Parking"] },
   { name: "Bring.In Cafe", desc: "Cafe dengan interior kayu hangat dan plafon kisi-kisi estetik, cocok untuk nongkrong malam dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
+  { name: "AnHour Coffee House", desc: "Cafe industrial dengan dinding semen ekspos dan bar bata merah yang ikonik, cocok untuk ngopi santai dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
+  { name: "Heaven With You", desc: "Cafe minimalis modern serba putih dengan sofa velvet dan dekorasi bunga kering, suasananya romantic dan sangat cocok untuk foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi"] },
 ];
 
 const categoryLabels = {

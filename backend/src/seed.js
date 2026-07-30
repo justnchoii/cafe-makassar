@@ -483,6 +483,32 @@ const cafes = [
     image: "/bringin-cafe.jpg",
     mapsLink: "https://maps.app.goo.gl/crK96ybdS1Trz58D8",
     location: { lat: -5.1500, lng: 119.4300 }
+  },
+  {
+    name: "AnHour Coffee House",
+    description: "Cafe industrial dengan dinding semen ekspos dan bar bata merah yang ikonik, cocok untuk ngopi santai dan foto aesthetic.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.6,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/anhour-coffee-house.jpg",
+    mapsLink: "https://maps.app.goo.gl/6fTJWFT53fhhKY266",
+    location: { lat: -5.1500, lng: 119.4300 }
+  },
+  {
+    name: "Heaven With You",
+    description: "Cafe minimalis modern serba putih dengan sofa velvet dan dekorasi bunga kering, suasananya romantic dan sangat cocok untuk foto aesthetic.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.6,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "WiFi"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/heaven-with-you.jpg",
+    mapsLink: "https://maps.app.goo.gl/uSfDLaaLaB4t52Jx9",
+    location: { lat: -5.1500, lng: 119.4300 }
   }
 ].map(cafe => ({
   ...cafe,
