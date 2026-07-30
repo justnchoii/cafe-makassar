@@ -86,15 +86,6 @@ const QUERY_HINTS = [
 function getGeminiRequestConfig(rawKey) {
   const key = rawKey.trim();
 
-  if (key.startsWith('AQ')) {
-    return {
-      url: GEMINI_URL,
-      headers: {
-        Authorization: `Bearer ${key}`,
-      },
-    };
-  }
-
   return {
     url: GEMINI_URL,
     headers: {
