@@ -573,6 +573,30 @@ const staticCafes = [
     openHours: "Cek jam buka di Google Maps",
     image: "/sekan-coffee.jpg",
     mapsLink: "https://maps.app.goo.gl/rUY9SNw4XeKFx2ge8"
+  },
+  {
+    name: "Povibes",
+    description: "Cafe kekinian dengan neon sign bubble yang cute, dominasi warna hijau dan krem yang segar. Cocok untuk anak muda yang suka vibe aesthetic dan playful.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.8,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "WiFi"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/povibes.jpg",
+    mapsLink: "https://maps.app.goo.gl/qYezLxQb3itpDxpM6"
+  },
+  {
+    name: "Camell Coffee",
+    description: "Cafe modern dengan fasad kaca melengkung dan neon sign putih elegan. Interior hangat dengan bar kayu yang cozy, sempurna untuk ngopi malam hari.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.6,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/camell-coffee.jpg",
+    mapsLink: "https://maps.app.goo.gl/ooy6KDAXxUJpB3Dx6"
   }
 ].map(cafe => ({
   ...cafe,

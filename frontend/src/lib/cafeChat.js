@@ -44,6 +44,8 @@ export const cafeData = [
   { name: "Nuiz Coffee", desc: "Cafe kekinian dengan fasad beton estetik, neon sign modern, dan pohon palem di entrance yang memukau, perfect untuk foto malam hari", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
   { name: "BW Coffee Daya", desc: "Cafe modern minimalis dengan interior kayu elegan, partisi kaca hitam estetik, dan konsep coffee plus barbershop yang unik di area Daya", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Daya, Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
   { name: "Sekan Coffee (Racing Centre)", desc: "Cafe retro hangat dengan rak vinyl record ikonik, sofa kulit, dan dekorasi kayu yang kental nuansa 70an, cocok untuk ngopi sambil menikmati musik", cat: "cozy", price: "$$", rating: 4.5, addr: "Racing Centre, Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Music"] },
+  { name: "Povibes", desc: "Cafe kekinian dengan neon sign bubble yang cute, dominasi warna hijau dan krem yang segar, cocok untuk anak muda yang suka vibe aesthetic playful", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi"] },
+  { name: "Camell Coffee", desc: "Cafe modern dengan fasad kaca melengkung dan neon sign putih elegan, interior hangat dengan bar kayu yang cozy untuk ngopi malam hari", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
 ];
 
 const categoryLabels = {
