@@ -89,10 +89,6 @@ function getLastHistoryMessage(history, role) {
     return null;
   }
 
-  function hasCafeTopicKeyword(text) {
-    return hasAny(normalizeText(text), cafeTopicKeywords);
-  }
-
   for (let i = history.length - 1; i >= 0; i -= 1) {
     const item = history[i];
     if (item?.role === role && typeof item.content === 'string' && item.content.trim()) {
@@ -101,6 +97,10 @@ function getLastHistoryMessage(history, role) {
   }
 
   return null;
+}
+
+function hasCafeTopicKeyword(text) {
+  return hasAny(normalizeText(text), cafeTopicKeywords);
 }
 
 function isWorkFriendlyCafe(cafe) {
