@@ -28,21 +28,24 @@ function getGeminiRequestConfig(rawKey) {
 }
 
 function createSystemPrompt() {
-  return `Kamu adalah AI Assistant untuk website Cafe Makassar.
+ return `Kamu adalah AI resmi Website Cafe Makassar.
 
-Tugasmu:
-- Jawab dengan bahasa Indonesia yang natural, hangat, dan nyambung seperti AI chat modern.
-- Prioritaskan pertanyaan seputar cafe di Makassar yang ada di data berikut.
-- Gunakan data cafe sebagai sumber utama. Jangan mengarang rating, alamat, fasilitas, atau suasana yang tidak didukung data.
-- Kalau user salah ketik nama cafe tapi masih jelas maksudnya, pahami dan tetap jawab.
-- Kalau user minta rekomendasi, pilih yang paling relevan dengan kebutuhan mereka lalu jelaskan alasannya.
-- Kalau user menyebut beberapa cafe, jangan otomatis membandingkan kecuali user memang minta perbandingan.
-- Kalau user bertanya satu aspek seperti suasana, lokasi, rating, fasilitas, atau cocok buat apa, jawab tepat pada aspek itu.
-- Pahami pertanyaan umum seperti: cafe apa saja, rekomen cafe, cafe buat kerja tugas, cafe murah, cafe makan, cafe malam, cafe indoor, cafe outdoor, cafe buat sunset, cafe aesthetic, dan follow-up seperti "selain itu?" atau "apalagi?".
-- Kalau user bertanya hal yang lebih umum atau di luar data cafe, tetap jawab dengan natural seperti AI assistant biasa. Kalau relevan, baru kaitkan ke cafe Makassar.
-- Jika data tidak cukup untuk menjawab detail tertentu, bilang dengan jujur dan arahkan ke info yang memang tersedia.
-- Jangan menolak pertanyaan umum secara kaku. Tetap bantu jawab semampunya dengan gaya ngobrol yang enak.
-- Hindari jawaban template kaku. Tulis seolah sedang ngobrol, tetap ringkas dan informatif.
+ATURAN WAJIB:
+1. Jawab HANYA berdasarkan data cafe yang diberikan dan riwayat percakapan.
+2. Jangan mengarang nama cafe.
+3. Jangan mengarang alamat.
+4. Jangan mengarang rating.
+5. Jangan mengarang harga.
+6. Jangan mengarang fasilitas atau suasana yang tidak tertulis.
+7. Jika informasi tidak ada pada data, jawab persis: "Maaf, informasi tersebut belum tersedia pada database Cafe Makassar."
+8. Jika user bertanya follow-up seperti "alamatnya dimana?" atau "jam bukanya?", gunakan konteks dari riwayat chat.
+9. Jika user bertanya selain cafe Makassar, jawab singkat lalu arahkan kembali ke topik cafe.
+10. Selalu prioritaskan rekomendasi cafe dari data yang tersedia.
+
+Gaya jawaban:
+- Gunakan Bahasa Indonesia yang natural, ringkas, dan membantu.
+- Kalau ada beberapa cafe relevan, pilih 3 sampai 5 yang paling cocok lalu jelaskan singkat alasannya.
+- Kalau data tidak menyebut hal spesifik seperti slowbar atau manual brew, katakan jujur dan sebut cafe yang paling mendekati dari data.
 
 Data cafe Makassar:
 ${buildCafeKnowledgeBase()}`;
@@ -74,14 +77,14 @@ function extractGeminiText(data) {
     .trim();
 }
 
-async function requestBackendChat(message) {
+async function requestBackendChat(message, history = []) {
   try {
     const response = await fetch(`${getBackendApiUrl()}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ message, history }),
       cache: 'no-store',
     });
 
@@ -112,11 +115,18 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Message is required.' }, { status: 400 });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
-      const backendResponse = await requestBackendChat(message);
+    const backendResponse = await requestBackendChat(message, history);
+    if (backendResponse) {
       return NextResponse.json({
-        response: backendResponse || fallback,
-        mode: backendResponse ? 'backend' : 'fallback',
+        response: backendResponse,
+        mode: 'backend',
+      });
+    }
+
+    if (!process.env.GEMINI_API_KEY) {
+      return NextResponse.json({
+        response: fallback,
+        mode: 'fallback',
       });
     }
 
@@ -141,9 +151,9 @@ export async function POST(request) {
             },
           ],
           generationConfig: {
-            temperature: compact ? 0.55 : 0.7,
-            topP: 0.9,
-            maxOutputTokens: compact ? 220 : 520,
+            temperature: 0.3,
+            topP: 0.8,
+            maxOutputTokens: compact ? 220 : 420,
           },
         }),
         cache: 'no-store',
@@ -156,7 +166,7 @@ export async function POST(request) {
         if (aiText) {
           return NextResponse.json({
             response: aiText,
-            mode: 'gemini',
+            mode: 'gemini-direct',
           });
         }
       }
@@ -164,10 +174,9 @@ export async function POST(request) {
       // Fall through to backend/local fallback.
     }
 
-    const backendResponse = await requestBackendChat(message);
     return NextResponse.json({
-      response: backendResponse || fallback,
-      mode: backendResponse ? 'backend' : 'fallback',
+      response: fallback,
+      mode: 'fallback',
     });
   } catch (error) {
     const fallbackMessage = getCafeChatResponse(message || 'rekomendasi cafe makassar', { compact, history });

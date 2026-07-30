@@ -1,6 +1,74 @@
 const Cafe = require('../models/Cafe');
 
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const MAX_HISTORY_ITEMS = 10;
+const MAX_CONTEXT_CAFES = 8;
+const MIN_RELEVANCE_SCORE = 3;
+const STOP_WORDS = new Set([
+  'ada', 'aja', 'apa', 'apakah', 'atau', 'buat', 'bisa', 'cafe', 'coffee', 'dan', 'dari',
+  'dengan', 'di', 'dimana', 'dong', 'enak', 'itu', 'ini', 'juga', 'kalau', 'kalo', 'ke',
+  'kok', 'lagi', 'makassar', 'mau', 'nya', 'saja', 'sih', 'sudah', 'tentang', 'untuk',
+  'yang',
+]);
+
+const QUERY_HINTS = [
+  {
+    keywords: ['murah', 'budget', 'hemat', 'mahasiswa', 'terjangkau'],
+    score: cafe => (cafe.priceRange === '$' ? 8 : cafe.priceRange === '$$' ? 2 : 0),
+  },
+  {
+    keywords: ['mahal', 'premium', 'fine dining', 'expensive'],
+    score: cafe => (cafe.priceRange === '$$$' ? 8 : cafe.priceRange === '$$' ? 3 : 0),
+  },
+  {
+    keywords: ['wifi', 'wfc', 'work', 'kerja', 'laptop', 'nugas', 'meeting', 'coworking'],
+    score: cafe => (
+      (cafe.category === 'coworking' ? 8 : 0)
+      + (hasFacility(cafe, 'wifi') ? 4 : 0)
+      + (hasFacility(cafe, 'colokan') ? 2 : 0)
+    ),
+  },
+  {
+    keywords: ['slowbar', 'slow bar', 'manual brew', 'v60', 'pour over', 'filter coffee', 'hand brew'],
+    score: cafe => (
+      (hasFacility(cafe, 'coffee bar') ? 7 : 0)
+      + (normalizeText(cafe.name).includes('roastery') ? 5 : 0)
+      + (buildCafeSearchBlob(cafe).includes('manual brew') ? 4 : 0)
+    ),
+  },
+  {
+    keywords: ['aesthetic', 'estetik', 'instagramable', 'instagrammable', 'foto'],
+    score: cafe => (
+      (cafe.category === 'aesthetic' ? 8 : 0)
+      + (buildCafeSearchBlob(cafe).includes('aesthetic') ? 2 : 0)
+    ),
+  },
+  {
+    keywords: ['rooftop', 'sunset', 'view', 'pemandangan'],
+    score: cafe => (
+      (cafe.category === 'rooftop' ? 8 : 0)
+      + (buildCafeSearchBlob(cafe).includes('sunset') ? 3 : 0)
+    ),
+  },
+  {
+    keywords: ['outdoor', 'semi outdoor', 'taman', 'alam', 'hijau'],
+    score: cafe => (
+      (cafe.category === 'outdoor' ? 8 : 0)
+      + (hasFacility(cafe, 'outdoor') ? 3 : 0)
+    ),
+  },
+  {
+    keywords: ['tradisional', 'warkop', 'kopi toraja', 'klasik'],
+    score: cafe => (cafe.category === 'traditional' ? 8 : 0),
+  },
+  {
+    keywords: ['indoor', 'ac', 'dingin'],
+    score: cafe => (
+      (hasFacility(cafe, 'indoor') ? 4 : 0)
+      + (hasFacility(cafe, 'ac') ? 4 : 0)
+    ),
+  },
+];
 
 function getGeminiRequestConfig(rawKey) {
   const key = rawKey.trim();
@@ -22,137 +90,266 @@ function getGeminiRequestConfig(rawKey) {
   };
 }
 
+function normalizeText(value = '') {
+  return String(value)
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function stringifyValue(value) {
+  if (Array.isArray(value)) {
+    return value.filter(Boolean).join(', ');
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.entries(value)
+      .filter(([, nestedValue]) => nestedValue !== undefined && nestedValue !== null && nestedValue !== '')
+      .map(([key, nestedValue]) => `${key}: ${nestedValue}`)
+      .join(', ');
+  }
+
+  return value ? String(value) : '';
+}
+
+function hasAny(text, keywords) {
+  return keywords.some(keyword => text.includes(keyword));
+}
+
+function hasFacility(cafe, keyword) {
+  const normalizedKeyword = normalizeText(keyword);
+  return (cafe.facilities || []).some(facility => normalizeText(facility).includes(normalizedKeyword));
+}
+
+function sanitizeHistory(history) {
+  if (!Array.isArray(history)) {
+    return [];
+  }
+
+  return history
+    .filter(item => item && typeof item.content === 'string' && item.content.trim())
+    .slice(-MAX_HISTORY_ITEMS)
+    .map(item => ({
+      role: item.role === 'user' ? 'user' : 'model',
+      parts: [{ text: item.content.trim() }],
+    }));
+}
+
+function extractConversationText(message, history) {
+  const historyText = Array.isArray(history)
+    ? history
+      .filter(item => item && typeof item.content === 'string')
+      .map(item => item.content)
+      .join(' ')
+    : '';
+
+  return normalizeText(`${historyText} ${message}`);
+}
+
+function extractSearchTerms(text) {
+  return normalizeText(text)
+    .split(' ')
+    .filter(term => term.length >= 3 && !STOP_WORDS.has(term));
+}
+
+function formatField(label, value) {
+  const text = stringifyValue(value);
+  return `${label}: ${text || 'tidak tersedia'}`;
+}
+
 function buildCafeContext(cafes) {
-  return cafes.map(cafe =>
-    `- ${cafe.name}: ${cafe.description}. Kategori: ${cafe.category}, Harga: ${cafe.priceRange}, Rating: ${cafe.rating}/5, Alamat: ${cafe.address}, Fasilitas: ${cafe.facilities.join(', ')}`
-  ).join('\n');
+  return cafes.map(cafe => {
+    const lines = [
+      `- Nama: ${cafe.name}`,
+      formatField('Deskripsi', cafe.description),
+      formatField('Kategori', cafe.category),
+      formatField('Harga', cafe.priceRange),
+      formatField('Rating', cafe.rating ? `${cafe.rating}/5` : ''),
+      formatField('Alamat', cafe.address),
+      formatField('Fasilitas', cafe.facilities),
+      formatField('Jam buka', cafe.openHours),
+      formatField('Maps', cafe.mapsLink),
+      formatField('Koordinat', cafe.location),
+    ];
+
+    return lines.join('\n  ');
+  }).join('\n');
 }
 
 function createSystemPrompt(cafes) {
-  return `Kamu adalah AI Assistant untuk website Cafe Makassar.
+  return `Kamu adalah AI resmi Website Cafe Makassar.
 
-Tugasmu:
-- Jawab dalam Bahasa Indonesia dengan natural, ramah, dan nyambung seperti AI chat modern.
-- Prioritaskan bantuan seputar cafe di Makassar berdasarkan data yang tersedia.
-- Jangan mengarang rating, alamat, fasilitas, harga, atau suasana jika datanya tidak ada.
-- Kalau user salah ketik nama cafe tapi maksudnya masih jelas, tetap pahami.
-- Kalau user meminta rekomendasi, pilih yang paling relevan lalu jelaskan alasannya.
-- Kalau user menyebut beberapa cafe, jangan otomatis membandingkan kecuali user memang meminta perbandingan.
-- Kalau user bertanya umum atau sedikit di luar topik, tetap jawab dengan sopan dan natural, lalu kaitkan ke cafe Makassar bila relevan.
-- Kalau user bertanya hal spesifik seperti slowbar atau manual brew sementara data tidak menyebutnya secara eksplisit, katakan dengan jujur lalu berikan cafe yang paling mendekati berdasarkan data yang ada.
-- Hindari jawaban template yang kaku.
+ATURAN WAJIB:
+1. Jawab HANYA berdasarkan data cafe yang diberikan dan riwayat percakapan.
+2. Jangan mengarang nama cafe.
+3. Jangan mengarang alamat.
+4. Jangan mengarang rating.
+5. Jangan mengarang harga.
+6. Jangan mengarang fasilitas, jam buka, atau detail suasana yang tidak tertulis.
+7. Jika informasi tidak ada pada data, jawab persis: "Maaf, informasi tersebut belum tersedia pada database Cafe Makassar."
+8. Jika user bertanya follow-up seperti "alamatnya dimana?" atau "jam bukanya?", gunakan konteks dari riwayat chat untuk menentukan cafe yang sedang dibahas.
+9. Jika user bertanya selain cafe Makassar, jawab singkat lalu arahkan kembali ke topik cafe.
+10. Selalu prioritaskan rekomendasi cafe dari data yang tersedia.
 
-Data cafe Makassar:
+Gaya jawaban:
+- Gunakan Bahasa Indonesia yang natural, ringkas, dan membantu.
+- Kalau ada beberapa cafe relevan, pilih 3 sampai 5 yang paling cocok lalu jelaskan singkat alasannya.
+- Kalau data tidak menyebut hal spesifik seperti slowbar atau manual brew, katakan jujur dan sebut cafe yang paling mendekati dari data.
+
+Data cafe Makassar yang relevan:
 ${buildCafeContext(cafes)}`;
 }
 
+function buildCafeSearchBlob(cafe) {
+  return normalizeText([
+    cafe.name,
+    cafe.description,
+    cafe.address,
+    cafe.category,
+    cafe.priceRange,
+    stringifyValue(cafe.facilities),
+    cafe.openHours,
+    cafe.mapsLink,
+    stringifyValue(cafe.location),
+  ].join(' '));
+}
+
+function scoreCafeForQuery(cafe, messageText, conversationText, searchTerms, isFollowUp) {
+  const normalizedName = normalizeText(cafe.name);
+  const searchBlob = buildCafeSearchBlob(cafe);
+  let score = 0;
+
+  if (messageText.includes(normalizedName)) {
+    score += 80;
+  } else if (conversationText.includes(normalizedName)) {
+    score += isFollowUp ? 35 : 16;
+  }
+
+  const nameTokens = normalizedName
+    .split(' ')
+    .filter(token => token.length >= 4 && !STOP_WORDS.has(token));
+
+  for (const token of nameTokens) {
+    if (messageText.includes(token)) {
+      score += 8;
+    } else if (conversationText.includes(token)) {
+      score += isFollowUp ? 4 : 1;
+    }
+  }
+
+  for (const term of searchTerms) {
+    if (searchBlob.includes(term)) {
+      score += 3;
+    }
+  }
+
+  for (const hint of QUERY_HINTS) {
+    if (hasAny(messageText, hint.keywords)) {
+      score += hint.score(cafe);
+    }
+  }
+
+  return score;
+}
+
+function selectRelevantCafes(message, history, cafes) {
+  if (!Array.isArray(cafes) || cafes.length === 0) {
+    return [];
+  }
+
+  const messageText = normalizeText(message);
+  const conversationText = extractConversationText(message, history);
+  const searchTerms = Array.from(new Set([
+    ...extractSearchTerms(messageText),
+    ...extractSearchTerms(conversationText),
+  ]));
+  const isFollowUp = hasAny(messageText, [
+    'alamat', 'alamatnya', 'dimana', 'di mana', 'lokasi', 'lokasinya',
+    'jam', 'jamnya', 'buka', 'tutup', 'harga', 'rating', 'fasilitas', 'maps',
+  ]) && Array.isArray(history) && history.length > 0;
+
+  const scored = cafes
+    .map(cafe => ({
+      cafe,
+      score: scoreCafeForQuery(cafe, messageText, conversationText, searchTerms, isFollowUp),
+    }))
+    .filter(entry => entry.score >= MIN_RELEVANCE_SCORE)
+    .sort((a, b) => {
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+
+      return (b.cafe.rating || 0) - (a.cafe.rating || 0);
+    })
+    .slice(0, MAX_CONTEXT_CAFES)
+    .map(entry => entry.cafe);
+
+  if (scored.length > 0) {
+    return scored;
+  }
+
+  return [...cafes]
+    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    .slice(0, MAX_CONTEXT_CAFES);
+}
+
+function formatCafeList(cafes) {
+  return cafes
+    .slice(0, 5)
+    .map(cafe => {
+      const details = [
+        `☕ **${cafe.name}**`,
+        cafe.rating ? `(Rating: ${cafe.rating}/5)` : '',
+        cafe.address ? `- ${cafe.address}` : '',
+      ].filter(Boolean).join(' ');
+
+      return `${details}\n${cafe.description}`;
+    })
+    .join('\n\n');
+}
+
 function generateFallbackResponse(message, cafes) {
-  const msg = message.toLowerCase();
-
-  if (
-    msg.includes('slowbar')
-    || msg.includes('slow bar')
-    || msg.includes('manual brew')
-    || msg.includes('v60')
-    || msg.includes('pour over')
-    || msg.includes('filter coffee')
-    || msg.includes('hand brew')
-  ) {
-    const picks = cafes
-      .filter(c => c.facilities.includes('Coffee Bar') || c.name.toLowerCase().includes('roastery') || c.description.toLowerCase().includes('ngopi'))
-      .sort((a, b) => b.rating - a.rating)
-      .slice(0, 5);
-
-    if (picks.length > 0) {
-      const list = picks.map(c => `☕ **${c.name}** (Rating: ${c.rating}/5) - ${c.address}\n   ${c.description}`).join('\n\n');
-      return `Di data yang ada, belum tertulis slowbar atau manual brew secara eksplisit. Tapi cafe yang paling mendekati untuk kamu cek adalah:\n\n${list}\n\nKalau kamu mau, aku juga bisa pilihkan yang paling cocok buat ngopi serius atau ngobrol santai.`;
-    }
+  if (!cafes.length) {
+    return 'Maaf, data cafe belum tersedia saat ini.';
   }
 
-  if (msg.includes('aesthetic') || msg.includes('instagramable') || msg.includes('foto')) {
-    const picks = cafes.filter(c => c.category === 'aesthetic');
-    if (picks.length > 0) {
-      const list = picks.map(c => `☕ **${c.name}** (Rating: ${c.rating}/5) - ${c.address}\n   ${c.description}`).join('\n\n');
-      return `Untuk cafe aesthetic & instagramable di Makassar, saya rekomendasikan:\n\n${list}\n\nSemuanya punya spot foto keren! 📸`;
-    }
+  const normalizedMessage = normalizeText(message);
+  const list = formatCafeList(cafes);
+
+  if (hasAny(normalizedMessage, ['slowbar', 'slow bar', 'manual brew', 'v60', 'pour over', 'filter coffee', 'hand brew'])) {
+    return `Di data yang ada, slowbar atau manual brew belum tertulis secara eksplisit. Tapi cafe yang paling mendekati untuk kamu cek adalah:\n\n${list}`;
   }
 
-  if (msg.includes('kerja') || msg.includes('work') || msg.includes('wifi') || msg.includes('coworking') || msg.includes('laptop')) {
-    const picks = cafes.filter(c => c.category === 'coworking');
-    if (picks.length > 0) {
-      const list = picks.map(c => `💻 **${c.name}** (Rating: ${c.rating}/5) - ${c.address}\n   ${c.description}`).join('\n\n');
-      return `Untuk kerja/WFC, cafe dengan WiFi cepat di Makassar:\n\n${list}\n\nSemua punya WiFi cepat dan colokan! 🔌`;
-    }
+  return `Berikut cafe yang paling relevan dari database Cafe Makassar:\n\n${list}\n\nKalau mau, tanya lagi lebih spesifik seperti area, budget, WiFi, suasana, atau nama cafe tertentu.`;
+}
+
+function extractGeminiText(data) {
+  const parts = data?.candidates?.[0]?.content?.parts;
+  if (!Array.isArray(parts)) {
+    return '';
   }
 
-  if (msg.includes('murah') || msg.includes('terjangkau') || msg.includes('hemat') || msg.includes('mahasiswa')) {
-    const picks = cafes.filter(c => c.priceRange === '$');
-    if (picks.length > 0) {
-      const list = picks.map(c => `💰 **${c.name}** (Rating: ${c.rating}/5) - ${c.address}\n   ${c.description}`).join('\n\n');
-      return `Cafe murah tapi enak di Makassar:\n\n${list}\n\nHarga ramah kantong! 💸`;
-    }
-  }
-
-  if (msg.includes('rooftop') || msg.includes('view') || msg.includes('sunset') || msg.includes('pemandangan')) {
-    const picks = cafes.filter(c => c.category === 'rooftop');
-    if (picks.length > 0) {
-      const list = picks.map(c => `🌆 **${c.name}** (Rating: ${c.rating}/5) - ${c.address}\n   ${c.description}`).join('\n\n');
-      return `Rooftop cafe dengan view terbaik di Makassar:\n\n${list}\n\nCocok buat nikmati sunset! 🌅`;
-    }
-  }
-
-  if (msg.includes('outdoor') || msg.includes('taman') || msg.includes('alam') || msg.includes('hijau')) {
-    const picks = cafes.filter(c => c.category === 'outdoor');
-    if (picks.length > 0) {
-      const list = picks.map(c => `🌿 **${c.name}** (Rating: ${c.rating}/5) - ${c.address}\n   ${c.description}`).join('\n\n');
-      return `Cafe outdoor asri di Makassar:\n\n${list}\n\nSegar dan nyaman! 🍃`;
-    }
-  }
-
-  if (msg.includes('tradisional') || msg.includes('kopi toraja') || msg.includes('warkop') || msg.includes('klasik')) {
-    const picks = cafes.filter(c => c.category === 'traditional');
-    if (picks.length > 0) {
-      const list = picks.map(c => `☕ **${c.name}** (Rating: ${c.rating}/5) - ${c.address}\n   ${c.description}`).join('\n\n');
-      return `Warkop & cafe tradisional di Makassar:\n\n${list}\n\nRasakan kopi khas Makassar! ☕`;
-    }
-  }
-
-  if (msg.includes('terbaik') || msg.includes('rating') || msg.includes('top') || msg.includes('populer')) {
-    const picks = [...cafes].sort((a, b) => b.rating - a.rating).slice(0, 5);
-    const list = picks.map((c, i) => `${i + 1}. **${c.name}** ⭐${c.rating} - ${c.category}\n   📍 ${c.address}`).join('\n\n');
-    return `Top 5 cafe terbaik di Makassar berdasarkan rating:\n\n${list}\n\nSemua worth to visit! 🏆`;
-  }
-
-  if (msg.includes('rekomen') || msg.includes('saran') || msg.includes('suggest')) {
-    const picks = [...cafes].sort((a, b) => b.rating - a.rating).slice(0, 4);
-    const list = picks.map(c => `⭐ **${c.name}** (${c.category}) - Rating: ${c.rating}/5\n   📍 ${c.address}\n   ${c.description}`).join('\n\n');
-    return `Rekomendasi cafe di Makassar untuk kamu:\n\n${list}\n\nMau cari yang spesifik? Tanya aja kategori yang kamu mau! 😊`;
-  }
-
-  if (msg.includes('halo') || msg.includes('hai') || msg.includes('hi') || msg.includes('hey')) {
-    return `Halo! 👋 Selamat datang di Cafe Makassar!\n\nSaya bisa bantu kamu cari cafe terbaik di Makassar. Coba tanya:\n- "Cafe aesthetic yang instagramable?"\n- "Cafe buat kerja dengan WiFi cepat?"\n- "Cafe murah tapi enak dimana?"\n- "Rooftop cafe dengan view bagus?"\n- "Rekomendasi cafe terbaik?"\n\nMau cari yang mana? 😊☕`;
-  }
-
-  const categories = {
-    aesthetic: cafes.filter(c => c.category === 'aesthetic').length,
-    coworking: cafes.filter(c => c.category === 'coworking').length,
-    outdoor: cafes.filter(c => c.category === 'outdoor').length,
-    rooftop: cafes.filter(c => c.category === 'rooftop').length,
-    traditional: cafes.filter(c => c.category === 'traditional').length,
-  };
-
-  return `Kami punya ${cafes.length} cafe di Makassar! 🏪\n\n📸 Aesthetic: ${categories.aesthetic} cafe\n💻 Coworking: ${categories.coworking} cafe\n🌿 Outdoor: ${categories.outdoor} cafe\n🌆 Rooftop: ${categories.rooftop} cafe\n☕ Traditional: ${categories.traditional} cafe\n\nMau rekomendasi yang mana? Ceritakan kebutuhan atau mood kamu! 😊`;
+  return parts
+    .map(part => part?.text || '')
+    .join('\n')
+    .trim();
 }
 
 exports.chat = async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, history = [] } = req.body;
 
-    if (!message) {
+    if (!message || typeof message !== 'string' || !message.trim()) {
       return res.status(400).json({ success: false, message: 'Message is required' });
     }
 
-    const cafes = await Cafe.find({});
+    const allCafes = await Cafe.find({}).lean();
+    const relevantCafes = selectRelevantCafes(message, history, allCafes);
+    const cafesForContext = relevantCafes.length > 0 ? relevantCafes : allCafes.slice(0, MAX_CONTEXT_CAFES);
+    const sanitizedHistory = sanitizeHistory(history);
 
     try {
       if (!process.env.GEMINI_API_KEY) {
@@ -168,18 +365,19 @@ exports.chat = async (req, res) => {
         },
         body: JSON.stringify({
           systemInstruction: {
-            parts: [{ text: createSystemPrompt(cafes) }],
+            parts: [{ text: createSystemPrompt(cafesForContext) }],
           },
           contents: [
+            ...sanitizedHistory,
             {
               role: 'user',
-              parts: [{ text: message }],
+              parts: [{ text: message.trim() }],
             },
           ],
           generationConfig: {
-            temperature: 0.7,
-            topP: 0.9,
-            maxOutputTokens: 520,
+            temperature: 0.3,
+            topP: 0.8,
+            maxOutputTokens: 420,
           },
         }),
       });
@@ -189,31 +387,43 @@ exports.chat = async (req, res) => {
       }
 
       const data = await response.json();
-      const aiResponse = data?.candidates?.[0]?.content?.parts
-        ?.map(part => part?.text || '')
-        .join('\n')
-        .trim() || generateFallbackResponse(message, cafes);
+      const aiResponse = extractGeminiText(data);
+
+      if (!aiResponse) {
+        throw new Error('Gemini returned empty response');
+      }
 
       return res.json({
         success: true,
-        data: { message: aiResponse, timestamp: new Date().toISOString() }
+        mode: 'gemini',
+        contextCount: cafesForContext.length,
+        data: {
+          message: aiResponse,
+          timestamp: new Date().toISOString(),
+        },
       });
     } catch (aiError) {
       console.log('Gemini not available, using fallback:', aiError.message);
-      const fallbackResponse = generateFallbackResponse(message, cafes);
+      const fallbackResponse = generateFallbackResponse(message, cafesForContext);
+
       return res.json({
         success: true,
-        data: { message: fallbackResponse, timestamp: new Date().toISOString() }
+        mode: 'fallback',
+        contextCount: cafesForContext.length,
+        data: {
+          message: fallbackResponse,
+          timestamp: new Date().toISOString(),
+        },
       });
     }
   } catch (error) {
     console.error('Chat Error:', error.message);
-    res.json({
+    return res.json({
       success: true,
       data: {
         message: 'Maaf, terjadi kesalahan. Silakan coba lagi! 🙏',
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
   }
 };
