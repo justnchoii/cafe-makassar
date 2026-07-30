@@ -501,6 +501,30 @@ const staticCafes = [
     openHours: "Cek jam buka di Google Maps",
     image: "/heaven-with-you.jpg",
     mapsLink: "https://maps.app.goo.gl/uSfDLaaLaB4t52Jx9"
+  },
+  {
+    name: "Soraa Cafe",
+    description: "Cafe cozy dengan suasana hangat, rak display estetik, dan ruangan ber-AC yang nyaman. Cocok untuk nongkrong santai bersama teman-teman.",
+    address: "Makassar",
+    category: "cozy",
+    rating: 5.0,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "WiFi"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/soraa-cafe.jpg",
+    mapsLink: "https://maps.app.goo.gl/9p681wuZaLNjGP1Z7"
+  },
+  {
+    name: "Temu Kopi",
+    description: "Cafe modern dengan interior abu-abu elegan, sofa nyaman, dan bar kopi lengkap. Tempat yang sempurna untuk bersantai sambil menikmati kopi berkualitas.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.9,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Sofa"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/temu-kopi.jpg",
+    mapsLink: "https://maps.app.goo.gl/HqoYPpLpuqgqJVMT9"
   }
 ].map(cafe => ({
   ...cafe,
