@@ -12,8 +12,8 @@ const cafeSchema = new mongoose.Schema({
   rating: { type: Number, min: 0, max: 5, default: 0 },
   priceRange: { 
     type: String, 
-    enum: ['$', '$$', '$$$'],
-    required: true 
+    enum: ['$', '$$', '$$$', 'Murah', 'Sedang', 'Mahal'],
+    default: 'Sedang'
   },
   facilities: [String],
   openHours: { type: String },
