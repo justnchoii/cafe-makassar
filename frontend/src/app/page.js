@@ -429,6 +429,30 @@ const staticCafes = [
     openHours: "Cek jam buka di Google Maps",
     image: "/monolith-coffee.jpg",
     mapsLink: "https://maps.app.goo.gl/TibXk1eQnwWsu1XR7"
+  },
+  {
+    name: "Aksen Cafe",
+    description: "Cafe Coffee & Eatery dengan konsep bersih dan minimalis, cocok untuk ngopi santai dan makan ringan di suasana yang nyaman.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 5.0,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "Outdoor Seating", "AC", "Coffee Bar", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/aksen-cafe.jpg",
+    mapsLink: "https://maps.app.goo.gl/JrFe2oAb2oLBb1sG8"
+  },
+  {
+    name: "MAUKI",
+    description: "Cafe malam dengan bangunan dua lantai megah, lampu string yang hangat, dan nuansa industrial modern. Cocok untuk nongkrong malam dan foto aesthetic.",
+    address: "Makassar",
+    category: "outdoor",
+    rating: 4.6,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "Outdoor Seating", "AC", "Coffee Bar", "WiFi", "Parking", "Live Music"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/mauki.jpg",
+    mapsLink: "https://maps.app.goo.gl/Dh95SiFuaiqLLQCf9"
   }
 ].map(cafe => ({
   ...cafe,

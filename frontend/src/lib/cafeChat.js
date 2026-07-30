@@ -31,7 +31,9 @@ export const cafeData = [
   { name: "TOMORO COFFEE", desc: "Cafe kopi chain modern dengan konsep clean dan minimalis, cocok untuk ngopi cepat, kerja, dan nongkrong santai", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
   { name: "Eksposed 3.0 Signature Pettarani", desc: "Cafe modern dua lantai dengan rooftop terbuka, cocok untuk nongkrong dan foto aesthetic di area Pettarani", cat: "rooftop", price: "$$", rating: 4.5, addr: "Jalan A.P. Pettarani, Makassar", fac: ["Indoor Seating", "Outdoor Seating", "AC", "WiFi", "Parking", "Rooftop"] },
   { name: "VENDOR COFFEE", desc: "Cafe aesthetic dengan interior kayu hangat dan neon sign elegan, cocok untuk ngopi santai dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi"] },
-  { name: "Monolith Coffee", desc: "Cafe dengan arsitektur unik bergaya heritage, cocok untuk ngopi santai dan foto aesthetic dengan nuansa kolonial yang elegan", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Makassar", fac: ["Indoor Seating", "Outdoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
+  { name: "Monolith Coffee", desc: "Cafe dengan arsitektur unik bergaya heritage, cocok untuk ngopi santai dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.7, addr: "Makassar", fac: ["Indoor Seating", "Outdoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
+  { name: "Aksen Cafe", desc: "Cafe Coffee & Eatery dengan konsep bersih dan minimalis, cocok untuk ngopi santai dan makan ringan", cat: "aesthetic", price: "$$", rating: 5.0, addr: "Makassar", fac: ["Indoor Seating", "Outdoor Seating", "AC", "Coffee Bar", "Parking"] },
+  { name: "MAUKI", desc: "Cafe malam megah dua lantai dengan lampu string hangat dan nuansa industrial modern, cocok untuk nongkrong malam dan foto aesthetic", cat: "outdoor", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "Outdoor Seating", "AC", "Coffee Bar", "WiFi", "Parking", "Live Music"] },
 ];
 
 const categoryLabels = {
