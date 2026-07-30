@@ -6,7 +6,7 @@ const cafeSchema = new mongoose.Schema({
   address: { type: String, required: true },
   category: { 
     type: String, 
-    enum: ['aesthetic', 'coworking', 'outdoor', 'rooftop', 'traditional'],
+    enum: ['aesthetic', 'coworking', 'outdoor', 'rooftop', 'traditional', 'cozy'],
     required: true 
   },
   rating: { type: Number, min: 0, max: 5, default: 0 },

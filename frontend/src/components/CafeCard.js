@@ -7,6 +7,7 @@ export default function CafeCard({ cafe, index }) {
     outdoor: '🌿',
     rooftop: '🌆',
     traditional: '☕',
+    cozy: '🛋️',
   };
 
   const categoryColors = {
@@ -15,6 +16,7 @@ export default function CafeCard({ cafe, index }) {
     outdoor: 'bg-green-50 text-green-600',
     rooftop: 'bg-purple-50 text-purple-600',
     traditional: 'bg-amber-50 text-amber-600',
+    cozy: 'bg-orange-50 text-orange-600',
   };
 
   return (
