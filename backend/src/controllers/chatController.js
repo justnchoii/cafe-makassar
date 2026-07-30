@@ -410,6 +410,31 @@ function summarizeCafeForDebug(cafe) {
   };
 }
 
+async function callGeminiWithRetry(payload, apiKey, retries = 2) {
+  const config = getGeminiRequestConfig(apiKey);
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const response = await fetch(config.url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...config.headers },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.status === 429) {
+      if (attempt < retries) {
+        await new Promise(resolve => setTimeout(resolve, 2000 * (attempt + 1)));
+        continue;
+      }
+      throw new Error('RATE_LIMIT');
+    }
+
+    if (!response.ok) {
+      throw new Error(`Gemini request failed with status ${response.status}`);
+    }
+
+    return response;
+  }
+}
+
 exports.chat = async (req, res) => {
   try {
     const { message, history = [] } = req.body;
@@ -426,95 +451,59 @@ exports.chat = async (req, res) => {
       : [];
     const sanitizedHistory = sanitizeHistory(history);
 
-    logChatDebug('request-summary', {
-      message: message.trim(),
-      cafeRelated,
-      historyCount: Array.isArray(history) ? history.length : 0,
-      sanitizedHistoryCount: sanitizedHistory.length,
-      totalCafeCount: allCafes.length,
-      contextCafeCount: cafesForContext.length,
-    });
-    logChatDebug('all-cafes-sample', allCafes.slice(0, 2).map(summarizeCafeForDebug));
-    logChatDebug('selected-context-cafes', cafesForContext.map(summarizeCafeForDebug));
-    logChatDebug('system-prompt-preview', createSystemPrompt(cafeRelated ? cafesForContext : [], cafeRelated).slice(0, MAX_DEBUG_RESPONSE_LENGTH));
-
     try {
       if (!process.env.GEMINI_API_KEY) {
         throw new Error('GEMINI_API_KEY is not set');
       }
 
-      const geminiConfig = getGeminiRequestConfig(process.env.GEMINI_API_KEY);
-      const response = await fetch(geminiConfig.url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...geminiConfig.headers,
+      const payload = {
+        systemInstruction: {
+          parts: [{ text: createSystemPrompt(cafeRelated ? cafesForContext : [], cafeRelated) }],
         },
-        body: JSON.stringify({
-          systemInstruction: {
-            parts: [{ text: createSystemPrompt(cafeRelated ? cafesForContext : [], cafeRelated) }],
-          },
-          contents: [
-            ...sanitizedHistory,
-            {
-              role: 'user',
-              parts: [{ text: message.trim() }],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            topP: 0.9,
-            maxOutputTokens: 1024,
-          },
-        }),
-      });
+        contents: [
+          ...sanitizedHistory,
+          { role: 'user', parts: [{ text: message.trim() }] },
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          topP: 0.9,
+          maxOutputTokens: 1024,
+        },
+      };
 
-      if (!response.ok) {
-        throw new Error(`Gemini request failed with status ${response.status}`);
-      }
-
+      const response = await callGeminiWithRetry(payload, process.env.GEMINI_API_KEY);
       const data = await response.json();
-      logChatDebug('gemini-raw-response', JSON.stringify(data, null, 2).slice(0, MAX_DEBUG_RESPONSE_LENGTH));
       const aiResponse = extractGeminiText(data);
 
       if (!aiResponse) {
         throw new Error('Gemini returned empty response');
       }
 
-      logChatDebug('gemini-text-response', aiResponse.slice(0, MAX_DEBUG_RESPONSE_LENGTH));
-
       return res.json({
         success: true,
         mode: 'gemini',
-        contextCount: cafesForContext.length,
-        data: {
-          message: aiResponse,
-          timestamp: new Date().toISOString(),
-        },
+        data: { message: aiResponse, timestamp: new Date().toISOString() },
       });
     } catch (aiError) {
-      console.log('Gemini not available, using fallback:', aiError.message);
-      const fallbackResponse = generateFallbackResponse(message, cafeRelated ? cafesForContext : [], cafeRelated);
-      logChatDebug('fallback-response', fallbackResponse.slice(0, MAX_DEBUG_RESPONSE_LENGTH));
+      let fallbackMessage;
+      if (aiError.message === 'RATE_LIMIT') {
+        fallbackMessage = 'AI sedang sibuk karena terlalu banyak permintaan. Tunggu sebentar (1-2 menit) lalu coba lagi ya! 🙏';
+      } else {
+        console.log('Gemini not available:', aiError.message);
+        fallbackMessage = generateFallbackResponse(message, cafeRelated ? cafesForContext : [], cafeRelated);
+      }
 
       return res.json({
         success: true,
         mode: 'fallback',
-        contextCount: cafesForContext.length,
-        data: {
-          message: fallbackResponse,
-          timestamp: new Date().toISOString(),
-        },
+        data: { message: fallbackMessage, timestamp: new Date().toISOString() },
       });
     }
   } catch (error) {
     console.error('Chat Error:', error.message);
     return res.json({
       success: true,
-      data: {
-        message: 'Maaf, terjadi kesalahan. Silakan coba lagi! 🙏',
-        timestamp: new Date().toISOString(),
-      },
+      data: { message: 'Maaf, terjadi kesalahan. Silakan coba lagi! 🙏', timestamp: new Date().toISOString() },
     });
   }
 };
