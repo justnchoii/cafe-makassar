@@ -5,11 +5,15 @@ import { useRouter } from 'next/navigation';
 
 const EMPTY_FORM = {
   name: '', description: '', address: '', category: 'aesthetic',
-  rating: '', priceRange: 'Sedang', facilities: '', openHours: '', mapsLink: '', image: '',
+  rating: '', priceRange: '$$', facilities: '', openHours: '', mapsLink: '', image: '',
 };
 
 const CATEGORIES = ['aesthetic', 'coworking', 'outdoor', 'rooftop', 'traditional'];
-const PRICE_RANGES = ['Murah', 'Sedang', 'Mahal'];
+const PRICE_RANGES = [
+  { value: '$', label: 'Murah' },
+  { value: '$$', label: 'Sedang' },
+  { value: '$$$', label: 'Mahal' },
+];
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -69,7 +73,7 @@ export default function AdminDashboard() {
       address: cafe.address || '',
       category: cafe.category || 'aesthetic',
       rating: cafe.rating ?? '',
-      priceRange: cafe.priceRange || 'Sedang',
+      priceRange: cafe.priceRange || '$$',
       facilities: Array.isArray(cafe.facilities) ? cafe.facilities.join(', ') : (cafe.facilities || ''),
       openHours: cafe.openHours || '',
       mapsLink: cafe.mapsLink || '',
@@ -284,7 +288,7 @@ export default function AdminDashboard() {
                 <div>
                   <label className="text-xs font-semibold text-gray-600 block mb-1">Harga</label>
                   <select value={form.priceRange} onChange={e => setForm(f => ({...f, priceRange: e.target.value}))} className="input-field">
-                    {PRICE_RANGES.map(p => <option key={p} value={p}>{p}</option>)}
+                    {PRICE_RANGES.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
                   </select>
                 </div>
               </div>
