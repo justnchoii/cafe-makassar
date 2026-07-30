@@ -1,6 +1,8 @@
 const Cafe = require('../models/Cafe');
 
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
 const MAX_HISTORY_ITEMS = 10;
 const MAX_CONTEXT_CAFES = 8;
 const MIN_RELEVANCE_SCORE = 3;
@@ -410,7 +412,7 @@ function summarizeCafeForDebug(cafe) {
   };
 }
 
-async function callGeminiWithRetry(payload, apiKey, retries = 2) {
+async function callGeminiWithRetry(payload, apiKey, retries = 1) {
   const config = getGeminiRequestConfig(apiKey);
   for (let attempt = 0; attempt <= retries; attempt++) {
     const response = await fetch(config.url, {
@@ -435,6 +437,39 @@ async function callGeminiWithRetry(payload, apiKey, retries = 2) {
   }
 }
 
+async function callGroq(systemPrompt, history, message) {
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    ...history.map(item => ({
+      role: item.role === 'user' ? 'user' : 'assistant',
+      content: item.content,
+    })),
+    { role: 'user', content: message },
+  ];
+
+  const response = await fetch(GROQ_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      messages,
+      temperature: 0.7,
+      max_tokens: 1024,
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.text().catch(() => '');
+    throw new Error(`Groq HTTP ${response.status}: ${err.slice(0, 100)}`);
+  }
+
+  const data = await response.json();
+  return data?.choices?.[0]?.message?.content?.trim() || '';
+}
+
 exports.chat = async (req, res) => {
   try {
     const { message, history = [] } = req.body;
@@ -450,55 +485,69 @@ exports.chat = async (req, res) => {
       ? (relevantCafes.length > 0 ? relevantCafes : allCafes.slice(0, MAX_CONTEXT_CAFES))
       : [];
     const sanitizedHistory = sanitizeHistory(history);
+    const systemPrompt = createSystemPrompt(cafeRelated ? cafesForContext : [], cafeRelated);
 
-    try {
-      if (!process.env.GEMINI_API_KEY) {
-        throw new Error('GEMINI_API_KEY is not set');
+    // 1. Try Groq first (higher rate limits)
+    if (process.env.GROQ_API_KEY) {
+      try {
+        const groqHistory = Array.isArray(history)
+          ? history.filter(h => h && typeof h.content === 'string').slice(-10)
+          : [];
+        const aiResponse = await callGroq(systemPrompt, groqHistory, message.trim());
+        if (aiResponse) {
+          return res.json({
+            success: true,
+            mode: 'groq',
+            data: { message: aiResponse, timestamp: new Date().toISOString() },
+          });
+        }
+      } catch (groqErr) {
+        console.log('Groq failed, trying Gemini:', groqErr.message);
       }
-
-      const payload = {
-        systemInstruction: {
-          parts: [{ text: createSystemPrompt(cafeRelated ? cafesForContext : [], cafeRelated) }],
-        },
-        contents: [
-          ...sanitizedHistory,
-          { role: 'user', parts: [{ text: message.trim() }] },
-        ],
-        generationConfig: {
-          temperature: 0.7,
-          topP: 0.9,
-          maxOutputTokens: 1024,
-        },
-      };
-
-      const response = await callGeminiWithRetry(payload, process.env.GEMINI_API_KEY);
-      const data = await response.json();
-      const aiResponse = extractGeminiText(data);
-
-      if (!aiResponse) {
-        throw new Error('Gemini returned empty response');
-      }
-
-      return res.json({
-        success: true,
-        mode: 'gemini',
-        data: { message: aiResponse, timestamp: new Date().toISOString() },
-      });
-    } catch (aiError) {
-      let fallbackMessage;
-      if (aiError.message === 'RATE_LIMIT') {
-        fallbackMessage = 'AI sedang sibuk karena terlalu banyak permintaan. Tunggu sebentar (1-2 menit) lalu coba lagi ya! 🙏';
-      } else {
-        console.log('Gemini not available:', aiError.message);
-        fallbackMessage = generateFallbackResponse(message, cafeRelated ? cafesForContext : [], cafeRelated);
-      }
-
-      return res.json({
-        success: true,
-        mode: 'fallback',
-        data: { message: fallbackMessage, timestamp: new Date().toISOString() },
-      });
     }
+
+    // 2. Fallback to Gemini
+    if (process.env.GEMINI_API_KEY) {
+      try {
+        const payload = {
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          contents: [
+            ...sanitizedHistory,
+            { role: 'user', parts: [{ text: message.trim() }] },
+          ],
+          generationConfig: { temperature: 0.7, topP: 0.9, maxOutputTokens: 1024 },
+        };
+
+        const response = await callGeminiWithRetry(payload, process.env.GEMINI_API_KEY);
+        const data = await response.json();
+        const aiResponse = extractGeminiText(data);
+
+        if (aiResponse) {
+          return res.json({
+            success: true,
+            mode: 'gemini',
+            data: { message: aiResponse, timestamp: new Date().toISOString() },
+          });
+        }
+      } catch (geminiErr) {
+        if (geminiErr.message === 'RATE_LIMIT') {
+          return res.json({
+            success: true,
+            mode: 'fallback',
+            data: { message: 'AI sedang sibuk. Tunggu sebentar lalu coba lagi ya! 🙏', timestamp: new Date().toISOString() },
+          });
+        }
+        console.log('Gemini failed:', geminiErr.message);
+      }
+    }
+
+    // 3. Local fallback
+    const fallbackMessage = generateFallbackResponse(message, cafeRelated ? cafesForContext : [], cafeRelated);
+    return res.json({
+      success: true,
+      mode: 'fallback',
+      data: { message: fallbackMessage, timestamp: new Date().toISOString() },
+    });
   } catch (error) {
     console.error('Chat Error:', error.message);
     return res.json({
