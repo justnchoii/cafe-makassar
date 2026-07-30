@@ -561,6 +561,32 @@ const cafes = [
     image: "/nuiz-coffee.jpg",
     mapsLink: "https://maps.app.goo.gl/cnJtL72f6wzPSaxF6",
     location: { lat: -5.1500, lng: 119.4300 }
+  },
+  {
+    name: "BW Coffee Daya",
+    description: "Cafe modern minimalis dengan interior kayu elegan, partisi kaca hitam estetik, dan konsep coffee plus barbershop yang unik di area Daya.",
+    address: "Daya, Makassar",
+    category: "aesthetic",
+    rating: 4.9,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/bw-coffee-daya.jpg",
+    mapsLink: "https://maps.app.goo.gl/GNpHC5Ua7BWxvAiH7",
+    location: { lat: -5.1500, lng: 119.4300 }
+  },
+  {
+    name: "Sekan Coffee (Racing Centre)",
+    description: "Cafe retro hangat dengan rak vinyl record ikonik, sofa kulit, dan dekorasi kayu kental nuansa 70an. Cocok untuk ngopi santai sambil menikmati musik.",
+    address: "Racing Centre, Makassar",
+    category: "cozy",
+    rating: 4.5,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Music"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/sekan-coffee.jpg",
+    mapsLink: "https://maps.app.goo.gl/rUY9SNw4XeKFx2ge8",
+    location: { lat: -5.1500, lng: 119.4300 }
   }
 ].map(cafe => ({
   ...cafe,

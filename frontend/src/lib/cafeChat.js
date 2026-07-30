@@ -42,6 +42,8 @@ export const cafeData = [
   { name: "Temu Kopi", desc: "Cafe modern dengan interior abu-abu elegan, sofa nyaman, dan bar kopi lengkap, sempurna untuk bersantai sambil ngopi", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Sofa"] },
   { name: "VAAN IN SKY", desc: "Cafe outdoor dengan konsep gedung tua bersejarah dan neon sign ikonik, suasana malam yang unik dan ramai, cocok untuk nongkrong seru", cat: "outdoor", price: "$", rating: 3.8, addr: "Makassar", fac: ["Outdoor Seating", "Live Music", "Parking"] },
   { name: "Nuiz Coffee", desc: "Cafe kekinian dengan fasad beton estetik, neon sign modern, dan pohon palem di entrance yang memukau, perfect untuk foto malam hari", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
+  { name: "BW Coffee Daya", desc: "Cafe modern minimalis dengan interior kayu elegan, partisi kaca hitam estetik, dan konsep coffee plus barbershop yang unik di area Daya", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Daya, Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
+  { name: "Sekan Coffee (Racing Centre)", desc: "Cafe retro hangat dengan rak vinyl record ikonik, sofa kulit, dan dekorasi kayu yang kental nuansa 70an, cocok untuk ngopi sambil menikmati musik", cat: "cozy", price: "$$", rating: 4.5, addr: "Racing Centre, Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Music"] },
 ];
 
 const categoryLabels = {
