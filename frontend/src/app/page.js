@@ -632,8 +632,7 @@ export default function Home() {
 
   const fetchCafes = async () => {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${API_URL}/api/cafes`);
+      const res = await fetch(`/api/cafes`);
       const data = await res.json();
       if (data.success && data.data.length > 0) {
         const cafesWithResolvedImages = data.data.map(cafe => ({
