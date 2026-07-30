@@ -5,6 +5,18 @@ const MAX_HISTORY_ITEMS = 10;
 const MAX_CONTEXT_CAFES = 8;
 const MIN_RELEVANCE_SCORE = 3;
 const MAX_DEBUG_RESPONSE_LENGTH = 1200;
+const CAFE_TOPIC_KEYWORDS = [
+  'cafe', 'coffee', 'kopi', 'ngopi', 'warkop', 'barista', 'slowbar', 'slow bar', 'manual brew',
+  'v60', 'pour over', 'filter coffee', 'hand brew', 'aesthetic', 'estetik', 'instagramable',
+  'instagrammable', 'wifi', 'wfc', 'coworking', 'rooftop', 'sunset', 'outdoor', 'indoor',
+  'murah', 'mahal', 'budget', 'hemat', 'terjangkau', 'mahasiswa', 'view', 'pemandangan',
+  'makan', 'nongkrong', 'hangout', 'makassar',
+];
+const CAFE_FOLLOW_UP_KEYWORDS = [
+  'alamat', 'alamatnya', 'dimana', 'di mana', 'lokasi', 'lokasinya', 'jam', 'jamnya', 'buka',
+  'tutup', 'harga', 'rating', 'fasilitas', 'maps', 'menu', 'nomor', 'kontak', 'telepon',
+  'selain itu', 'apalagi', 'yang lain', 'beda apa', 'bandingkan',
+];
 const STOP_WORDS = new Set([
   'ada', 'aja', 'apa', 'apakah', 'atau', 'buat', 'bisa', 'cafe', 'coffee', 'dan', 'dari',
   'dengan', 'di', 'dimana', 'dong', 'enak', 'itu', 'ini', 'juga', 'kalau', 'kalo', 'ke',
@@ -162,6 +174,48 @@ function extractConversationText(message, history) {
   return normalizeText(`${historyText} ${message}`);
 }
 
+function mentionsCafeName(text, cafes) {
+  const normalizedText = normalizeText(text);
+
+  return cafes.some(cafe => {
+    const normalizedName = normalizeText(cafe.name);
+
+    if (normalizedText.includes(normalizedName)) {
+      return true;
+    }
+
+    return normalizedName
+      .split(' ')
+      .filter(token => token.length >= 4 && !STOP_WORDS.has(token))
+      .some(token => normalizedText.includes(token));
+  });
+}
+
+function isCafeRelatedQuery(message, history, cafes) {
+  const messageText = normalizeText(message);
+  const historyText = Array.isArray(history)
+    ? history
+      .filter(item => item && typeof item.content === 'string')
+      .map(item => item.content)
+      .join(' ')
+    : '';
+  const normalizedHistoryText = normalizeText(historyText);
+  const hasCafeKeyword = hasAny(messageText, CAFE_TOPIC_KEYWORDS);
+  const messageMentionsCafe = mentionsCafeName(messageText, cafes);
+  const historyMentionsCafe = mentionsCafeName(normalizedHistoryText, cafes);
+  const isFollowUp = hasAny(messageText, CAFE_FOLLOW_UP_KEYWORDS);
+
+  if (hasCafeKeyword || messageMentionsCafe) {
+    return true;
+  }
+
+  if (isFollowUp && (historyMentionsCafe || hasAny(normalizedHistoryText, CAFE_TOPIC_KEYWORDS))) {
+    return true;
+  }
+
+  return false;
+}
+
 function extractSearchTerms(text) {
   return normalizeText(text)
     .split(' ')
@@ -192,25 +246,30 @@ function buildCafeContext(cafes) {
   }).join('\n');
 }
 
-function createSystemPrompt(cafes) {
-  return `Kamu adalah AI resmi Website Cafe Makassar.
+function createSystemPrompt(cafes, isCafeRelated) {
+  const basePrompt = `Kamu adalah AI Assistant pada website Cafe Makassar.
 
-ATURAN WAJIB:
-1. Jawab HANYA berdasarkan data cafe yang diberikan dan riwayat percakapan.
-2. Jangan mengarang nama cafe.
-3. Jangan mengarang alamat.
-4. Jangan mengarang rating.
-5. Jangan mengarang harga.
-6. Jangan mengarang fasilitas, jam buka, atau detail suasana yang tidak tertulis.
-7. Jika informasi tidak ada pada data, jawab persis: "Maaf, informasi tersebut belum tersedia pada database Cafe Makassar."
-8. Jika user bertanya follow-up seperti "alamatnya dimana?" atau "jam bukanya?", gunakan konteks dari riwayat chat untuk menentukan cafe yang sedang dibahas.
-9. Jika user bertanya selain cafe Makassar, jawab singkat lalu arahkan kembali ke topik cafe.
-10. Selalu prioritaskan rekomendasi cafe dari data yang tersedia.
+Aturan:
+1. Kamu boleh menjawab pertanyaan umum seperti teknologi, pendidikan, sejarah, matematika, pemrograman, kesehatan umum, bahasa, dan pengetahuan umum.
+2. Jawab dengan Bahasa Indonesia yang natural, ramah, jelas, dan terasa seperti AI chat modern.
+3. Gunakan riwayat percakapan untuk memahami follow-up seperti "alamatnya dimana?" atau "lanjutkan".
+4. Jika pertanyaan berkaitan dengan cafe di Makassar, gunakan data cafe yang diberikan sebagai sumber utama.
+5. Jangan mengarang informasi tentang cafe. Jika data cafe tidak tersedia, jawab persis: "Maaf, informasi tersebut belum tersedia pada database Cafe Makassar."
+6. Untuk pertanyaan non-cafe, jawab normal seperti asisten AI umum tanpa mengaitkan paksa ke cafe.
+7. Jika user meminta rekomendasi cafe, pilih yang paling relevan dan jelaskan singkat alasannya.`;
 
-Gaya jawaban:
-- Gunakan Bahasa Indonesia yang natural, ringkas, dan membantu.
-- Kalau ada beberapa cafe relevan, pilih 3 sampai 5 yang paling cocok lalu jelaskan singkat alasannya.
-- Kalau data tidak menyebut hal spesifik seperti slowbar atau manual brew, katakan jujur dan sebut cafe yang paling mendekati dari data.
+  if (!isCafeRelated || cafes.length === 0) {
+    return `${basePrompt}
+
+Saat ini tidak ada data cafe yang perlu dipakai untuk pertanyaan ini, jadi jawab sebagai AI assistant umum.`;
+  }
+
+  return `${basePrompt}
+
+Khusus untuk pertanyaan cafe:
+- Jawab hanya berdasarkan data cafe yang tersedia di bawah.
+- Jangan mengarang nama cafe, alamat, rating, harga, fasilitas, jam buka, atau detail suasana.
+- Jika data tidak menyebut hal spesifik seperti slowbar atau manual brew, katakan jujur lalu sebut cafe yang paling mendekati dari data.
 
 Data cafe Makassar yang relevan:
 ${buildCafeContext(cafes)}`;
@@ -324,7 +383,11 @@ function formatCafeList(cafes) {
     .join('\n\n');
 }
 
-function generateFallbackResponse(message, cafes) {
+function generateFallbackResponse(message, cafes, isCafeRelated) {
+  if (!isCafeRelated) {
+    return 'AI sedang tidak tersedia untuk pertanyaan umum saat ini. Coba lagi sebentar lagi setelah koneksi Gemini aktif.';
+  }
+
   if (!cafes.length) {
     return 'Maaf, data cafe belum tersedia saat ini.';
   }
@@ -370,12 +433,16 @@ exports.chat = async (req, res) => {
     }
 
     const allCafes = await Cafe.find({}).lean();
-    const relevantCafes = selectRelevantCafes(message, history, allCafes);
-    const cafesForContext = relevantCafes.length > 0 ? relevantCafes : allCafes.slice(0, MAX_CONTEXT_CAFES);
+    const cafeRelated = isCafeRelatedQuery(message, history, allCafes);
+    const relevantCafes = cafeRelated ? selectRelevantCafes(message, history, allCafes) : [];
+    const cafesForContext = cafeRelated
+      ? (relevantCafes.length > 0 ? relevantCafes : allCafes.slice(0, MAX_CONTEXT_CAFES))
+      : [];
     const sanitizedHistory = sanitizeHistory(history);
 
     logChatDebug('request-summary', {
       message: message.trim(),
+      cafeRelated,
       historyCount: Array.isArray(history) ? history.length : 0,
       sanitizedHistoryCount: sanitizedHistory.length,
       totalCafeCount: allCafes.length,
@@ -383,7 +450,7 @@ exports.chat = async (req, res) => {
     });
     logChatDebug('all-cafes-sample', allCafes.slice(0, 2).map(summarizeCafeForDebug));
     logChatDebug('selected-context-cafes', cafesForContext.map(summarizeCafeForDebug));
-    logChatDebug('system-prompt-preview', createSystemPrompt(cafesForContext).slice(0, MAX_DEBUG_RESPONSE_LENGTH));
+    logChatDebug('system-prompt-preview', createSystemPrompt(cafeRelated ? cafesForContext : [], cafeRelated).slice(0, MAX_DEBUG_RESPONSE_LENGTH));
 
     try {
       if (!process.env.GEMINI_API_KEY) {
@@ -399,7 +466,7 @@ exports.chat = async (req, res) => {
         },
         body: JSON.stringify({
           systemInstruction: {
-            parts: [{ text: createSystemPrompt(cafesForContext) }],
+            parts: [{ text: createSystemPrompt(cafeRelated ? cafesForContext : [], cafeRelated) }],
           },
           contents: [
             ...sanitizedHistory,
@@ -441,7 +508,7 @@ exports.chat = async (req, res) => {
       });
     } catch (aiError) {
       console.log('Gemini not available, using fallback:', aiError.message);
-      const fallbackResponse = generateFallbackResponse(message, cafesForContext);
+      const fallbackResponse = generateFallbackResponse(message, cafeRelated ? cafesForContext : [], cafeRelated);
       logChatDebug('fallback-response', fallbackResponse.slice(0, MAX_DEBUG_RESPONSE_LENGTH));
 
       return res.json({
