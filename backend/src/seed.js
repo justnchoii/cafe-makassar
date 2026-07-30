@@ -327,6 +327,32 @@ const cafes = [
     openHours: "24 Jam",
     image: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=600&h=400&fit=crop",
     location: { lat: -5.1380, lng: 119.4100 }
+  },
+  {
+    name: "Beyours Coffee & Space",
+    description: "Cafe dengan interior kayu yang hangat dan cozy, cocok untuk ngopi santai dan nongkrong dengan nuansa rustic yang nyaman.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.5,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/beyours-coffee-space.png",
+    mapsLink: "https://maps.app.goo.gl/ncXZq8ZXQ6D5TrAq6",
+    location: { lat: -5.1500, lng: 119.4300 }
+  },
+  {
+    name: "REAL CAFE",
+    description: "Cafe dengan konsep industrial yang unik dan autentik, cocok untuk nongkrong malam dengan suasana yang berbeda dan raw.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.6,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "Outdoor Seating", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/real-cafe.png",
+    mapsLink: "https://maps.app.goo.gl/g3dNnR2c69Zw5oLk8",
+    location: { lat: -5.1500, lng: 119.4300 }
   }
 ].map(cafe => ({
   ...cafe,

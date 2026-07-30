@@ -24,6 +24,8 @@ export const cafeData = [
   { name: "Wam's Coffee", desc: "Cafe real dengan nuansa industrial hangat, cocok untuk nongkrong malam dan ngopi santai", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Jalan Inspeksi Kanal Puri Borong Raya, Borong, Manggala", fac: ["Indoor Seating", "Outdoor Seating", "Coffee Bar"] },
   { name: "Utata Space", desc: "Cafe real dengan interior luas dan industrial modern, cocok untuk nongkrong dan kerja ringan", cat: "aesthetic", price: "$$", rating: 4.4, addr: "Bitoa, Manggala, Makassar", fac: ["Indoor Seating", "AC", "Workspace"] },
   { name: "Warkop Phoenam", desc: "Legendaris sejak 1946, kopi tubruk khas Makassar", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14", fac: ["Traditional Coffee", "24 Jam"] },
+  { name: "Beyours Coffee & Space", desc: "Cafe dengan interior kayu yang hangat dan cozy, cocok untuk ngopi santai dan nongkrong dengan nuansa rustic yang nyaman", cat: "aesthetic", price: "$$", rating: 4.5, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "Parking"] },
+  { name: "REAL CAFE", desc: "Cafe dengan konsep industrial yang unik dan autentik, cocok untuk nongkrong malam dengan suasana yang berbeda dan raw", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "Outdoor Seating", "Parking"] },
 ];
 
 const categoryLabels = {
