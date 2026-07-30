@@ -1,8 +1,7 @@
 ﻿import { NextResponse } from 'next/server';
 
-function getBackendApiUrl() {
-  return process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-}
+// Always use localhost for server-side backend calls (works in Codespaces)
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
 export async function POST(request) {
   let body = {};
@@ -21,9 +20,9 @@ export async function POST(request) {
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
+    const timeout = setTimeout(() => controller.abort(), 20000);
 
-    const res = await fetch(`${getBackendApiUrl()}/api/chat`, {
+    const res = await fetch(`${BACKEND_URL}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message, history }),
@@ -47,8 +46,16 @@ export async function POST(request) {
     throw new Error('Backend returned empty response');
   } catch (err) {
     console.error('[chat] Error:', err.message);
+
+    if (err.name === 'AbortError') {
+      return NextResponse.json({
+        response: 'AI membutuhkan waktu terlalu lama. Coba lagi.',
+        mode: 'timeout',
+      });
+    }
+
     return NextResponse.json({
-      response: 'AI sedang tidak tersedia. Pastikan backend berjalan dan GEMINI_API_KEY sudah diset di backend/.env, lalu restart server.',
+      response: 'AI sedang tidak tersedia. Pastikan backend berjalan dan GEMINI_API_KEY sudah diset di backend/.env.',
       mode: 'error',
     });
   }
