@@ -418,6 +418,19 @@ const cafes = [
     image: "/vendor-coffee.jpg",
     mapsLink: "https://maps.app.goo.gl/KXnTFVFziugUWwxy9",
     location: { lat: -5.1500, lng: 119.4300 }
+  },
+  {
+    name: "Monolith Coffee",
+    description: "Cafe dengan arsitektur unik bergaya heritage, cocok untuk ngopi santai dan foto aesthetic dengan nuansa kolonial yang elegan.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.7,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "Outdoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/monolith-coffee.jpg",
+    mapsLink: "https://maps.app.goo.gl/TibXk1eQnwWsu1XR7",
+    location: { lat: -5.1500, lng: 119.4300 }
   }
 ].map(cafe => ({
   ...cafe,
