@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import CafeCard from '../components/CafeCard';
 import ChatWidget from '../components/ChatWidget';
-import { resolveCafeImageUrl } from '../lib/imageStorage';
 
 const staticCafes = [
   {
@@ -635,10 +634,7 @@ export default function Home() {
       const res = await fetch(`/api/cafes`);
       const data = await res.json();
       if (data.success && data.data.length > 0) {
-        const cafesWithResolvedImages = data.data.map(cafe => ({
-          ...cafe,
-          image: resolveCafeImageUrl(cafe.image),
-        }));
+        const cafesWithResolvedImages = data.data;
         setCafes(cafesWithResolvedImages);
         setFilteredCafes(cafesWithResolvedImages);
       }
