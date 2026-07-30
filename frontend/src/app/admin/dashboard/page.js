@@ -322,17 +322,18 @@ export default function AdminDashboard() {
               <div>
                 <label className="text-xs font-semibold text-gray-600 block mb-1">Foto Cafe</label>
                 <div className="space-y-2">
-                  <input type="file" accept="image/*" onChange={handleImageChange}
-                    className="text-xs text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-secondary/10 file:text-secondary file:text-xs hover:file:bg-secondary/20" />
-                  {!imageFile && (
-                    <input value={form.image} onChange={e => setForm(f => ({...f, image: e.target.value}))}
-                      className="input-field text-xs" placeholder="Atau masukkan URL foto..." />
-                  )}
+                  <label className="flex items-center gap-2 cursor-pointer w-full px-3 py-2.5 rounded-xl border-2 border-dashed border-secondary/40 hover:border-secondary transition-all bg-secondary/5">
+                    <span className="text-secondary text-lg">📸</span>
+                    <span className="text-xs text-gray-600 flex-1">
+                      {imageFile ? imageFile.name : (modal === 'edit' && form.image ? 'Klik untuk ganti foto' : 'Klik untuk pilih foto dari perangkat')}
+                    </span>
+                    <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+                  </label>
                   {(imageFile || form.image) && (
                     <img
                       src={imageFile ? URL.createObjectURL(imageFile) : form.image}
                       alt="Preview"
-                      className="w-full h-32 object-cover rounded-xl"
+                      className="w-full h-36 object-cover rounded-xl border border-gray-100"
                       onError={e => e.target.style.display='none'}
                     />
                   )}
