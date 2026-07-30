@@ -22,7 +22,14 @@ const cafeSchema = new mongoose.Schema({
   location: {
     lat: { type: Number },
     lng: { type: Number }
-  }
+  },
+  // Detail fields
+  menu: [String],
+  priceInfo: { type: String },
+  suitableFor: [String],
+  favoriteSpot: { type: String },
+  tips: { type: String },
+  about: { type: String },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Cafe', cafeSchema);
