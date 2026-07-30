@@ -599,7 +599,6 @@ const staticCafes = [
   }
 ].map(cafe => ({
   ...cafe,
-  image: resolveCafeImageUrl(cafe.image),
 }));
 
 export default function Home() {
