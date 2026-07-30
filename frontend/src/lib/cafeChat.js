@@ -47,6 +47,18 @@ const areaKeywords = [
 ];
 
 const followUpKeywords = ['selain itu', 'selain', 'yang lain', 'lainnya', 'apalagi', 'opsi lain', 'alternatif lain'];
+const cafeTopicKeywords = [
+  'cafe', 'coffee', 'kopi', 'ngopi', 'warkop', 'barista', 'slowbar', 'slow bar', 'manual brew',
+  'v60', 'pour over', 'filter coffee', 'hand brew', 'wifi', 'wfc', 'coworking', 'rooftop',
+  'sunset', 'outdoor', 'indoor', 'aesthetic', 'estetik', 'instagramable', 'instagrammable',
+  'nongkrong', 'hangout', 'murah', 'mahal', 'budget', 'hemat', 'terjangkau', 'mahasiswa',
+  'view', 'pemandangan', 'makan', 'makassar'
+];
+const cafeFollowUpKeywords = [
+  'alamat', 'alamatnya', 'dimana', 'di mana', 'lokasi', 'lokasinya', 'jam', 'jamnya', 'buka',
+  'tutup', 'harga', 'rating', 'fasilitas', 'maps', 'menu', 'nomor', 'kontak', 'telepon',
+  'selain itu', 'apalagi', 'yang lain', 'beda apa', 'bandingkan'
+];
 
 function normalizeText(text) {
   return text
@@ -75,6 +87,10 @@ function dedupeCafes(cafes) {
 function getLastHistoryMessage(history, role) {
   if (!Array.isArray(history)) {
     return null;
+  }
+
+  function hasCafeTopicKeyword(text) {
+    return hasAny(normalizeText(text), cafeTopicKeywords);
   }
 
   for (let i = history.length - 1; i >= 0; i -= 1) {
@@ -256,6 +272,24 @@ function findMentionedCafes(message) {
   return matches
     .sort((a, b) => b.score - a.score || b.alias.length - a.alias.length)
     .map(match => match.cafe);
+}
+
+export function isCafeRelatedChatMessage(message, history = []) {
+  const normalizedMessage = normalizeText(message);
+  const historyText = Array.isArray(history)
+    ? history
+      .filter(item => item && typeof item.content === 'string')
+      .map(item => item.content)
+      .join(' ')
+    : '';
+  const normalizedHistory = normalizeText(historyText);
+  const hasMessageTopic = hasCafeTopicKeyword(normalizedMessage);
+  const hasMentionedCafe = findMentionedCafes(message).length > 0;
+  const hasAreaMention = Boolean(findAreaCafes(message));
+  const isFollowUp = hasAny(normalizedMessage, cafeFollowUpKeywords);
+  const historyHasCafeContext = hasCafeTopicKeyword(normalizedHistory) || findMentionedCafes(historyText).length > 0;
+
+  return hasMessageTopic || hasMentionedCafe || hasAreaMention || (isFollowUp && historyHasCafeContext);
 }
 
 function findAreaCafes(message) {

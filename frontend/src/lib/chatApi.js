@@ -1,4 +1,8 @@
-import { getCafeChatResponse } from './cafeChat';
+import { getCafeChatResponse, isCafeRelatedChatMessage } from './cafeChat';
+
+function getUnavailableGeneralAiResponse() {
+  return 'AI sedang tidak tersedia untuk pertanyaan umum saat ini. Coba lagi sebentar lagi setelah koneksi Gemini aktif.';
+}
 
 export async function sendCafeChat({ message, history = [], compact = false }) {
   const trimmedMessage = typeof message === 'string' ? message.trim() : '';
@@ -29,8 +33,12 @@ export async function sendCafeChat({ message, history = [], compact = false }) {
       return data.response.trim();
     }
   } catch (error) {
-    return getCafeChatResponse(trimmedMessage, { compact, history });
+    return isCafeRelatedChatMessage(trimmedMessage, history)
+      ? getCafeChatResponse(trimmedMessage, { compact, history })
+      : getUnavailableGeneralAiResponse();
   }
 
-  return getCafeChatResponse(trimmedMessage, { compact, history });
+  return isCafeRelatedChatMessage(trimmedMessage, history)
+    ? getCafeChatResponse(trimmedMessage, { compact, history })
+    : getUnavailableGeneralAiResponse();
 }

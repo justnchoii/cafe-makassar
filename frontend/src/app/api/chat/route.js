@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { buildCafeKnowledgeBase, getCafeChatResponse } from '../../../lib/cafeChat';
+import { buildCafeKnowledgeBase, getCafeChatResponse, isCafeRelatedChatMessage } from '../../../lib/cafeChat';
 
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
@@ -68,6 +68,14 @@ function extractGeminiText(data) {
     .trim();
 }
 
+function getFallbackResponse(message, history, compact) {
+  if (isCafeRelatedChatMessage(message, history)) {
+    return getCafeChatResponse(message, { compact, history });
+  }
+
+  return 'AI sedang tidak tersedia untuk pertanyaan umum saat ini. Coba lagi sebentar lagi setelah koneksi Gemini aktif.';
+}
+
 async function requestBackendChat(message, history = []) {
   try {
     const response = await fetch(`${getBackendApiUrl()}/api/chat`, {
@@ -100,7 +108,7 @@ export async function POST(request) {
     message = typeof body?.message === 'string' ? body.message.trim() : '';
     compact = Boolean(body?.compact);
     history = Array.isArray(body?.history) ? body.history : [];
-    const fallback = getCafeChatResponse(message, { compact, history });
+    const fallback = getFallbackResponse(message, history, compact);
 
     if (!message) {
       return NextResponse.json({ error: 'Message is required.' }, { status: 400 });
@@ -170,7 +178,7 @@ export async function POST(request) {
       mode: 'fallback',
     });
   } catch (error) {
-    const fallbackMessage = getCafeChatResponse(message || 'rekomendasi cafe makassar', { compact, history });
+    const fallbackMessage = getFallbackResponse(message || '', history, compact);
     return NextResponse.json({ response: fallbackMessage, mode: 'fallback' });
   }
 }
