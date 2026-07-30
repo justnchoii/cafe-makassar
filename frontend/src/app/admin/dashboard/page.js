@@ -8,7 +8,7 @@ const EMPTY_FORM = {
   rating: '', priceRange: '$$', facilities: '', openHours: '', mapsLink: '', image: '',
 };
 
-const CATEGORIES = ['aesthetic', 'coworking', 'outdoor', 'rooftop', 'traditional'];
+const CATEGORIES = ['aesthetic', 'coworking', 'outdoor', 'rooftop', 'traditional', 'cozy'];
 const PRICE_RANGES = [
   { value: '$', label: 'Murah' },
   { value: '$$', label: 'Sedang' },
@@ -180,6 +180,12 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-500">{cafes.length} cafe</span>
+            <a
+              href="/"
+              className="px-3 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 hover:bg-gray-50 transition-all flex items-center gap-1"
+            >
+              🏠 Ke Website
+            </a>
             <button
               onClick={openAdd}
               className="px-4 py-2 bg-gradient-cafe text-white rounded-xl text-sm font-medium hover:opacity-90 transition-all"
