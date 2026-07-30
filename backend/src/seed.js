@@ -405,6 +405,19 @@ const cafes = [
     image: "/eksposed-pettarani.jpg",
     mapsLink: "https://maps.app.goo.gl/7SownMCEJPrFx36U8",
     location: { lat: -5.1500, lng: 119.4300 }
+  },
+  {
+    name: "VENDOR COFFEE",
+    description: "Cafe aesthetic dengan interior kayu hangat dan neon sign elegan, cocok untuk ngopi santai dan foto aesthetic.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.8,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "WiFi"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/vendor-coffee.jpg",
+    mapsLink: "https://maps.app.goo.gl/KXnTFVFziugUWwxy9",
+    location: { lat: -5.1500, lng: 119.4300 }
   }
 ].map(cafe => ({
   ...cafe,

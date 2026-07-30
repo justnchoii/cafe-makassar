@@ -30,6 +30,7 @@ export const cafeData = [
   { name: "THEMA", desc: "Cafe modern dengan interior industrial minimalis, dilengkapi TV layar besar, cocok untuk nongkrong santai sambil nonton atau kerja", cat: "coworking", price: "$$", rating: 4.7, addr: "Makassar", fac: ["Indoor Seating", "AC", "WiFi", "TV Screen", "Coffee Bar"] },
   { name: "TOMORO COFFEE", desc: "Cafe kopi chain modern dengan konsep clean dan minimalis, cocok untuk ngopi cepat, kerja, dan nongkrong santai", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
   { name: "Eksposed 3.0 Signature Pettarani", desc: "Cafe modern dua lantai dengan rooftop terbuka, cocok untuk nongkrong dan foto aesthetic di area Pettarani", cat: "rooftop", price: "$$", rating: 4.5, addr: "Jalan A.P. Pettarani, Makassar", fac: ["Indoor Seating", "Outdoor Seating", "AC", "WiFi", "Parking", "Rooftop"] },
+  { name: "VENDOR COFFEE", desc: "Cafe aesthetic dengan interior kayu hangat dan neon sign elegan, cocok untuk ngopi santai dan foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.8, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi"] },
 ];
 
 const categoryLabels = {
