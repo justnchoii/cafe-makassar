@@ -379,6 +379,32 @@ const cafes = [
     image: "/thema.jpg",
     mapsLink: "https://maps.app.goo.gl/rZ2PwgNQ7KYBbA57A",
     location: { lat: -5.1500, lng: 119.4300 }
+  },
+  {
+    name: "TOMORO COFFEE",
+    description: "Cafe kopi chain modern dengan konsep clean dan minimalis, cocok untuk ngopi cepat, kerja, dan nongkrong santai dengan kopi berkualitas.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.9,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/tomoro-coffee.jpg",
+    mapsLink: "https://maps.app.goo.gl/XnqvaoTVWZwQJtaXA",
+    location: { lat: -5.1500, lng: 119.4300 }
+  },
+  {
+    name: "Eksposed 3.0 Signature Pettarani",
+    description: "Cafe modern dua lantai dengan konsep industrial dan rooftop terbuka, cocok untuk nongkrong, foto aesthetic, dan menikmati suasana sore di area Pettarani.",
+    address: "Jalan A.P. Pettarani, Makassar",
+    category: "rooftop",
+    rating: 4.5,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "Outdoor Seating", "AC", "WiFi", "Parking", "Rooftop"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/eksposed-pettarani.jpg",
+    mapsLink: "https://maps.app.goo.gl/7SownMCEJPrFx36U8",
+    location: { lat: -5.1500, lng: 119.4300 }
   }
 ].map(cafe => ({
   ...cafe,

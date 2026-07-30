@@ -28,6 +28,8 @@ export const cafeData = [
   { name: "REAL CAFE", desc: "Cafe dengan konsep industrial yang unik dan autentik, cocok untuk nongkrong malam dengan suasana yang berbeda dan raw", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "Outdoor Seating", "Parking"] },
   { name: "KOPIKU", desc: "Cafe kopi dengan neon sign khas yang ikonik, cocok untuk nongkrong malam dengan suasana casual dan ramai", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Makassar", fac: ["Indoor Seating", "Outdoor Seating", "Coffee Bar", "Parking"] },
   { name: "THEMA", desc: "Cafe modern dengan interior industrial minimalis, dilengkapi TV layar besar, cocok untuk nongkrong santai sambil nonton atau kerja", cat: "coworking", price: "$$", rating: 4.7, addr: "Makassar", fac: ["Indoor Seating", "AC", "WiFi", "TV Screen", "Coffee Bar"] },
+  { name: "TOMORO COFFEE", desc: "Cafe kopi chain modern dengan konsep clean dan minimalis, cocok untuk ngopi cepat, kerja, dan nongkrong santai", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
+  { name: "Eksposed 3.0 Signature Pettarani", desc: "Cafe modern dua lantai dengan rooftop terbuka, cocok untuk nongkrong dan foto aesthetic di area Pettarani", cat: "rooftop", price: "$$", rating: 4.5, addr: "Jalan A.P. Pettarani, Makassar", fac: ["Indoor Seating", "Outdoor Seating", "AC", "WiFi", "Parking", "Rooftop"] },
 ];
 
 const categoryLabels = {
