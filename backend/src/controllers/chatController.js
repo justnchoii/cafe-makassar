@@ -222,45 +222,40 @@ function buildCafeContext(cafes) {
   return cafes.map(cafe => {
     const lines = [
       `- Nama: ${cafe.name}`,
-      formatField('Deskripsi', cafe.description),
+      formatField('Deskripsi', cafe.about || cafe.description),
       formatField('Kategori', cafe.category),
-      formatField('Harga', cafe.priceRange),
+      formatField('Harga', cafe.priceInfo || cafe.priceRange),
       formatField('Rating', cafe.rating ? `${cafe.rating}/5` : ''),
       formatField('Alamat', cafe.address),
       formatField('Fasilitas', cafe.facilities),
+      formatField('Menu', cafe.menu),
+      cafe.suitableFor?.length ? `  Cocok untuk: ${cafe.suitableFor.join(', ')}` : '',
+      cafe.tips ? `  Tips: ${cafe.tips}` : '',
       formatField('Jam buka', cafe.openHours),
       formatField('Maps', cafe.mapsLink),
-      formatField('Koordinat', cafe.location),
-    ];
+    ].filter(Boolean);
 
     return lines.join('\n  ');
   }).join('\n');
 }
 
 function createSystemPrompt(cafes, isCafeRelated) {
-  const basePrompt = `Kamu adalah AI Assistant pada website Cafe Makassar.
+  const basePrompt = `Kamu adalah AI Assistant cerdas di website Cafe Makassar. Kamu bisa menjawab APA SAJA yang ditanyakan.
 
-Aturan:
-1. Kamu boleh menjawab pertanyaan umum seperti teknologi, pendidikan, sejarah, matematika, pemrograman, kesehatan umum, bahasa, dan pengetahuan umum.
-2. Jawab dengan Bahasa Indonesia yang natural, ramah, jelas, dan terasa seperti AI chat modern.
-3. Gunakan riwayat percakapan untuk memahami follow-up seperti "alamatnya dimana?" atau "lanjutkan".
-4. Jika pertanyaan berkaitan dengan cafe di Makassar, gunakan data cafe yang diberikan sebagai sumber utama.
-5. Jangan mengarang informasi tentang cafe. Jika data cafe tidak tersedia, jawab persis: "Maaf, informasi tersebut belum tersedia pada database Cafe Makassar."
-6. Untuk pertanyaan non-cafe, jawab normal seperti asisten AI umum tanpa mengaitkan paksa ke cafe.
-7. Jika user meminta rekomendasi cafe, pilih yang paling relevan dan jelaskan singkat alasannya.`;
+ATURAN:
+1. Jawab SEMUA pertanyaan dengan baik — cafe, teknologi, sains, matematika, sejarah, bahasa, coding, kesehatan, atau topik apapun.
+2. Gunakan Bahasa Indonesia yang natural, ramah, dan jelas.
+3. Untuk pertanyaan tentang cafe di Makassar, gunakan data cafe yang diberikan sebagai sumber utama.
+4. Jangan mengarang informasi cafe yang tidak ada di data. Jika tidak ada, bilang jujur.
+5. Untuk pertanyaan NON-cafe, jawab seperti asisten AI umum yang pintar dan membantu.
+6. Gunakan riwayat percakapan untuk memahami konteks follow-up.
+7. Jawaban boleh panjang jika pertanyaan membutuhkan penjelasan detail.`;
 
   if (!isCafeRelated || cafes.length === 0) {
-    return `${basePrompt}
-
-Saat ini tidak ada data cafe yang perlu dipakai untuk pertanyaan ini, jadi jawab sebagai AI assistant umum.`;
+    return `${basePrompt}\n\nJawab pertanyaan ini sebagai AI assistant umum yang membantu.`;
   }
 
   return `${basePrompt}
-
-Khusus untuk pertanyaan cafe:
-- Jawab hanya berdasarkan data cafe yang tersedia di bawah.
-- Jangan mengarang nama cafe, alamat, rating, harga, fasilitas, jam buka, atau detail suasana.
-- Jika data tidak menyebut hal spesifik seperti slowbar atau manual brew, katakan jujur lalu sebut cafe yang paling mendekati dari data.
 
 Data cafe Makassar yang relevan:
 ${buildCafeContext(cafes)}`;
@@ -467,9 +462,9 @@ exports.chat = async (req, res) => {
             },
           ],
           generationConfig: {
-            temperature: 0.3,
-            topP: 0.8,
-            maxOutputTokens: 420,
+            temperature: 0.7,
+            topP: 0.9,
+            maxOutputTokens: 1024,
           },
         }),
       });
