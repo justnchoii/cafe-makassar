@@ -453,6 +453,30 @@ const staticCafes = [
     openHours: "Cek jam buka di Google Maps",
     image: "/mauki.jpg",
     mapsLink: "https://maps.app.goo.gl/Dh95SiFuaiqLLQCf9"
+  },
+  {
+    name: "Obladi Cafe",
+    description: "Cafe cozy dengan interior industrial bata merah dan pencahayaan hangat, cocok untuk nongkrong, kerja, dan ngopi santai.",
+    address: "Makassar",
+    category: "coworking",
+    rating: 4.7,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "WiFi", "Coffee Bar", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/obladi-cafe.jpg",
+    mapsLink: "https://maps.app.goo.gl/dn1oS9cdeN5KR4hX6"
+  },
+  {
+    name: "Bring.In Cafe",
+    description: "Cafe dengan interior kayu hangat dan plafon kisi-kisi estetik, cocok untuk nongkrong malam dan foto aesthetic.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.6,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/bringin-cafe.jpg",
+    mapsLink: "https://maps.app.goo.gl/crK96ybdS1Trz58D8"
   }
 ].map(cafe => ({
   ...cafe,
