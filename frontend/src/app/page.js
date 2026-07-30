@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import CafeCard from '../components/CafeCard';
 import ChatWidget from '../components/ChatWidget';
+import { resolveCafeImageUrl } from '../lib/imageStorage';
 
 const staticCafes = [
   {
@@ -331,7 +332,10 @@ const staticCafes = [
     openHours: "24 Jam",
     image: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=600&h=400&fit=crop"
   }
-];
+].map(cafe => ({
+  ...cafe,
+  image: resolveCafeImageUrl(cafe.image),
+}));
 
 export default function Home() {
   const [cafes, setCafes] = useState(staticCafes);
@@ -366,8 +370,12 @@ export default function Home() {
       const res = await fetch(`${API_URL}/api/cafes`);
       const data = await res.json();
       if (data.success && data.data.length > 0) {
-        setCafes(data.data);
-        setFilteredCafes(data.data);
+        const cafesWithResolvedImages = data.data.map(cafe => ({
+          ...cafe,
+          image: resolveCafeImageUrl(cafe.image),
+        }));
+        setCafes(cafesWithResolvedImages);
+        setFilteredCafes(cafesWithResolvedImages);
       }
     } catch (error) {
       console.log('Using static cafe data');

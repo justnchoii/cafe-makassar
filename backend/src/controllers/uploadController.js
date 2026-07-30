@@ -1,4 +1,5 @@
 const { minioClient } = require('../config/minio');
+const { buildMinioObjectUrl, getMinioBucketName } = require('../config/imageStorage');
 const multer = require('multer');
 const path = require('path');
 
@@ -22,14 +23,14 @@ exports.uploadImage = async (req, res) => {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
 
-    const bucket = process.env.MINIO_BUCKET || 'cafe-images';
+    const bucket = getMinioBucketName();
     const fileName = `${Date.now()}-${req.file.originalname}`;
     
     await minioClient.putObject(bucket, fileName, req.file.buffer, req.file.size, {
       'Content-Type': req.file.mimetype,
     });
 
-    const imageUrl = `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${bucket}/${fileName}`;
+    const imageUrl = buildMinioObjectUrl(fileName);
     
     res.json({ success: true, data: { url: imageUrl, fileName } });
   } catch (error) {

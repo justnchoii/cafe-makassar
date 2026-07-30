@@ -1,6 +1,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const Cafe = require('./models/Cafe');
+const { resolveStoredImageUrl } = require('./config/imageStorage');
 
 const cafes = [
   {
@@ -327,7 +328,10 @@ const cafes = [
     image: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=600&h=400&fit=crop",
     location: { lat: -5.1380, lng: 119.4100 }
   }
-];
+].map(cafe => ({
+  ...cafe,
+  image: resolveStoredImageUrl(cafe.image),
+}));
 
 const seedDB = async () => {
   try {

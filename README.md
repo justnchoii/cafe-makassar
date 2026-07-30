@@ -63,6 +63,39 @@ npm install
 npm run dev
 ```
 
+### Sinkronkan semua foto cafe ke MinIO
+
+Foto-foto cafe lokal saat ini ada di `frontend/public/`. Untuk mengunggah semuanya ke bucket MinIO sekaligus:
+
+```bash
+# terminal backend
+cd backend
+cp .env.example .env
+npm install
+npm run sync:minio-images
+```
+
+Script ini akan mengunggah semua file `.png/.jpg/.jpeg/.webp` dari `frontend/public/` ke bucket `cafe-images` (atau bucket dari env kamu).
+
+Setelah itu isi env publik supaya frontend dan backend memakai URL MinIO:
+
+**backend/.env**
+```env
+MINIO_ENDPOINT=minio
+MINIO_PORT=9000
+MINIO_USE_SSL=false
+MINIO_BUCKET=cafe-images
+MINIO_PUBLIC_URL=http://localhost:9000
+```
+
+**frontend/.env.local**
+```env
+NEXT_PUBLIC_MINIO_URL=http://localhost:9000
+NEXT_PUBLIC_MINIO_BUCKET=cafe-images
+```
+
+Kalau di Codespaces kamu expose port MinIO, ganti `http://localhost:9000` dengan URL public port MinIO yang aktif.
+
 ## 🤖 AI Chat
 
 AI Chat frontend sekarang bisa memakai **Gemini API** lewat route internal Next.js (`frontend/src/app/api/chat/route.js`) agar jawaban lebih natural seperti AI chat modern, tetapi tetap diarahkan ke data cafe Makassar yang ada di web.
