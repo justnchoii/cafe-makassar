@@ -40,6 +40,8 @@ export const cafeData = [
   { name: "Heaven With You", desc: "Cafe minimalis modern serba putih dengan sofa velvet dan dekorasi bunga kering, suasananya romantic dan sangat cocok untuk foto aesthetic", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi"] },
   { name: "Soraa Cafe", desc: "Cafe cozy dengan suasana hangat, rak display estetik, dan ruangan ber-AC yang nyaman, cocok untuk nongkrong santai", cat: "cozy", price: "$$", rating: 5.0, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi"] },
   { name: "Temu Kopi", desc: "Cafe modern dengan interior abu-abu elegan, sofa nyaman, dan bar kopi lengkap, sempurna untuk bersantai sambil ngopi", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Sofa"] },
+  { name: "VAAN IN SKY", desc: "Cafe outdoor dengan konsep gedung tua bersejarah dan neon sign ikonik, suasana malam yang unik dan ramai, cocok untuk nongkrong seru", cat: "outdoor", price: "$", rating: 3.8, addr: "Makassar", fac: ["Outdoor Seating", "Live Music", "Parking"] },
+  { name: "Nuiz Coffee", desc: "Cafe kekinian dengan fasad beton estetik, neon sign modern, dan pohon palem di entrance yang memukau, perfect untuk foto malam hari", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"] },
 ];
 
 const categoryLabels = {

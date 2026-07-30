@@ -535,6 +535,32 @@ const cafes = [
     image: "/temu-kopi.jpg",
     mapsLink: "https://maps.app.goo.gl/HqoYPpLpuqgqJVMT9",
     location: { lat: -5.1500, lng: 119.4300 }
+  },
+  {
+    name: "VAAN IN SKY",
+    description: "Cafe outdoor dengan konsep gedung tua bersejarah dan neon sign ikonik. Suasana malam yang unik dan ramai, cocok untuk nongkrong seru bersama teman.",
+    address: "Makassar",
+    category: "outdoor",
+    rating: 3.8,
+    priceRange: "$",
+    facilities: ["Outdoor Seating", "Live Music", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/vaan-in-sky.jpg",
+    mapsLink: "https://maps.app.goo.gl/W81VVJewTd2WbJ9A7",
+    location: { lat: -5.1500, lng: 119.4300 }
+  },
+  {
+    name: "Nuiz Coffee",
+    description: "Cafe kekinian dengan fasad beton estetik, neon sign modern, dan pohon palem di entrance yang memukau. Perfect untuk foto malam hari dan ngopi santai.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.6,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "Coffee Bar", "WiFi", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/nuiz-coffee.jpg",
+    mapsLink: "https://maps.app.goo.gl/cnJtL72f6wzPSaxF6",
+    location: { lat: -5.1500, lng: 119.4300 }
   }
 ].map(cafe => ({
   ...cafe,
