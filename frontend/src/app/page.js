@@ -357,6 +357,30 @@ const staticCafes = [
     openHours: "Cek jam buka di Google Maps",
     image: "/real-cafe.png",
     mapsLink: "https://maps.app.goo.gl/g3dNnR2c69Zw5oLk8"
+  },
+  {
+    name: "KOPIKU",
+    description: "Cafe kopi dengan neon sign khas yang ikonik, cocok untuk nongkrong malam dengan suasana casual dan ramai. Tempatnya sederhana tapi selalu rame pengunjung.",
+    address: "Makassar",
+    category: "aesthetic",
+    rating: 4.9,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "Outdoor Seating", "Coffee Bar", "Parking"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/kopiku.jpg",
+    mapsLink: "https://maps.app.goo.gl/JG3nB6FziCDu8dzZ9"
+  },
+  {
+    name: "THEMA",
+    description: "Cafe modern dengan interior industrial minimalis, dilengkapi TV layar besar, cocok untuk nongkrong santai sambil nonton atau kerja.",
+    address: "Makassar",
+    category: "coworking",
+    rating: 4.7,
+    priceRange: "$$",
+    facilities: ["Indoor Seating", "AC", "WiFi", "TV Screen", "Coffee Bar"],
+    openHours: "Cek jam buka di Google Maps",
+    image: "/thema.jpg",
+    mapsLink: "https://maps.app.goo.gl/rZ2PwgNQ7KYBbA57A"
   }
 ].map(cafe => ({
   ...cafe,

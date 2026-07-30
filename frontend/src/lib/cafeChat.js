@@ -26,6 +26,8 @@ export const cafeData = [
   { name: "Warkop Phoenam", desc: "Legendaris sejak 1946, kopi tubruk khas Makassar", cat: "traditional", price: "$", rating: 4.6, addr: "Jl. Sulawesi No. 14", fac: ["Traditional Coffee", "24 Jam"] },
   { name: "Beyours Coffee & Space", desc: "Cafe dengan interior kayu yang hangat dan cozy, cocok untuk ngopi santai dan nongkrong dengan nuansa rustic yang nyaman", cat: "aesthetic", price: "$$", rating: 4.5, addr: "Makassar", fac: ["Indoor Seating", "AC", "Coffee Bar", "Parking"] },
   { name: "REAL CAFE", desc: "Cafe dengan konsep industrial yang unik dan autentik, cocok untuk nongkrong malam dengan suasana yang berbeda dan raw", cat: "aesthetic", price: "$$", rating: 4.6, addr: "Makassar", fac: ["Indoor Seating", "Outdoor Seating", "Parking"] },
+  { name: "KOPIKU", desc: "Cafe kopi dengan neon sign khas yang ikonik, cocok untuk nongkrong malam dengan suasana casual dan ramai", cat: "aesthetic", price: "$$", rating: 4.9, addr: "Makassar", fac: ["Indoor Seating", "Outdoor Seating", "Coffee Bar", "Parking"] },
+  { name: "THEMA", desc: "Cafe modern dengan interior industrial minimalis, dilengkapi TV layar besar, cocok untuk nongkrong santai sambil nonton atau kerja", cat: "coworking", price: "$$", rating: 4.7, addr: "Makassar", fac: ["Indoor Seating", "AC", "WiFi", "TV Screen", "Coffee Bar"] },
 ];
 
 const categoryLabels = {
