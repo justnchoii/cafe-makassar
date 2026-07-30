@@ -125,6 +125,14 @@ function isNightCafe(cafe) {
   return cafe.fac.includes('24 Jam') || hasAny(normalizeText(cafe.desc), ['malam', 'senja', 'sunset']);
 }
 
+function isSlowbarCandidate(cafe) {
+  const description = normalizeText(cafe.desc);
+  const name = normalizeText(cafe.name);
+  return cafe.fac.includes('Coffee Bar')
+    || name.includes('roastery')
+    || hasAny(description, ['ngopi', 'coffee', 'bar', 'roastery']);
+}
+
 function getRelaxedSignature(text) {
   return normalizeText(text).replace(/\s+/g, '').replace(/[aeiou]/g, '');
 }
@@ -555,6 +563,29 @@ function buildCategoryResponse(message, compact = false, excludedCafeNames = [])
 
 function buildNeedsResponse(message, compact = false, excludedCafeNames = []) {
   const normalizedMessage = normalizeText(message);
+
+  if (hasAny(normalizedMessage, ['slowbar', 'slow bar', 'manual brew', 'v60', 'pour over', 'filter coffee', 'hand brew'])) {
+    const cafes = filterExcludedCafes(
+      rankCafes(cafeData.filter(isSlowbarCandidate), cafe => {
+        let score = cafe.rating;
+        if (cafe.fac.includes('Coffee Bar')) {
+          score += 1;
+        }
+        if (normalizeText(cafe.name).includes('roastery')) {
+          score += 0.8;
+        }
+        return score;
+      }),
+      excludedCafeNames
+    );
+
+    const title = '☕ Cafe yang kemungkinan punya coffee bar / konsep mendekati slowbar';
+    const closing = compact
+      ? 'Di data yang ada belum tertulis slowbar secara eksplisit, jadi ini opsi yang paling mendekati.'
+      : 'Di data web yang ada belum tertulis slowbar atau manual brew secara eksplisit. Jadi aku kasih opsi yang paling mendekati dan paling masuk akal untuk kamu cek langsung.';
+
+    return buildCuratedResponse(title, cafes, compact, closing);
+  }
 
   if (hasAny(normalizedMessage, ['murah', 'hemat', 'budget', 'terjangkau', 'mahasiswa'])) {
     const cafes = filterExcludedCafes(

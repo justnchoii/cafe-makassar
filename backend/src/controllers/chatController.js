@@ -39,6 +39,7 @@ Tugasmu:
 - Kalau user meminta rekomendasi, pilih yang paling relevan lalu jelaskan alasannya.
 - Kalau user menyebut beberapa cafe, jangan otomatis membandingkan kecuali user memang meminta perbandingan.
 - Kalau user bertanya umum atau sedikit di luar topik, tetap jawab dengan sopan dan natural, lalu kaitkan ke cafe Makassar bila relevan.
+- Kalau user bertanya hal spesifik seperti slowbar atau manual brew sementara data tidak menyebutnya secara eksplisit, katakan dengan jujur lalu berikan cafe yang paling mendekati berdasarkan data yang ada.
 - Hindari jawaban template yang kaku.
 
 Data cafe Makassar:
@@ -47,6 +48,26 @@ ${buildCafeContext(cafes)}`;
 
 function generateFallbackResponse(message, cafes) {
   const msg = message.toLowerCase();
+
+  if (
+    msg.includes('slowbar')
+    || msg.includes('slow bar')
+    || msg.includes('manual brew')
+    || msg.includes('v60')
+    || msg.includes('pour over')
+    || msg.includes('filter coffee')
+    || msg.includes('hand brew')
+  ) {
+    const picks = cafes
+      .filter(c => c.facilities.includes('Coffee Bar') || c.name.toLowerCase().includes('roastery') || c.description.toLowerCase().includes('ngopi'))
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 5);
+
+    if (picks.length > 0) {
+      const list = picks.map(c => `☕ **${c.name}** (Rating: ${c.rating}/5) - ${c.address}\n   ${c.description}`).join('\n\n');
+      return `Di data yang ada, belum tertulis slowbar atau manual brew secara eksplisit. Tapi cafe yang paling mendekati untuk kamu cek adalah:\n\n${list}\n\nKalau kamu mau, aku juga bisa pilihkan yang paling cocok buat ngopi serius atau ngobrol santai.`;
+    }
+  }
 
   if (msg.includes('aesthetic') || msg.includes('instagramable') || msg.includes('foto')) {
     const picks = cafes.filter(c => c.category === 'aesthetic');
