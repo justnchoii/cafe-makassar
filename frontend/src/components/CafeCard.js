@@ -37,7 +37,7 @@ export default function CafeCard({ cafe, index }) {
         )}
         {/* Price Badge */}
         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-bold text-primary">
-          {cafe.priceRange}
+          {cafe.priceRange === '$' ? 'Murah' : cafe.priceRange === '$$' ? 'Sedang' : cafe.priceRange === '$$$' ? 'Mahal' : cafe.priceRange || 'Sedang'}
         </div>
         {/* Rating Badge */}
         <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-bold text-primary flex items-center gap-1">

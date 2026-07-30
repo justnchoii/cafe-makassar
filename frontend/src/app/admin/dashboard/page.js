@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 
 const EMPTY_FORM = {
   name: '', description: '', address: '', category: 'aesthetic',
-  rating: '', priceRange: '$$', facilities: '', openHours: '', mapsLink: '', image: '',
+  rating: '', priceRange: 'Sedang', facilities: '', openHours: '', mapsLink: '', image: '',
 };
 
 const CATEGORIES = ['aesthetic', 'coworking', 'outdoor', 'rooftop', 'traditional'];
-const PRICE_RANGES = ['$', '$$', '$$$'];
+const PRICE_RANGES = ['Murah', 'Sedang', 'Mahal'];
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -69,7 +69,7 @@ export default function AdminDashboard() {
       address: cafe.address || '',
       category: cafe.category || 'aesthetic',
       rating: cafe.rating ?? '',
-      priceRange: cafe.priceRange || '$$',
+      priceRange: cafe.priceRange || 'Sedang',
       facilities: Array.isArray(cafe.facilities) ? cafe.facilities.join(', ') : (cafe.facilities || ''),
       openHours: cafe.openHours || '',
       mapsLink: cafe.mapsLink || '',
