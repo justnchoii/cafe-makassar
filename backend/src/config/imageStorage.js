@@ -30,7 +30,13 @@ function resolveStoredImageUrl(imagePath) {
     return imagePath;
   }
 
+  // Already an absolute URL — use as-is
   if (/^https?:\/\//i.test(imagePath)) {
+    return imagePath;
+  }
+
+  // Relative path (e.g. /goodfields.png) — keep as-is so Next.js serves it from /public
+  if (imagePath.startsWith('/')) {
     return imagePath;
   }
 
