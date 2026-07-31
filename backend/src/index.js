@@ -3,8 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const connectDB = require('./config/database');
-const { initMinio, minioClient } = require('./config/minio');
-const { getMinioBucketName } = require('./config/imageStorage');
+const { initMinio } = require('./config/minio');
 const swaggerSpec = require('./config/swagger');
 
 const cafeRoutes = require('./routes/cafeRoutes');
@@ -27,22 +26,6 @@ app.use('/api/cafes', cafeRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/admin', adminRoutes);
-
-// Image proxy — serves MinIO images via backend so browser always uses port 5000
-app.get('/api/images/:filename', async (req, res) => {
-  try {
-    const { filename } = req.params;
-    const bucket = getMinioBucketName();
-    const stat = await minioClient.statObject(bucket, filename);
-    const contentType = stat.metaData?.['content-type'] || 'image/jpeg';
-    res.setHeader('Content-Type', contentType);
-    res.setHeader('Cache-Control', 'public, max-age=86400');
-    const stream = await minioClient.getObject(bucket, filename);
-    stream.pipe(res);
-  } catch {
-    res.status(404).json({ error: 'Image not found' });
-  }
-});
 
 // Health check
 app.get('/health', (req, res) => {
