@@ -13,6 +13,8 @@ export async function POST(request) {
 
   const message = typeof body?.message === 'string' ? body.message.trim() : '';
   const history = Array.isArray(body?.history) ? body.history : [];
+  const systemOverride = typeof body?.systemOverride === 'string' ? body.systemOverride : undefined;
+  const cafeId = typeof body?.cafeId === 'string' ? body.cafeId : undefined;
 
   if (!message) {
     return NextResponse.json({ error: 'Message is required.' }, { status: 400 });
@@ -25,7 +27,7 @@ export async function POST(request) {
     const res = await fetch(`${BACKEND_URL}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, history }),
+      body: JSON.stringify({ message, history, systemOverride, cafeId }),
       cache: 'no-store',
       signal: controller.signal,
     });

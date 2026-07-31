@@ -472,20 +472,28 @@ async function callGroq(systemPrompt, history, message) {
 
 exports.chat = async (req, res) => {
   try {
-    const { message, history = [] } = req.body;
+    const { message, history = [], systemOverride } = req.body;
 
     if (!message || typeof message !== 'string' || !message.trim()) {
       return res.status(400).json({ success: false, message: 'Message is required' });
     }
 
     const allCafes = await Cafe.find({}).lean();
-    const cafeRelated = isCafeRelatedQuery(message, history, allCafes);
-    const relevantCafes = cafeRelated ? selectRelevantCafes(message, history, allCafes) : [];
-    const cafesForContext = cafeRelated
-      ? (relevantCafes.length > 0 ? relevantCafes : allCafes.slice(0, MAX_CONTEXT_CAFES))
-      : [];
+
+    // If systemOverride provided (per-cafe page), use it directly
+    let systemPrompt;
+    if (systemOverride && typeof systemOverride === 'string') {
+      systemPrompt = systemOverride;
+    } else {
+      const cafeRelated = isCafeRelatedQuery(message, history, allCafes);
+      const relevantCafes = cafeRelated ? selectRelevantCafes(message, history, allCafes) : [];
+      const cafesForContext = cafeRelated
+        ? (relevantCafes.length > 0 ? relevantCafes : allCafes.slice(0, MAX_CONTEXT_CAFES))
+        : [];
+      systemPrompt = createSystemPrompt(cafeRelated ? cafesForContext : [], cafeRelated);
+    }
+
     const sanitizedHistory = sanitizeHistory(history);
-    const systemPrompt = createSystemPrompt(cafeRelated ? cafesForContext : [], cafeRelated);
 
     // 1. Try Groq first (higher rate limits)
     if (process.env.GROQ_API_KEY) {
