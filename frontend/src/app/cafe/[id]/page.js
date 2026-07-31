@@ -315,13 +315,6 @@ export default function CafeDetail() {
   );
 }
 
-
-export default function CafeDetail() {
-  const { id } = useParams();
-  const router = useRouter();
-  const [cafe, setCafe] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     if (!id) return;
     fetch(`/api/cafes/${id}`)
