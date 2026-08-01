@@ -52,7 +52,7 @@ export default function CafeDetail() {
 
     try {
       const cafeContext = `Nama: ${cafe.name}\nAlamat: ${cafe.address}\nKategori: ${cafe.category}\nRating: ${cafe.rating}\nHarga: ${cafe.priceInfo || cafe.priceRange}\nJam Buka: ${cafe.openHours}\nMenu: ${(cafe.menu || []).join(', ')}\nFasilitas: ${(cafe.facilities || []).join(', ')}\nCocok Untuk: ${(cafe.suitableFor || []).join(', ')}\nTentang: ${cafe.about || cafe.description}\nTips: ${cafe.tips || ''}\nSpot Favorit: ${cafe.favoriteSpot || ''}`;
-      const systemMessage = `Kamu adalah asisten AI untuk cafe "${cafe.name}" di Makassar. Jawab HANYA pertanyaan seputar cafe ini dengan ramah dan informatif. Data cafe:\n\n${cafeContext}`;
+      const systemMessage = `Kamu adalah asisten AI yang ramah dan cerdas untuk cafe "${cafe.name}" di Makassar. Kamu bisa menjawab APAPUN yang ditanyakan pengunjung — mulai dari info cafe, menu, harga, rekomendasi, hingga pertanyaan umum lainnya. Utamakan informasi tentang cafe ini jika relevan. Data cafe:\n\n${cafeContext}`;
       const history = newMessages.slice(0, -1).map(m => ({ role: m.role, content: m.content }));
 
       const res = await fetch('/api/chat', {
