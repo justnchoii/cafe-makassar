@@ -10,8 +10,12 @@ const options = {
     },
     servers: [
       {
+        url: process.env.PUBLIC_URL || 'http://localhost:5000',
+        description: 'API Server',
+      },
+      {
         url: 'http://localhost:5000',
-        description: 'Development server',
+        description: 'Local server',
       },
     ],
   },
