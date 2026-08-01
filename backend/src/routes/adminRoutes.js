@@ -129,6 +129,24 @@ router.delete('/cafes/:id', cafeController.deleteCafe);
  *     tags: [Admin]
  *     security:
  *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - image
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: File gambar cafe (jpg/png/webp)
+ *     responses:
+ *       200:
+ *         description: Image uploaded successfully, returns URL
+ *       401:
+ *         description: Unauthorized
  */
 router.post('/upload', uploadMiddleware, uploadImage);
 
