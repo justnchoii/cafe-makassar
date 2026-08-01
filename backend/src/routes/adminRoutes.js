@@ -51,6 +51,17 @@ router.use(adminAuth);
  *     tags: [Admin]
  *     security:
  *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Cafe'
+ *     responses:
+ *       201:
+ *         description: Cafe created successfully
+ *       401:
+ *         description: Unauthorized
  */
 router.post('/cafes', cafeController.createCafe);
 
@@ -62,6 +73,26 @@ router.post('/cafes', cafeController.createCafe);
  *     tags: [Admin]
  *     security:
  *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Cafe ID (MongoDB ObjectId)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Cafe'
+ *     responses:
+ *       200:
+ *         description: Cafe updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Cafe not found
  */
 router.put('/cafes/:id', cafeController.updateCafe);
 
@@ -73,6 +104,20 @@ router.put('/cafes/:id', cafeController.updateCafe);
  *     tags: [Admin]
  *     security:
  *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Cafe ID (MongoDB ObjectId)
+ *     responses:
+ *       200:
+ *         description: Cafe deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Cafe not found
  */
 router.delete('/cafes/:id', cafeController.deleteCafe);
 
