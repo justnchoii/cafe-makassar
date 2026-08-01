@@ -51,8 +51,9 @@ export default function CafeDetail() {
     setAiLoading(true);
 
     try {
-      const cafeContext = `Nama: ${cafe.name}\nAlamat: ${cafe.address}\nKategori: ${cafe.category}\nRating: ${cafe.rating}\nHarga: ${cafe.priceInfo || cafe.priceRange}\nJam Buka: ${cafe.openHours}\nMenu: ${(cafe.menu || []).join(', ')}\nFasilitas: ${(cafe.facilities || []).join(', ')}\nCocok Untuk: ${(cafe.suitableFor || []).join(', ')}\nTentang: ${cafe.about || cafe.description}\nTips: ${cafe.tips || ''}\nSpot Favorit: ${cafe.favoriteSpot || ''}`;
-      const systemMessage = `Kamu adalah asisten AI yang ramah dan cerdas untuk cafe "${cafe.name}" di Makassar. Kamu bisa menjawab APAPUN yang ditanyakan pengunjung — mulai dari info cafe, menu, harga, rekomendasi, hingga pertanyaan umum lainnya. Utamakan informasi tentang cafe ini jika relevan. Data cafe:\n\n${cafeContext}`;
+      const priceDisplay = cafe.priceInfo ? `Rp ${cafe.priceInfo} (dalam ribuan)` : cafe.priceRange === '$' ? 'Murah (di bawah Rp 30.000)' : cafe.priceRange === '$$' ? 'Sedang (Rp 30.000 - 60.000)' : 'Mahal (di atas Rp 60.000)';
+      const cafeContext = `Nama: ${cafe.name}\nAlamat: ${cafe.address}\nKategori: ${cafe.category}\nRating: ${cafe.rating}/5\nKisaran Harga: ${priceDisplay}\nJam Buka: ${cafe.openHours || 'tidak tersedia'}\nMenu Andalan: ${(cafe.menu || []).join(', ') || 'tidak tersedia'}\nFasilitas: ${(cafe.facilities || []).join(', ') || 'tidak tersedia'}\nCocok Untuk: ${(cafe.suitableFor || []).join(', ') || 'tidak tersedia'}\nTentang: ${cafe.about || cafe.description || ''}\nTips: ${cafe.tips || ''}\nSpot Favorit: ${cafe.favoriteSpot || ''}`;
+      const systemMessage = `Kamu adalah asisten AI yang ramah, cerdas, dan sangat membantu untuk cafe "${cafe.name}" di Makassar. Jawab APAPUN yang ditanyakan pengunjung dengan detail dan informatif. Jika ditanya harga, sebutkan dengan jelas. Jika ditanya menu, sebutkan semua yang ada. Jika data tidak lengkap, berikan estimasi yang masuk akal berdasarkan kategori cafe. Data lengkap cafe:\n\n${cafeContext}`;
       const history = newMessages.slice(0, -1).map(m => ({ role: m.role, content: m.content }));
 
       const res = await fetch('/api/chat', {
