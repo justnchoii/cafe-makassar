@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Navbar from '../../components/Navbar';
-import { sendCafeChat } from '../../lib/chatApi';
+import { streamCafeChat } from '../../lib/chatApi';
 
 function createChatMessage(role, content) {
   return {
@@ -46,12 +46,39 @@ export default function ChatPage() {
       content: msg.content,
     }));
 
-    const aiResponse = await sendCafeChat({
+    // The AI bubble is only added once the first chunk arrives, so the typing
+    // indicator stays visible while the request is still in flight.
+    let aiMessageIndex = -1;
+
+    await streamCafeChat({
       message: userMessage,
       history: chatHistory,
+      onChunk: (_delta, fullTextSoFar) => {
+        setIsLoading(false);
+        setMessages(prev => {
+          if (aiMessageIndex === -1) {
+            aiMessageIndex = prev.length;
+            return [...prev, createChatMessage('ai', fullTextSoFar)];
+          }
+          const next = [...prev];
+          next[aiMessageIndex] = { ...next[aiMessageIndex], content: fullTextSoFar };
+          return next;
+        });
+      },
+      onError: (errMsg) => {
+        setIsLoading(false);
+        setMessages(prev => {
+          if (aiMessageIndex === -1) {
+            aiMessageIndex = prev.length;
+            return [...prev, createChatMessage('ai', errMsg)];
+          }
+          const next = [...prev];
+          next[aiMessageIndex] = { ...next[aiMessageIndex], content: errMsg };
+          return next;
+        });
+      },
     });
 
-    setMessages(prev => [...prev, createChatMessage('ai', aiResponse)]);
     setIsLoading(false);
   };
 

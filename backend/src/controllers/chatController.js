@@ -470,6 +470,234 @@ async function callGroq(systemPrompt, history, message) {
   return data?.choices?.[0]?.message?.content?.trim() || '';
 }
 
+// ---- SSE streaming helpers ----
+
+function sseSend(res, event, data) {
+  res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+}
+
+// Streams a Groq (OpenAI-compatible) chat completion, invoking onDelta(text) per token chunk.
+// Returns true if any text was streamed, false if the provider returned nothing usable.
+async function streamGroq(systemPrompt, history, message, onDelta) {
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    ...history.map(item => ({
+      role: item.role === 'user' ? 'user' : 'assistant',
+      content: item.content,
+    })),
+    { role: 'user', content: message },
+  ];
+
+  const response = await fetch(GROQ_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      messages,
+      temperature: 0.7,
+      max_tokens: 1024,
+      stream: true,
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.text().catch(() => '');
+    throw new Error(`Groq HTTP ${response.status}: ${err.slice(0, 100)}`);
+  }
+
+  let full = '';
+  let buffer = '';
+  const decoder = new TextDecoder();
+
+  for await (const chunk of response.body) {
+    buffer += decoder.decode(chunk, { stream: true });
+    const parts = buffer.split('\n\n');
+    buffer = parts.pop() || '';
+
+    for (const part of parts) {
+      const line = part.split('\n').find(l => l.startsWith('data:'));
+      if (!line) continue;
+      const payload = line.replace(/^data:\s*/, '').trim();
+      if (payload === '[DONE]') continue;
+      try {
+        const json = JSON.parse(payload);
+        const delta = json?.choices?.[0]?.delta?.content;
+        if (delta) {
+          full += delta;
+          onDelta(delta);
+        }
+      } catch (_) {
+        // partial/incomplete JSON chunk — ignore, next read will complete it
+      }
+    }
+  }
+
+  return full.trim().length > 0;
+}
+
+// Streams a Gemini response using the streamGenerateContent + alt=sse endpoint,
+// invoking onDelta(text) per token chunk. Returns true if any text was streamed.
+async function streamGemini(systemPrompt, sanitizedHistory, message, apiKey, onDelta) {
+  const streamUrl = GEMINI_URL.replace(':generateContent', ':streamGenerateContent') + '?alt=sse';
+
+  const payload = {
+    systemInstruction: { parts: [{ text: systemPrompt }] },
+    contents: [
+      ...sanitizedHistory,
+      { role: 'user', parts: [{ text: message }] },
+    ],
+    generationConfig: { temperature: 0.7, topP: 0.9, maxOutputTokens: 1024 },
+  };
+
+  const response = await fetch(streamUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey.trim() },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const err = await response.text().catch(() => '');
+    throw new Error(`Gemini stream HTTP ${response.status}: ${err.slice(0, 100)}`);
+  }
+
+  let full = '';
+  let buffer = '';
+  const decoder = new TextDecoder();
+
+  for await (const chunk of response.body) {
+    buffer += decoder.decode(chunk, { stream: true });
+    const parts = buffer.split('\n\n');
+    buffer = parts.pop() || '';
+
+    for (const part of parts) {
+      const line = part.split('\n').find(l => l.startsWith('data:'));
+      if (!line) continue;
+      const payload = line.replace(/^data:\s*/, '').trim();
+      if (!payload) continue;
+      try {
+        const json = JSON.parse(payload);
+        const delta = extractGeminiText(json);
+        if (delta) {
+          full += delta;
+          onDelta(delta);
+        }
+      } catch (_) {
+        // partial/incomplete JSON chunk — ignore, next read will complete it
+      }
+    }
+  }
+
+  return full.trim().length > 0;
+}
+
+// SSE endpoint: streams the AI reply to the client token-by-token over a single
+// open HTTP connection (Content-Type: text/event-stream), instead of waiting for
+// the full response before sending it as one JSON payload.
+exports.chatStream = async (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders?.();
+
+  const heartbeat = setInterval(() => res.write(': ping\n\n'), 15000);
+  const stop = () => clearInterval(heartbeat);
+  req.on('close', stop);
+
+  try {
+    const { message, history = [], systemOverride } = req.body;
+
+    if (!message || typeof message !== 'string' || !message.trim()) {
+      sseSend(res, 'error', { message: 'Message is required' });
+      stop();
+      return res.end();
+    }
+
+    const allCafes = await Cafe.find({}).lean();
+
+    let systemPrompt;
+    let cafeRelated = false;
+    let cafesForContext = [];
+    if (systemOverride && typeof systemOverride === 'string') {
+      systemPrompt = systemOverride;
+    } else {
+      cafeRelated = isCafeRelatedQuery(message, history, allCafes);
+      const relevantCafes = cafeRelated ? selectRelevantCafes(message, history, allCafes) : [];
+      cafesForContext = cafeRelated
+        ? (relevantCafes.length > 0 ? relevantCafes : allCafes.slice(0, MAX_CONTEXT_CAFES))
+        : [];
+      systemPrompt = createSystemPrompt(cafeRelated ? cafesForContext : [], cafeRelated);
+    }
+
+    const sanitizedHistory = sanitizeHistory(history);
+
+    // 1. Try Groq streaming first (higher rate limits)
+    if (process.env.GROQ_API_KEY) {
+      try {
+        const groqHistory = Array.isArray(history)
+          ? history.filter(h => h && typeof h.content === 'string').slice(-10)
+          : [];
+        const streamed = await streamGroq(systemPrompt, groqHistory, message.trim(), (delta) => {
+          sseSend(res, 'chunk', { text: delta });
+        });
+        if (streamed) {
+          sseSend(res, 'done', { mode: 'groq', timestamp: new Date().toISOString() });
+          stop();
+          return res.end();
+        }
+      } catch (groqErr) {
+        console.log('Groq streaming failed, trying Gemini:', groqErr.message);
+      }
+    }
+
+    // 2. Fallback to Gemini streaming
+    if (process.env.GEMINI_API_KEY) {
+      try {
+        const streamed = await streamGemini(
+          systemPrompt,
+          sanitizedHistory,
+          message.trim(),
+          process.env.GEMINI_API_KEY,
+          (delta) => sseSend(res, 'chunk', { text: delta }),
+        );
+        if (streamed) {
+          sseSend(res, 'done', { mode: 'gemini', timestamp: new Date().toISOString() });
+          stop();
+          return res.end();
+        }
+      } catch (geminiErr) {
+        if (geminiErr.message === 'RATE_LIMIT') {
+          sseSend(res, 'chunk', { text: 'AI sedang sibuk. Tunggu sebentar lalu coba lagi ya! 🙏' });
+          sseSend(res, 'done', { mode: 'fallback', timestamp: new Date().toISOString() });
+          stop();
+          return res.end();
+        }
+        console.log('Gemini streaming failed:', geminiErr.message);
+      }
+    }
+
+    // 3. Local fallback — simulate token-by-token delivery so the UI behaves
+    // the same way whether or not an AI provider key is configured.
+    const fallbackMessage = generateFallbackResponse(message, cafesForContext, cafeRelated);
+    const words = fallbackMessage.split(' ');
+    for (const word of words) {
+      sseSend(res, 'chunk', { text: word + ' ' });
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise(resolve => setTimeout(resolve, 15));
+    }
+    sseSend(res, 'done', { mode: 'fallback', timestamp: new Date().toISOString() });
+    stop();
+    res.end();
+  } catch (error) {
+    console.error('Chat Stream Error:', error.message);
+    sseSend(res, 'error', { message: 'Maaf, terjadi kesalahan. Silakan coba lagi! 🙏' });
+    stop();
+    res.end();
+  }
+};
+
 exports.chat = async (req, res) => {
   try {
     const { message, history = [], systemOverride } = req.body;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { sendCafeChat } from '../lib/chatApi';
+import { streamCafeChat } from '../lib/chatApi';
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,13 +30,39 @@ export default function ChatWidget() {
       content: msg.content,
     }));
 
-    const response = await sendCafeChat({
+    // The AI bubble is only added once the first chunk arrives, so the typing
+    // indicator stays visible (instead of an empty bubble) while waiting.
+    let aiMessageIndex = -1;
+
+    await streamCafeChat({
       message: userMessage,
       history: chatHistory,
-      compact: true,
+      onChunk: (_delta, fullTextSoFar) => {
+        setIsLoading(false); // swap the typing dots for the live-streamed bubble
+        setMessages(prev => {
+          if (aiMessageIndex === -1) {
+            aiMessageIndex = prev.length;
+            return [...prev, { role: 'ai', content: fullTextSoFar }];
+          }
+          const next = [...prev];
+          next[aiMessageIndex] = { role: 'ai', content: fullTextSoFar };
+          return next;
+        });
+      },
+      onError: (errMsg) => {
+        setIsLoading(false);
+        setMessages(prev => {
+          if (aiMessageIndex === -1) {
+            aiMessageIndex = prev.length;
+            return [...prev, { role: 'ai', content: errMsg }];
+          }
+          const next = [...prev];
+          next[aiMessageIndex] = { role: 'ai', content: errMsg };
+          return next;
+        });
+      },
     });
 
-    setMessages(prev => [...prev, { role: 'ai', content: response }]);
     setIsLoading(false);
   };
 
